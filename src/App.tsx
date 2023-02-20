@@ -1,12 +1,15 @@
 import React from "react"
 import { Provider } from "react-redux"
 import Home from "pages/Home"
-import store from "redux/store"
+import store, { persistor } from "redux/store"
+import { PersistGate } from "redux-persist/lib/integration/react"
 
 const App = () => {
   return (
     <Provider store={store}>
-      <Home />
+      <PersistGate persistor={persistor}>
+        <Home />
+      </PersistGate>
     </Provider>
   )
 }

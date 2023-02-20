@@ -2,10 +2,10 @@ import React from "react"
 import { useCustomSelector, useCustomDispatch } from "hooks/redux"
 import { setAccessToken } from "redux/slices/auth"
 const Home = () => {
-  const auth = useCustomSelector((state) => state)
+  const { auth } = useCustomSelector((state) => state)
   const dispatch = useCustomDispatch()
 
-  console.log(auth)
+  console.log(auth.accessToken)
 
   const handleLogin = () => {
     dispatch(setAccessToken("addwadwad21d122dd21d212d2d1dd"))
