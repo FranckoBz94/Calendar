@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit"
+import { configureStore, type ThunkAction, type Action } from "@reduxjs/toolkit"
 import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 import authReducer from "./slices/auth"
@@ -22,8 +22,15 @@ const store = configureStore({
     })
 })
 
+// types
 export type RootState = ReturnType<typeof store.getState>
 export type Dispatch = typeof store.dispatch
+export type Thunk = ThunkAction<
+  Promise<unknown>,
+  RootState,
+  unknown,
+  Action<unknown>
+>
 
 export const persistor = persistStore(store)
 
