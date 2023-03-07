@@ -1,0 +1,69 @@
+:root {
+  --primary-color: #1b262c;
+  --secondary-color: #0f4c75;
+  --option1-color: #3282b8;
+  --option2-color: #bbe1fa;
+}
+
+.data-table-extensions {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.data-table-extensions > .data-table-extensions-filter {
+  float: right;
+  width: 30%;
+  border: 1px solid var(--option1-color);
+  border-radius: 14px;
+  margin-top: 20px;
+}
+
+.css-m9mp0w-MuiToolbar-root {
+  background: var(--primary-color);
+}
+
+.data-table-extensions > .data-table-extensions-filter > .icon {
+  height: 35px;
+}
+
+.data-table-extensions > .data-table-extensions-filter > .filter-text {
+  float: left;
+  width: 90%;
+  height: 35px;
+}
+
+.data-table-extensions-action {
+  display: none;
+}
+
+.kNUuTe {
+  background: var(--option1-color) !important;
+  border-top-left-radius: 20px !important;
+  border-top-right-radius: 20px !important;
+}
+
+.kNxEtY {
+  color: #fff;
+}
+
+.glnTqc > .kXLoVw {
+  text-align: left !important;
+}
+
+.iSAVrt {
+  background: var(--option2-color) !important;
+  height: 60px !important;
+}
+
+.iSAVrt > .glyQNg {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.WQNxq {
+  border-radius: 0px;
+}
+
+.eHijxz {
+  border: 1px solid #dbe7e2;
+}

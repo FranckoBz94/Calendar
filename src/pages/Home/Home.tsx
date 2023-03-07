@@ -1,10 +1,15 @@
 import React from "react"
 import { useCustomSelector, useCustomDispatch } from "hooks/redux"
 import { login } from "redux/slices/auth"
+import { Button, Switch } from "@mui/material"
+import { setThemeMode } from "redux/slices/settings"
+import { AppBarComponent } from "pages/AppBar/AppBar"
+import MotionComponent from "components/MotionComponent"
 
 const Home = () => {
   const {
-    auth: { accessToken, isLoading }
+    auth: { accessToken, isLoading },
+    settings: { themeMode }
   } = useCustomSelector((state) => state)
   const dispatch = useCustomDispatch()
   console.log(accessToken)
@@ -19,11 +24,28 @@ const Home = () => {
     )
   }
 
+  const handleChangeTheme = () => {
+    dispatch(setThemeMode(themeMode === "dark" ? "light" : "dark"))
+  }
+
   return (
-    <div>
-      <button onClick={handleLogin}>Login</button>
-      {isLoading && "Ingresando..."}
-    </div>
+    <AppBarComponent>
+      <MotionComponent>
+        <>
+          <Button
+            variant="contained"
+            onClick={handleLogin}
+            disabled={isLoading}
+          >
+            {isLoading ? "Ingresando..." : "Login"}
+          </Button>
+          <div>
+            <p>diivv</p>
+            <Switch onChange={handleChangeTheme} />
+          </div>
+        </>
+      </MotionComponent>
+    </AppBarComponent>
   )
 }
 

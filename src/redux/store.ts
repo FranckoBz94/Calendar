@@ -2,6 +2,7 @@ import { configureStore, type ThunkAction, type Action } from "@reduxjs/toolkit"
 import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 import authReducer from "./slices/auth"
+import settingsReducer from "./slices/settings"
 
 const persistAuthConfig = {
   key: "auth",
@@ -9,11 +10,21 @@ const persistAuthConfig = {
   whitelist: ["accessToken"]
 }
 
+const persistSettigsConfig = {
+  key: "settings",
+  storage,
+  whitelist: ["themeMode"]
+}
+
 const store = configureStore({
   reducer: {
     auth: persistReducer<ReturnType<typeof authReducer>>(
       persistAuthConfig,
       authReducer
+    ),
+    settings: persistReducer<ReturnType<typeof settingsReducer>>(
+      persistSettigsConfig,
+      settingsReducer
     )
   },
   middleware: (defaultMiddleware) =>
