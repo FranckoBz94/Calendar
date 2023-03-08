@@ -9,19 +9,20 @@ import DataTableExtensions from "react-data-table-component-extensions"
 import "react-data-table-component-extensions/dist/index.css"
 import { paginationOption } from "contants"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
-import MotionModal from "components/Modal/Modal"
 import MotionComponent from "components/MotionComponent"
+import MotionModal from "components/Modal/Modal"
+import CloseIcon from "@mui/icons-material/Close"
 
 const Clients = () => {
   const classes: any = useStyles()
-  const [open, setOpen] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
 
-  const handleOpen = () => {
-    setOpen(true)
+  const handleOpenModal = () => {
+    setOpenModal(true)
   }
 
-  const handleClose = () => {
-    setOpen(false)
+  const handleCloseModal = () => {
+    setOpenModal(false)
   }
 
   const data = [
@@ -75,8 +76,15 @@ const Clients = () => {
             <Card variant="outlined">
               <Box p={2}>
                 <div>
-                  <MotionModal open={open} handleClose={handleClose}>
-                    <Box mt={1}>
+                  <MotionModal open={openModal} handleClose={handleCloseModal}>
+                    <Box mt={1} position="relative">
+                      <Box
+                        position="absolute"
+                        className={classes.close}
+                        onClick={handleCloseModal}
+                      >
+                        <CloseIcon />
+                      </Box>
                       <RegisterClient />
                     </Box>
                   </MotionModal>
@@ -85,7 +93,7 @@ const Clients = () => {
                   <Button
                     variant="contained"
                     startIcon={<AddCircleOutlineIcon />}
-                    onClick={handleOpen}
+                    onClick={handleOpenModal}
                   >
                     Nuevo Cliente
                   </Button>

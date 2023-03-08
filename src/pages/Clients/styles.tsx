@@ -22,6 +22,11 @@ export const useStyles: any = makeStyles((theme: Theme) =>
     },
     dataGrid: {
       flexGrow: 1
+    },
+    close: {
+      cursor: "pointer",
+      right: "25px",
+      top: "0"
     }
   })
 )

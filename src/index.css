@@ -5,6 +5,22 @@
   --option2-color: #bbe1fa;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.btnSubmitOption2 {
+  background: var(--primary-color) !important;
+  border: 1px solid var(--option1-color) !important;
+}
+
+.btnSubmitOption2:hover {
+  background: var(--secondary-color) !important;
+  font-weight: 600;
+}
+
 .data-table-extensions {
   padding-left: 0px;
   padding-right: 0px;

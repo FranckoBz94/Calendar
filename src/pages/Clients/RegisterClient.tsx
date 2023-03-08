@@ -2,30 +2,44 @@ import * as React from "react"
 import Button from "@mui/material/Button"
 import CssBaseline from "@mui/material/CssBaseline"
 import TextField from "@mui/material/TextField"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import Checkbox from "@mui/material/Checkbox"
-import Link from "@mui/material/Link"
 import Grid from "@mui/material/Grid"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import { motion } from "framer-motion"
 
 const theme = createTheme()
 
 export default function RegisterClient() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get("email"),
-      password: data.get("password")
-    })
+  const initialValues = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    dni: ""
   }
+
+  const registerClient = (data: any) => {
+    console.log(data)
+  }
+
+  const { handleSubmit, handleChange, values, errors } = useFormik({
+    initialValues,
+    validationSchema: Yup.object({
+      firstName: Yup.string().required("Debes ingresar un nombre"),
+      lastName: Yup.string().required("Debes ingresar un apellido"),
+      email: Yup.string().required("Debes ingresar un email"),
+      phone: Yup.string().required("Debes ingresar una teléfono")
+    }),
+    onSubmit: registerClient
+  })
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="lg">
+      <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box
           sx={{
@@ -36,80 +50,109 @@ export default function RegisterClient() {
           }}
         >
           <Typography component="h1" variant="h5">
-            Sign up
+            Nuevo Cliente
           </Typography>
+
           <Box
             component="form"
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                />
+            <motion.div>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    name="firstName"
+                    required
+                    fullWidth
+                    label="Nombre"
+                    type="text"
+                    onChange={handleChange}
+                    value={values.firstName}
+                    error={Boolean(errors.firstName)}
+                    helperText={
+                      String(errors.firstName) !== "undefined"
+                        ? String(errors.firstName)
+                        : ""
+                    }
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    label="Apellido"
+                    name="lastName"
+                    type="text"
+                    onChange={handleChange}
+                    value={values.lastName}
+                    error={Boolean(errors.lastName)}
+                    helperText={
+                      String(errors.lastName) !== "undefined"
+                        ? String(errors.lastName)
+                        : ""
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    label="Email"
+                    name="email"
+                    type="email"
+                    onChange={handleChange}
+                    value={values.email}
+                    error={Boolean(errors.email)}
+                    helperText={
+                      String(errors.email) !== "undefined"
+                        ? String(errors.email)
+                        : ""
+                    }
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="phone"
+                    label="Teléfono"
+                    type="text"
+                    id="phone"
+                    onChange={handleChange}
+                    value={values.phone}
+                    error={Boolean(errors.phone)}
+                    helperText={
+                      String(errors.phone) !== "undefined"
+                        ? String(errors.phone)
+                        : ""
+                    }
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    name="dni"
+                    label="DNI"
+                    type="dni"
+                    id="dni"
+                    onChange={handleChange}
+                    value={values.dni}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
-            </Grid>
+            </motion.div>
+            <Box display="flex" justifyContent="center">
+              <Button
+                type="submit"
+                variant="contained"
+                className="btnSubmitOption2"
+                sx={{ mt: 5, mb: 5, py: 2, px: 4 }}
+              >
+                Guardar
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Container>

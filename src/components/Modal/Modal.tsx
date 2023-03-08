@@ -1,6 +1,7 @@
 import React, { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Modal, Box, Fade, Button } from "@mui/material"
+import { AnimatePresence } from "framer-motion"
+import { Modal, Fade } from "@mui/material"
+import { useStyles } from "./styles"
 
 interface ModalProps {
   open: boolean
@@ -8,38 +9,9 @@ interface ModalProps {
   children: any
 }
 
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4
-}
-
-const modalVariants = {
-  hidden: {
-    opacity: 0,
-    y: "-50vh"
-  },
-  visible: {
-    position: "absolute" as "absolute",
-    top: "40%",
-    left: "50%",
-    opacity: 1,
-    y: "0",
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 10
-    }
-  }
-}
-
 const MotionModal: React.FC<ModalProps> = ({ open, handleClose, children }) => {
+  const classes: any = useStyles()
+
   const [isBrowser, setIsBrowser] = useState(false)
 
   // Avoids server-side rendering errors
@@ -56,27 +28,18 @@ const MotionModal: React.FC<ModalProps> = ({ open, handleClose, children }) => {
       {open && (
         <div>
           <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
             open={open}
             onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            slotProps={{
+              backdrop: {
+                TransitionComponent: Fade
+              }
+            }}
           >
-            <Fade in={open}>
-              <motion.div
-                className="modal"
-                variants={modalVariants}
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-              >
-                <Box sx={style}>
-                  <div className="modal-dialog modal-lg modal-dialog-centered">
-                    {children}
-                  </div>
-                  <Button onClick={handleClose}>Close</Button>
-                </Box>
-              </motion.div>
-            </Fade>
+            <div className={classes.modalContainer}>{children}</div>
           </Modal>
         </div>
       )}
