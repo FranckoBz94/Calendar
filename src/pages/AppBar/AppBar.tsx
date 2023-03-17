@@ -77,7 +77,6 @@ interface Props {
 }
 
 export function AppBarComponent(props: Props) {
-  console.log(props.children)
   const { window, children } = props
 
   const [open, setOpen] = React.useState(true)
@@ -156,6 +155,7 @@ export function AppBarComponent(props: Props) {
             height: "100vh",
             overflow: "auto"
           }}
+          className="background_page"
         >
           {/* <Toolbar /> */}
           <Box mt={11} mx={3}>

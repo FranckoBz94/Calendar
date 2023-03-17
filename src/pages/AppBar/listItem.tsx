@@ -25,7 +25,7 @@ export const mainListItems = (
         <ListItemText primary="Servicios" />
       </ListItemButton>
     </motion.div>
-    <ListItemButton component={Link} to="/users">
+    <ListItemButton component={Link} to="/usuarios">
       <ListItemIcon>
         <GroupAddIcon />
       </ListItemIcon>

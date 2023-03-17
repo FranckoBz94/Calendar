@@ -89,29 +89,38 @@ const Clients = () => {
                     </Box>
                   </MotionModal>
                 </div>
-                <Grid container justifyContent="flex-end" p={2}>
-                  <Button
-                    variant="contained"
-                    startIcon={<AddCircleOutlineIcon />}
-                    onClick={handleOpenModal}
-                  >
-                    Nuevo Cliente
-                  </Button>
+                <Grid mb={2}>
+                  <Card variant="outlined">
+                    <Grid container justifyContent="flex-end" p={2}>
+                      <Button
+                        variant="contained"
+                        startIcon={<AddCircleOutlineIcon />}
+                        onClick={handleOpenModal}
+                        className={classes.btnAddClient}
+                      >
+                        Nuevo Cliente
+                      </Button>
+                    </Grid>
+                  </Card>
                 </Grid>
                 <Paper className={classes.cardTable}>
-                  <DataTableExtensions {...tableData} px={0}>
-                    <DataTable
-                      columns={columns}
-                      data={filteredData}
-                      pagination
-                      sortIcon={<ArrowDownwardIcon />}
-                      highlightOnHover
-                      defaultSortAsc={true}
-                      title="Listado de Clientes"
-                      noDataComponent="No hay datos para mostrar"
-                      paginationComponentOptions={paginationOption}
-                    />
-                  </DataTableExtensions>
+                  <Card variant="outlined">
+                    <Grid p={2}>
+                      <DataTableExtensions {...tableData} px={0}>
+                        <DataTable
+                          columns={columns}
+                          data={filteredData}
+                          pagination
+                          sortIcon={<ArrowDownwardIcon />}
+                          highlightOnHover
+                          defaultSortAsc={true}
+                          title="Listado de Clientes"
+                          noDataComponent="No hay datos para mostrar"
+                          paginationComponentOptions={paginationOption}
+                        />
+                      </DataTableExtensions>
+                    </Grid>
+                  </Card>
                 </Paper>
               </Box>
             </Card>

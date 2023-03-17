@@ -11,7 +11,7 @@ export const useStyles: any = makeStyles((theme: Theme) =>
       fontWeight: "bold"
     },
     colorCard: {
-      background: "#404258 !important"
+      background: "#0f4c75 !important"
     },
     cardTable: {
       display: "flex",
@@ -28,7 +28,7 @@ export const useStyles: any = makeStyles((theme: Theme) =>
       right: "25px",
       top: "0"
     },
-    btnAddClient: {
+    btnAddUser: {
       borderRadius: "70px !important",
       paddingLeft: "20px !important",
       paddingRight: "20px !important",

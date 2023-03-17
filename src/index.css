@@ -31,7 +31,6 @@ body {
   width: 30%;
   border: 1px solid var(--option1-color);
   border-radius: 14px;
-  margin-top: 20px;
 }
 
 .css-m9mp0w-MuiToolbar-root {
@@ -82,4 +81,8 @@ body {
 
 .eHijxz {
   border: 1px solid #dbe7e2;
+}
+
+.btnTable > span {
+  margin: 0px;
 }
