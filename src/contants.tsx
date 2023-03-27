@@ -1,7 +1,4 @@
-import Button from "@mui/material/Button"
-import EditIcon from "@mui/icons-material/Edit"
-import DeleteIcon from "@mui/icons-material/Delete"
-import { dataRow } from "pages/Users/Users"
+import { toast } from "react-toastify"
 
 export const options = {
   actionsCellStyle: {
@@ -38,67 +35,30 @@ export const paginationOption = {
   selectAllRowsItemText: "Todos"
 }
 
-export const columnsTableUsers = [
-  {
-    name: "Nombre",
-    selector: (row: any) => row.nombre,
-    sortable: true
-  },
-  {
-    name: "Apellido",
-    selector: (row: any) => row.apellido,
-    sortable: true
-  },
-  {
-    name: "Email",
-    selector: (row: any) => row.email,
-    sortable: true
-  },
-  {
-    name: "Usuario Creado",
-    selector: (row: any) => new Date(row.fecha_creacion).toLocaleString(),
-    sortable: true
-  },
-  {
-    name: "Activo",
-    selector: (row: any) => (row.is_active === 1 ? "Si" : "No"),
-    sortable: true,
-    center: true
-  },
-  {
-    name: "Administrador",
-    selector: (row: any) => (row.is_admin === 1 ? "Si" : "No"),
-    sortable: true,
-    center: true
-  },
-  {
-    name: "Acción",
-    sortable: false,
-    cell: (d: any) => [
-      <Button
-        key={1}
-        style={{ marginLeft: "3px", marginRight: "3px" }}
-        variant="contained"
-        type="button"
-        className="btnTable"
-        title="Editar Jugador"
-        startIcon={<EditIcon />}
-        color="primary"
-        onClick={() => dataRow(d)}
-      ></Button>,
-      <Button
-        key={2}
-        variant="contained"
-        color="error"
-        style={{ marginLeft: "3px", marginRight: "3px" }}
-        className="btnTable"
-        type="button"
-        title="Eliminar Jugador"
-        startIcon={<DeleteIcon />}
-        onClick={() => dataRow(d)}
-      ></Button>
-    ],
-    grow: 2,
-    center: true
+export class NotifyHelper {
+  static notifySuccess: (text: string) => void = (text: string) => {
+    toast.success(text, {
+      autoClose: 3000,
+      closeOnClick: true,
+      draggable: true,
+      hideProgressBar: false,
+      pauseOnHover: true,
+      position: "top-center",
+      progress: undefined,
+      theme: "colored"
+    })
   }
-]
+
+  static notifyError: (text: string) => void = (text: string) => {
+    toast.error(text, {
+      autoClose: 3000,
+      closeOnClick: true,
+      draggable: true,
+      hideProgressBar: false,
+      pauseOnHover: true,
+      position: "top-center",
+      progress: undefined,
+      theme: "colored"
+    })
+  }
+}

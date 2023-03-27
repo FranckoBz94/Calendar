@@ -5,9 +5,9 @@ import Paper from "@mui/material/Paper"
 import DataTableExtensions from "react-data-table-component-extensions"
 import DataTable from "react-data-table-component"
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
-import { paginationOption, columnsTableUsers } from "contants"
+import { NotifyHelper, paginationOption } from "contants"
 import { useStyles } from "./styles"
-import { getAllUsers } from "redux/actions/usersAction"
+import { getAllUsers, removeUser } from "redux/actions/usersAction"
 import { useDispatch, useSelector } from "react-redux"
 import store from "redux/store"
 import Grid from "@mui/material/Grid"
@@ -17,25 +17,24 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import Box from "@mui/material/Box"
 import MotionModal from "components/Modal/Modal"
 import CloseIcon from "@mui/icons-material/Close"
-import RegisterClient from "pages/Clients/RegisterClient"
-
-export function dataRow(e: any): any {
-  console.log(e)
-}
+import FormUser from "./RegisterUser"
+import EditIcon from "@mui/icons-material/Edit"
+import DeleteIcon from "@mui/icons-material/Delete"
+import { HelperContants } from "utils/HelperContants"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const Users = () => {
   const classes: any = useStyles()
   const [openModal, setOpenModal] = useState(false)
+  const [dataSelected, setDataSelected] = useState({})
   const dispatch = useDispatch()
   type RootState = ReturnType<typeof store.getState>
   const { users } = useSelector((state: RootState) => state.users)
   console.log(users)
-  const tableData = {
-    columns: columnsTableUsers,
-    data: users
-  }
 
   const handleOpenModal = () => {
+    setDataSelected({})
     setOpenModal(true)
   }
 
@@ -43,9 +42,104 @@ const Users = () => {
     setOpenModal(false)
   }
 
+  const dataRow = async (option: string, e: any) => {
+    if (option === "Editar") {
+      handleOpenModal()
+      setDataSelected(e)
+    } else {
+      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)
+      console.log(id)
+      console.log(rtaDelete)
+      if (rtaDelete) {
+        const rtaRemoveUser = await dispatch(removeUser(id) as any)
+        console.log(rtaRemoveUser)
+        if (rtaRemoveUser) {
+          NotifyHelper.notifySuccess(`Usuario eliminado correctamente.`)
+          handleCloseModal()
+        }
+      }
+    }
+  }
+
+  const columnsTableUsers = [
+    {
+      name: "Id",
+      selector: (row: any) => row.id,
+      sortable: true
+    },
+    {
+      name: "Nombre",
+      selector: (row: any) => row.firstName,
+      sortable: true
+    },
+    {
+      name: "Apellido",
+      selector: (row: any) => row.lastName,
+      sortable: true
+    },
+    {
+      name: "Email",
+      selector: (row: any) => row.email,
+      sortable: true
+    },
+    {
+      name: "Usuario Creado",
+      selector: (row: any) => new Date(row.fecha_creacion).toLocaleString(),
+      sortable: true
+    },
+    {
+      name: "Activo",
+      selector: (row: any) => (row.is_active === 1 ? "Si" : "No"),
+      sortable: true,
+      center: true
+    },
+    {
+      name: "Administrador",
+      selector: (row: any) => (row.is_admin === 1 ? "Si" : "No"),
+      sortable: true,
+      center: true
+    },
+    {
+      name: "Acciones",
+      sortable: false,
+      cell: (d: any) => [
+        <Button
+          key={1}
+          style={{ marginLeft: "3px", marginRight: "3px" }}
+          variant="contained"
+          type="button"
+          className="btnTable"
+          title="Editar Usuario"
+          startIcon={<EditIcon />}
+          color="primary"
+          onClick={() => dataRow("Editar", d)}
+        ></Button>,
+        <Button
+          key={2}
+          variant="contained"
+          color="error"
+          style={{ marginLeft: "3px", marginRight: "3px" }}
+          className="btnTable"
+          type="button"
+          title="Eliminar Usuario"
+          startIcon={<DeleteIcon />}
+          onClick={() => dataRow("Eliminar", d)}
+        ></Button>
+      ],
+      grow: 2,
+      center: true
+    }
+  ]
+
+  const tableData = {
+    columns: columnsTableUsers,
+    data: users
+  }
+
   useEffect(() => {
     dispatch(getAllUsers() as any)
-  }, [dispatch, dataRow])
+    console.log("ejec")
+  }, [dispatch])
 
   return (
     <AppBarComponent>
@@ -60,7 +154,7 @@ const Users = () => {
               >
                 <CloseIcon />
               </Box>
-              <RegisterClient />
+              <FormUser dataForm={dataSelected} />
             </Box>
           </MotionModal>
           <Card variant="outlined" className={classes.colorCard}>
@@ -99,6 +193,7 @@ const Users = () => {
                           title="Listado de Usuarios"
                           noDataComponent="No hay datos para mostrar"
                           paginationComponentOptions={paginationOption}
+                          expandableRowsHideExpander
                         />
                       </DataTableExtensions>
                     </Grid>
@@ -107,6 +202,7 @@ const Users = () => {
               </Box>
             </Card>
           </Box>
+          <ToastContainer />
         </>
       </MotionComponent>
     </AppBarComponent>

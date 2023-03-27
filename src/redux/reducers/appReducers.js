@@ -11,10 +11,10 @@ export const usersReducer = (state = initialState, { type, payload }) => {
       return { ...state, users: payload }
     // case ActionTypes.REMOVE_SELECTED_PLAYER:
     //   return { ...state }
-    // case ActionTypes.ADD_PLAYER:
-    //   return { ...state }
-    // case ActionTypes.UPDATE_PLAYER:
-    //   return { ...state, players: payload }
+    case usersTypes.ADD_USER:
+      return { ...state }
+    case usersTypes.UPDATE_USER:
+      return { ...state, users: payload }
     default:
       return state
   }

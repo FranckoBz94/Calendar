@@ -86,3 +86,11 @@ body {
 .btnTable > span {
   margin: 0px;
 }
+
+.w-100 {
+  width: 100% !important;
+}
+
+.d-none {
+  display: none !important;
+}
