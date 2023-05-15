@@ -43,9 +43,9 @@ export class NotifyHelper {
       draggable: true,
       hideProgressBar: false,
       pauseOnHover: true,
-      position: "top-center",
+      position: "bottom-right",
       progress: undefined,
-      theme: "colored"
+      theme: "light"
     })
   }
 
@@ -56,9 +56,9 @@ export class NotifyHelper {
       draggable: true,
       hideProgressBar: false,
       pauseOnHover: true,
-      position: "top-center",
+      position: "bottom-right",
       progress: undefined,
-      theme: "colored"
+      theme: "light"
     })
   }
 }

@@ -1,37 +1,35 @@
 import React, { useEffect, useState } from "react"
 import { AppBarComponent } from "pages/AppBar/AppBar"
-import MotionComponent from "components/MotionComponent"
-import Paper from "@mui/material/Paper"
-import DataTableExtensions from "react-data-table-component-extensions"
-import DataTable from "react-data-table-component"
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
-import { NotifyHelper, paginationOption } from "contants"
+import { Box, Button, Card, Grid, Paper } from "@mui/material"
 import { useStyles } from "./styles"
-import { getAllUsers, removeUser } from "redux/actions/usersAction"
-import { useDispatch, useSelector } from "react-redux"
-import store from "redux/store"
-import Grid from "@mui/material/Grid"
-import Card from "@mui/material/Card"
-import Button from "@mui/material/Button"
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
+import FormService from "./FormService"
+import DataTable from "react-data-table-component"
+import DataTableExtensions from "react-data-table-component-extensions"
+import "react-data-table-component-extensions/dist/index.css"
+import { NotifyHelper, paginationOption } from "contants"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
-import Box from "@mui/material/Box"
+import MotionComponent from "components/MotionComponent"
 import MotionModal from "components/Modal/Modal"
 import CloseIcon from "@mui/icons-material/Close"
-import FormUser from "./FormUser"
+import { useDispatch, useSelector } from "react-redux"
+import store from "redux/store"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
 import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+import { getAllServices, removeService } from "redux/actions/servicesAction"
 
-const Users = () => {
+const Services = () => {
   const classes: any = useStyles()
   const [openModal, setOpenModal] = useState(false)
-  const [dataSelected, setDataSelected] = useState({})
   const [optionSelected, setOptionSelected] = useState("")
+  const [dataSelected, setDataSelected] = useState({})
+
   const dispatch = useDispatch()
   type RootState = ReturnType<typeof store.getState>
-  const { users } = useSelector((state: RootState) => state.users)
+  const { services } = useSelector((state: RootState) => state.services)
+  console.log(services)
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})
@@ -42,16 +40,16 @@ const Users = () => {
     setOpenModal(false)
   }
 
-  const dataRow = async (option: string, e: any) => {
+  const dataRowService = async (option: string, e: any) => {
     if (option === "Editar") {
       handleOpenModal("Editar")
       setDataSelected(e)
     } else {
       const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)
       if (rtaDelete) {
-        const rtaRemoveUser = await dispatch(removeUser(id) as any)
+        const rtaRemoveUser = await dispatch(removeService(id) as any)
         if (rtaRemoveUser.rta === 1) {
-          NotifyHelper.notifySuccess(`Usuario eliminado correctamente.`)
+          NotifyHelper.notifySuccess(`Servicio eliminado correctamente.`)
           handleCloseModal()
         } else {
           NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
@@ -61,7 +59,7 @@ const Users = () => {
     }
   }
 
-  const columnsTableUsers = [
+  const columnsTableServices = [
     {
       name: "Id",
       selector: (row: any) => row.id,
@@ -69,35 +67,18 @@ const Users = () => {
     },
     {
       name: "Nombre",
-      selector: (row: any) => row.firstName,
+      selector: (row: any) => row.name_service,
       sortable: true
     },
     {
-      name: "Apellido",
-      selector: (row: any) => row.lastName,
+      name: "Precio",
+      selector: (row: any) => row.price_service,
       sortable: true
     },
     {
-      name: "Email",
-      selector: (row: any) => row.email,
+      name: "Minutos",
+      selector: (row: any) => row.minutes_service,
       sortable: true
-    },
-    {
-      name: "Usuario Creado",
-      selector: (row: any) => new Date(row.fecha_creacion).toLocaleString(),
-      sortable: true
-    },
-    {
-      name: "Activo",
-      selector: (row: any) => (row.is_active === 1 ? "Si" : "No"),
-      sortable: true,
-      center: true
-    },
-    {
-      name: "Administrador",
-      selector: (row: any) => (row.is_admin === 1 ? "Si" : "No"),
-      sortable: true,
-      center: true
     },
     {
       name: "Acciones",
@@ -112,7 +93,7 @@ const Users = () => {
           title="Editar Usuario"
           startIcon={<EditIcon />}
           color="primary"
-          onClick={() => dataRow("Editar", d)}
+          onClick={() => dataRowService("Editar", d)}
         ></Button>,
         <Button
           key={2}
@@ -123,7 +104,7 @@ const Users = () => {
           type="button"
           title="Eliminar Usuario"
           startIcon={<DeleteIcon />}
-          onClick={() => dataRow("Eliminar", d)}
+          onClick={() => dataRowService("Eliminar", d)}
         ></Button>
       ],
       grow: 2,
@@ -132,52 +113,54 @@ const Users = () => {
   ]
 
   const tableData = {
-    columns: columnsTableUsers,
-    data: users
+    columns: columnsTableServices,
+    data: services
   }
 
   useEffect(() => {
-    dispatch(getAllUsers() as any)
+    dispatch(getAllServices() as any)
   }, [dispatch])
 
   return (
     <AppBarComponent>
       <MotionComponent>
         <>
-          <MotionModal open={openModal} handleClose={handleCloseModal}>
-            <Box mt={1} position="relative">
-              <Box
-                position="absolute"
-                className={classes.close}
-                onClick={handleCloseModal}
-              >
-                <CloseIcon />
-              </Box>
-              <FormUser
-                dataForm={dataSelected}
-                optionSelected={optionSelected}
-                setOpenModal={setOpenModal}
-              />
-            </Box>
-          </MotionModal>
           <Card variant="outlined" className={classes.colorCard}>
             <Box px={2}>
-              <p className={classes.card_title}>Usuarios</p>
+              <p className={classes.card_title}>Servicios</p>
             </Box>
           </Card>
           <Box mt={2}>
             <Card variant="outlined">
               <Box p={2}>
+                <div>
+                  <MotionModal open={openModal} handleClose={handleCloseModal}>
+                    <Box mt={1} position="relative">
+                      <Box
+                        position="absolute"
+                        className={classes.close}
+                        onClick={handleCloseModal}
+                      >
+                        <CloseIcon />
+                      </Box>
+                      <FormService
+                        dataFormService={dataSelected}
+                        optionSelected={optionSelected}
+                        setOpenModal={setOpenModal}
+                      />
+                    </Box>
+                  </MotionModal>
+                </div>
                 <Grid mb={2}>
                   <Card variant="outlined">
                     <Grid container justifyContent="flex-end" p={2}>
                       <Button
                         variant="contained"
                         startIcon={<AddCircleOutlineIcon />}
-                        onClick={() => handleOpenModal("NewUser")}
-                        className={classes.btnAddUser}
+                        onClick={() => handleOpenModal("NewClient")}
+                        className={classes.btnAddClient}
                       >
-                        Nuevo Usuario
+                        Nuevo Servicio
                       </Button>
                     </Grid>
                   </Card>
@@ -187,16 +170,15 @@ const Users = () => {
                     <Grid p={2}>
                       <DataTableExtensions {...tableData} px={0}>
                         <DataTable
-                          columns={columnsTableUsers}
-                          data={users}
+                          columns={columnsTableServices}
+                          data={services}
                           pagination
                           sortIcon={<ArrowDownwardIcon />}
                           highlightOnHover
                           defaultSortAsc={true}
-                          title="Listado de Usuarios"
+                          title="Listado de Servicios"
                           noDataComponent="No hay datos para mostrar"
                           paginationComponentOptions={paginationOption}
-                          expandableRowsHideExpander
                         />
                       </DataTableExtensions>
                     </Grid>
@@ -212,4 +194,4 @@ const Users = () => {
   )
 }
 
-export default Users
+export default Services

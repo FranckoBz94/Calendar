@@ -1,5 +1,5 @@
 import * as React from "react"
-import Button from "@mui/material/Button"
+// import Button from "@mui/material/Button"
 import CssBaseline from "@mui/material/CssBaseline"
 import TextField from "@mui/material/TextField"
 import Grid from "@mui/material/Grid"
@@ -12,16 +12,25 @@ import * as Yup from "yup"
 import { motion } from "framer-motion"
 import { Card, Checkbox, FormControlLabel } from "@mui/material"
 import { useDispatch } from "react-redux"
-import { updateUser } from "redux/actions/usersAction"
+import { addUser, updateUser } from "redux/actions/usersAction"
+import { NotifyHelper } from "contants"
+import LoadingButton from "@mui/lab/LoadingButton"
 
 const theme = createTheme()
 
-const FormUser = (props: any) => {
+interface FormUserProps {
+  dataForm: any
+  optionSelected: string
+  setOpenModal: (send: boolean) => void
+}
+
+const FormUser = (props: FormUserProps) => {
   const [isAdminChecked, setIsAdminChecked] = React.useState(false)
   const [isActiveChecked, setIsActiveChecked] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
   const dispatch = useDispatch()
 
-  const { dataForm } = props
+  const { dataForm, optionSelected, setOpenModal } = props
   const initialValues = {
     firstName: dataForm.firstName || "",
     lastName: dataForm.lastName || "",
@@ -29,10 +38,42 @@ const FormUser = (props: any) => {
     is_active: !(false || dataForm.is_active === 0),
     is_admin: !(false || dataForm.is_admin === 0)
   }
-  const registerUser = (data: any) => {
-    console.log("Editar", data)
-    console.log("dataForm", dataForm)
-    dispatch(updateUser(data, dataForm.id) as any)
+
+  const registerUser = async (data: any) => {
+    setIsLoading(true)
+    let rtaUpdateUser
+    if (optionSelected === "Editar") {
+      try {
+        rtaUpdateUser = await dispatch(updateUser(data, dataForm.id) as any)
+        if (rtaUpdateUser.rta === 1) {
+          NotifyHelper.notifySuccess(rtaUpdateUser.message)
+          setOpenModal(false)
+          setIsLoading(false)
+        } else {
+          NotifyHelper.notifyError(rtaUpdateUser.message)
+          setIsLoading(false)
+        }
+      } catch (err) {
+        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+        setIsLoading(false)
+      }
+    } else {
+      let rtaAddUser
+      try {
+        rtaAddUser = await dispatch(addUser(data) as any)
+        if (rtaAddUser.rta === 1) {
+          NotifyHelper.notifySuccess(rtaAddUser.message)
+          setOpenModal(false)
+          setIsLoading(false)
+        } else {
+          NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+          setIsLoading(false)
+        }
+      } catch (err) {
+        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+        setIsLoading(false)
+      }
+    }
   }
 
   const { handleSubmit, handleChange, values, errors, setFieldValue } =
@@ -81,7 +122,7 @@ const FormUser = (props: any) => {
           }}
         >
           <Typography component="h1" variant="h5">
-            Nuevo Cliente
+            {optionSelected === "Editar" ? "Datos Usuario" : "Nuevo Usuario"}
           </Typography>
 
           <Box
@@ -197,14 +238,18 @@ const FormUser = (props: any) => {
               </Grid>
             </motion.div>
             <Box display="flex" justifyContent="center">
-              <Button
+              <LoadingButton
+                size="small"
                 type="submit"
-                variant="contained"
                 className="btnSubmitOption2"
+                loading={isLoading}
+                variant="contained"
                 sx={{ mt: 5, mb: 5, py: 2, px: 4 }}
               >
-                Guardar
-              </Button>
+                <span>
+                  {optionSelected === "Editar" ? "Actualizar" : "Guardar"}
+                </span>
+              </LoadingButton>
             </Box>
           </Box>
         </Box>

@@ -3,21 +3,36 @@ import { AppBarComponent } from "pages/AppBar/AppBar"
 import { Box, Button, Card, Grid, Paper } from "@mui/material"
 import { useStyles } from "./styles"
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
-import RegisterClient from "./RegisterClient"
+import FormClient from "./FormClient"
 import DataTable from "react-data-table-component"
 import DataTableExtensions from "react-data-table-component-extensions"
 import "react-data-table-component-extensions/dist/index.css"
-import { paginationOption } from "contants"
+import { NotifyHelper, paginationOption } from "contants"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import MotionComponent from "components/MotionComponent"
 import MotionModal from "components/Modal/Modal"
 import CloseIcon from "@mui/icons-material/Close"
+import { useDispatch, useSelector } from "react-redux"
+import store from "redux/store"
+import { getAllClients, removeClient } from "redux/actions/clientsAction"
+import EditIcon from "@mui/icons-material/Edit"
+import DeleteIcon from "@mui/icons-material/Delete"
+import { HelperContants } from "utils/HelperContants"
+import { ToastContainer } from "react-toastify"
 
 const Clients = () => {
   const classes: any = useStyles()
   const [openModal, setOpenModal] = useState(false)
+  const [optionSelected, setOptionSelected] = useState("")
+  const [dataSelected, setDataSelected] = useState({})
 
-  const handleOpenModal = () => {
+  const dispatch = useDispatch()
+  type RootState = ReturnType<typeof store.getState>
+  const { clients } = useSelector((state: RootState) => state.clients)
+  console.log(clients)
+  const handleOpenModal = (option: string) => {
+    setOptionSelected(option)
+    setDataSelected({})
     setOpenModal(true)
   }
 
@@ -25,43 +40,97 @@ const Clients = () => {
     setOpenModal(false)
   }
 
-  const data = [
-    { id: 1, name: "John Doe", company: "Acme Inc.", age: 30 },
-    { id: 2, name: "Jane Smith", company: "Acme Inc.", age: 32 },
-    { id: 3, name: "Bob Johnson", company: "XYZ Corp.", age: 45 },
-    { id: 4, name: "Mary Smith", company: "XYZ Corp.", age: 28 },
-    { id: 5, name: "Mary Smith", company: "XYZ Corp.", age: 28 },
-    { id: 6, name: "Mary Smith", company: "XYZ Corp.", age: 28 },
-    { id: 7, name: "Mary Smith", company: "XYZ Corp.", age: 28 }
-  ]
-  const [filteredData, setFilteredData] = useState(data)
+  const dataRowClient = async (option: string, e: any) => {
+    if (option === "Editar") {
+      handleOpenModal("Editar")
+      setDataSelected(e)
+    } else {
+      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)
+      if (rtaDelete) {
+        const rtaRemoveUser = await dispatch(removeClient(id) as any)
+        if (rtaRemoveUser.rta === 1) {
+          NotifyHelper.notifySuccess(`Cliente eliminado correctamente.`)
+          handleCloseModal()
+        } else {
+          NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
+          handleCloseModal()
+        }
+      }
+    }
+  }
 
-  const columns = [
+  const columnsTableClients = [
     {
-      name: "Name",
-      selector: (row: any) => row.name,
+      name: "Id",
+      selector: (row: any) => row.id,
       sortable: true
     },
     {
-      name: "Company",
-      selector: (row: any) => row.company,
+      name: "Nombre",
+      selector: (row: any) => row.firstName,
       sortable: true
     },
     {
-      name: "Age",
-      selector: (row: any) => row.age,
+      name: "Apellido",
+      selector: (row: any) => row.lastName,
       sortable: true
+    },
+    {
+      name: "Email",
+      selector: (row: any) => row.email,
+      sortable: true
+    },
+    {
+      name: "Dni",
+      selector: (row: any) => row.dni,
+      sortable: true
+    },
+    {
+      name: "telefono",
+      selector: (row: any) => row.telefono,
+      sortable: true,
+      center: true
+    },
+    {
+      name: "Acciones",
+      sortable: false,
+      cell: (d: any) => [
+        <Button
+          key={1}
+          style={{ marginLeft: "3px", marginRight: "3px" }}
+          variant="contained"
+          type="button"
+          className="btnTable"
+          title="Editar Usuario"
+          startIcon={<EditIcon />}
+          color="primary"
+          onClick={() => dataRowClient("Editar", d)}
+        ></Button>,
+        <Button
+          key={2}
+          variant="contained"
+          color="error"
+          style={{ marginLeft: "3px", marginRight: "3px" }}
+          className="btnTable"
+          type="button"
+          title="Eliminar Usuario"
+          startIcon={<DeleteIcon />}
+          onClick={() => dataRowClient("Eliminar", d)}
+        ></Button>
+      ],
+      grow: 2,
+      center: true
     }
   ]
 
   const tableData = {
-    columns,
-    data
+    columns: columnsTableClients,
+    data: clients
   }
 
   useEffect(() => {
-    setFilteredData(data)
-  }, [])
+    dispatch(getAllClients() as any)
+  }, [dispatch])
 
   return (
     <AppBarComponent>
@@ -85,7 +154,11 @@ const Clients = () => {
                       >
                         <CloseIcon />
                       </Box>
-                      <RegisterClient />
+                      <FormClient
+                        dataFormClient={dataSelected}
+                        optionSelected={optionSelected}
+                        setOpenModal={setOpenModal}
+                      />
                     </Box>
                   </MotionModal>
                 </div>
@@ -95,7 +168,7 @@ const Clients = () => {
                       <Button
                         variant="contained"
                         startIcon={<AddCircleOutlineIcon />}
-                        onClick={handleOpenModal}
+                        onClick={() => handleOpenModal("NewClient")}
                         className={classes.btnAddClient}
                       >
                         Nuevo Cliente
@@ -108,8 +181,8 @@ const Clients = () => {
                     <Grid p={2}>
                       <DataTableExtensions {...tableData} px={0}>
                         <DataTable
-                          columns={columns}
-                          data={filteredData}
+                          columns={columnsTableClients}
+                          data={clients}
                           pagination
                           sortIcon={<ArrowDownwardIcon />}
                           highlightOnHover
@@ -125,6 +198,7 @@ const Clients = () => {
               </Box>
             </Card>
           </Box>
+          <ToastContainer />
         </>
       </MotionComponent>
     </AppBarComponent>

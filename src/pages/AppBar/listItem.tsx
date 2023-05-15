@@ -11,6 +11,12 @@ import { Link } from "react-router-dom"
 import { motion } from "framer-motion"
 export const mainListItems = (
   <React.Fragment>
+    <ListItemButton component={Link} to="/">
+      <ListItemIcon>
+        <GroupIcon />
+      </ListItemIcon>
+      <ListItemText primary="Agenda" />
+    </ListItemButton>
     <ListItemButton component={Link} to="/clients">
       <ListItemIcon>
         <GroupIcon />

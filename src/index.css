@@ -94,3 +94,19 @@ body {
 .d-none {
   display: none !important;
 }
+
+.cardCalendar {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+#react-select-3-listbox {
+  background-color: #fff; /* color de fondo del elemento option */
+  color: #333; /* color del texto del elemento option */
+  z-index: 999;
+}
+
+/* Estilo personalizado para la flecha que indica que se puede desplegar el select */
+.react-select__indicator {
+  color: #333; /* color de la flecha */
+}

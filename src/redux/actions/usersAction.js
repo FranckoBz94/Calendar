@@ -43,53 +43,35 @@ export const getAllUsers = () => {
   }
 }
 
-export const addUser = (user) => {
-  return function (dispatch) {
-    axios
-      .post(ruta + "users/", user)
-      .then((response) => {
-        if (response.data.message === "1") {
-          dispatch(setAddUser())
-          dispatch(getAllUsers())
-        }
-      })
-      .catch((error) => console.error(error))
+export const addUser = (user) => async (dispatch) => {
+  try {
+    const response = await axios.post(ruta + "users/", user)
+    dispatch(setAddUser())
+    dispatch(getAllUsers())
+    return response.data
+  } catch (err) {
+    console.log(err)
   }
 }
 
-export const updateUser = (data, id) => {
-  console.log(ruta + "users/" + id)
-  return function (dispatch) {
-    try {
-      axios
-        .put(ruta + "users/" + id, data)
-        .then((response) => {
-          dispatch(setUpdateUser())
-          dispatch(getAllUsers())
-        })
-        .catch((error) => console.error(error))
-    } catch (err) {
-      console.log(err)
-    }
+export const updateUser = (data, id) => async (dispatch) => {
+  try {
+    const response = await axios.put(ruta + "users/" + id, data)
+    dispatch(setUpdateUser())
+    dispatch(getAllUsers())
+    return response.data
+  } catch (err) {
+    console.log(err)
   }
 }
 
-export const removeUser = (id) => {
-   async function (dispatch) {
-    await axios
-      .delete(ruta + "users/" + id)
-      .then((response) => {
-        dispatch(setRemoveUser())
-        dispatch(getAllUsers())
-        return response
-        // if (response.data.affectedRows === 1) {
-        //   console.log("true")
-        //   return true
-        // } else {
-        //   console.log("false")
-        //   return false
-        // }
-      })
-      .catch((error) => console.error(error))
+export const removeUser = (id) => async (dispatch) => {
+  try {
+    const response = await axios.delete(`${ruta}users/${id}`)
+    dispatch(setRemoveUser())
+    dispatch(getAllUsers())
+    return response.data
+  } catch (error) {
+    console.error(error)
   }
 }

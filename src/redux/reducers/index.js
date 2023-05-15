@@ -1,9 +1,16 @@
 import { combineReducers } from "redux"
-import { usersReducer } from "./appReducers"
+import {
+  berberReducer,
+  clientsReducer,
+  serviceReducer,
+  usersReducer
+} from "./appReducers"
 
-const reducer = combineReducers({
-  accessToken: null,
-  users: usersReducer
+const reducers = combineReducers({
+  users: usersReducer,
+  clients: clientsReducer,
+  services: serviceReducer,
+  barbers: berberReducer
 })
 
-export default reducer
+export default reducers
