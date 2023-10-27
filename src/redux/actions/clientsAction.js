@@ -34,7 +34,6 @@ export const getAllClients = () => {
       axios
         .get(ruta + "clients/")
         .then((response) => {
-          console.log(response)
           dispatch(getClients(response.data))
         })
         .catch((error) => console.error(error))
@@ -50,7 +49,6 @@ export const addClient = (user) => async (dispatch) => {
     const response = await axios.post(ruta + "clients/", user)
     dispatch(setAddClient())
     dispatch(getAllClients())
-    console.log("response", response.data)
     return response.data
   } catch (err) {
     return { rta: -1, message: "Ocurrio un errorrr." }

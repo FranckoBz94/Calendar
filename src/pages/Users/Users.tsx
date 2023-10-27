@@ -31,7 +31,9 @@ const Users = () => {
   const [optionSelected, setOptionSelected] = useState("")
   const dispatch = useDispatch()
   type RootState = ReturnType<typeof store.getState>
-  const { users } = useSelector((state: RootState) => state.users)
+  const storeComplete: any = useSelector((state: RootState) => state)
+  const { users } = useSelector((state: RootState) => storeComplete.users)
+
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})
@@ -65,7 +67,8 @@ const Users = () => {
     {
       name: "Id",
       selector: (row: any) => row.id,
-      sortable: true
+      sortable: true,
+      omit: true
     },
     {
       name: "Nombre",

@@ -2,7 +2,9 @@ import {
   clientsTypes,
   usersTypes,
   servicesTypes,
-  barbersTypes
+  barbersTypes,
+  turnsTypes,
+  hoursTypes
 } from "../contants/action-types"
 
 const initialState = {
@@ -10,10 +12,12 @@ const initialState = {
   clients: [],
   services: [],
   barbers: [],
+  turns: [],
+  hours: [],
   isLoadingUsers: false
 }
 
-export const usersReducer = (state = initialState, { type, payload }) => {
+export const usersReducer = (state = initialState.users, { type, payload }) => {
   switch (type) {
     case usersTypes.GET_USERS:
       return { ...state, users: payload }
@@ -28,7 +32,10 @@ export const usersReducer = (state = initialState, { type, payload }) => {
   }
 }
 
-export const clientsReducer = (state = initialState, { type, payload }) => {
+export const clientsReducer = (
+  state = initialState.clients,
+  { type, payload }
+) => {
   switch (type) {
     case clientsTypes.GET_CLIENTS:
       return { ...state, clients: payload }
@@ -43,7 +50,10 @@ export const clientsReducer = (state = initialState, { type, payload }) => {
   }
 }
 
-export const serviceReducer = (state = initialState, { type, payload }) => {
+export const serviceReducer = (
+  state = initialState.services,
+  { type, payload }
+) => {
   switch (type) {
     case servicesTypes.GET_SERVICES:
       return { ...state, services: payload }
@@ -58,7 +68,10 @@ export const serviceReducer = (state = initialState, { type, payload }) => {
   }
 }
 
-export const berberReducer = (state = initialState, { type, payload }) => {
+export const berberReducer = (
+  state = initialState.barbers,
+  { type, payload }
+) => {
   switch (type) {
     case barbersTypes.GET_BARBERS:
       return { ...state, barbers: payload }
@@ -68,6 +81,32 @@ export const berberReducer = (state = initialState, { type, payload }) => {
       return { ...state }
     case barbersTypes.UPDATE_BARBER:
       return { ...state, barbers: payload }
+    default:
+      return state
+  }
+}
+
+export const turnReducer = (state = initialState.turns, { type, payload }) => {
+  switch (type) {
+    case turnsTypes.GET_TURNS:
+      return { ...state, turns: payload }
+    case turnsTypes.REMOVE_SELECTED_TURN:
+      return { ...state }
+    case turnsTypes.ADD_TURN:
+      return { ...state }
+    case turnsTypes.UPDATE_TURN:
+      return { ...state, turns: payload }
+    default:
+      return state
+  }
+}
+
+export const hoursReducer = (state = initialState.hours, { type, payload }) => {
+  switch (type) {
+    case hoursTypes.GET_HOURS:
+      return { ...state, hours: payload }
+    case hoursTypes.UPDATE_HOURS:
+      return { ...state, hours: payload }
     default:
       return state
   }

@@ -34,7 +34,6 @@ export const getAllServices = () => {
       axios
         .get(ruta)
         .then((response) => {
-          console.log(response)
           dispatch(getServices(response.data))
         })
         .catch((error) => console.error(error))
@@ -46,11 +45,9 @@ export const getAllServices = () => {
 
 export const addService = (user) => async (dispatch) => {
   try {
-    console.log(user)
     const response = await axios.post(ruta, user)
     dispatch(setAddService())
     dispatch(getAllServices())
-    console.log("response", response.data)
     return response.data
   } catch (err) {
     return { rta: -1, message: "Ocurrio un errorrr." }

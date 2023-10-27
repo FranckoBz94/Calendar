@@ -28,8 +28,9 @@ const Clients = () => {
 
   const dispatch = useDispatch()
   type RootState = ReturnType<typeof store.getState>
-  const { clients } = useSelector((state: RootState) => state.clients)
-  console.log(clients)
+  const storeComplete: any = useSelector((state: RootState) => state)
+  const { clients } = useSelector((state: RootState) => storeComplete.clients)
+
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})

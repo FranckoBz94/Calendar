@@ -5,15 +5,17 @@ import ListItemText from "@mui/material/ListItemText"
 import GroupIcon from "@mui/icons-material/Group"
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted"
 import GroupAddIcon from "@mui/icons-material/GroupAdd"
+import EventNoteIcon from "@mui/icons-material/EventNote"
 import WaterfallChartIcon from "@mui/icons-material/WaterfallChart"
 import EditRoadIcon from "@mui/icons-material/EditRoad"
+import ContentCutIcon from "@mui/icons-material/ContentCut"
 import { Link } from "react-router-dom"
 import { motion } from "framer-motion"
 export const mainListItems = (
   <React.Fragment>
     <ListItemButton component={Link} to="/">
       <ListItemIcon>
-        <GroupIcon />
+        <EventNoteIcon />
       </ListItemIcon>
       <ListItemText primary="Agenda" />
     </ListItemButton>
@@ -31,6 +33,12 @@ export const mainListItems = (
         <ListItemText primary="Servicios" />
       </ListItemButton>
     </motion.div>
+    <ListItemButton component={Link} to="/barbers">
+      <ListItemIcon>
+        <ContentCutIcon />
+      </ListItemIcon>
+      <ListItemText primary="Barberos" />
+    </ListItemButton>
     <ListItemButton component={Link} to="/usuarios">
       <ListItemIcon>
         <GroupAddIcon />

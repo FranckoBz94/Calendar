@@ -25,3 +25,15 @@ export const barbersTypes = {
   UPDATE_BARBER: "UPDATE_BARBER",
   REMOVE_SELECTED_BERBER: "REMOVE_SELECTED_BERBER"
 }
+
+export const turnsTypes = {
+  GET_TURNS: "GET_TURNS",
+  ADD_TURN: "ADD_TURN",
+  UPDATE_TURN: "UPDATE_TURN",
+  REMOVE_SELECTED_TURN: "REMOVE_SELECTED_TURN"
+}
+
+export const hoursTypes = {
+  GET_HOURS: "GET_HOURS",
+  UPDATE_HOURS: "UPDATE_HOURS"
+}

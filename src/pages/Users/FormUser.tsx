@@ -6,15 +6,18 @@ import Grid from "@mui/material/Grid"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { createTheme, ThemeProvider, styled } from "@mui/material/styles"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { motion } from "framer-motion"
-import { Card, Checkbox, FormControlLabel } from "@mui/material"
+import { Button, Card, Checkbox, FormControlLabel } from "@mui/material"
 import { useDispatch } from "react-redux"
 import { addUser, updateUser } from "redux/actions/usersAction"
 import { NotifyHelper } from "contants"
 import LoadingButton from "@mui/lab/LoadingButton"
+import ButtonBase from "@mui/material/ButtonBase"
+import fondoBarber from "../../images/fondo_barber.jpg"
+import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 
 const theme = createTheme()
 
@@ -24,9 +27,86 @@ interface FormUserProps {
   setOpenModal: (send: boolean) => void
 }
 
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1
+})
+
+const ImageButton = styled(ButtonBase)(({ theme }) => ({
+  position: "relative",
+  height: 200,
+  [theme.breakpoints.down("sm")]: {
+    width: "100% !important", // Overrides inline-style
+    height: 100
+  },
+  "&:hover, &.Mui-focusVisible": {
+    zIndex: 1,
+    "& .MuiImageBackdrop-root": {
+      opacity: 0.15
+    },
+    "& .MuiImageMarked-root": {
+      opacity: 0
+    },
+    "& .MuiTypography-root": {
+      border: "4px solid currentColor"
+    }
+  }
+}))
+
+const ImageSrc = styled("span")({
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+  backgroundSize: "cover",
+  backgroundPosition: "center 40%"
+})
+
+const Image = styled("span")(({ theme }) => ({
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: theme.palette.common.white
+}))
+
+const ImageBackdrop = styled("span")(({ theme }) => ({
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+  backgroundColor: theme.palette.common.black,
+  opacity: 0.4,
+  transition: theme.transitions.create("opacity")
+}))
+
+const ImageMarked = styled("span")(({ theme }) => ({
+  height: 3,
+  width: 18,
+  backgroundColor: theme.palette.common.white,
+  position: "absolute",
+  bottom: -2,
+  left: "calc(50% - 9px)",
+  transition: theme.transitions.create("opacity")
+}))
+
 const FormUser = (props: FormUserProps) => {
   const [isAdminChecked, setIsAdminChecked] = React.useState(false)
   const [isActiveChecked, setIsActiveChecked] = React.useState(false)
+  const [profileImage, setProfileImage] = React.useState("")
   const [isLoading, setIsLoading] = React.useState(false)
   const dispatch = useDispatch()
 
@@ -37,6 +117,17 @@ const FormUser = (props: FormUserProps) => {
     email: dataForm.email || "",
     is_active: !(false || dataForm.is_active === 0),
     is_admin: !(false || dataForm.is_admin === 0)
+  }
+
+  const handleImageChange = (e: any) => {
+    const selectedImage = e.target.files[0]
+
+    if (selectedImage) {
+      const imageUrl = URL.createObjectURL(selectedImage)
+      setProfileImage(imageUrl)
+    }
+
+    // setProfileImage(selectedImage)
   }
 
   const registerUser = async (data: any) => {
@@ -133,107 +224,160 @@ const FormUser = (props: FormUserProps) => {
           >
             <motion.div>
               <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    name="firstName"
-                    required
-                    fullWidth
-                    label="Nombre"
-                    type="text"
-                    onChange={(e) =>
-                      handleInputChange("firstName", e.target.value)
-                    }
-                    value={values.firstName}
-                    error={Boolean(errors.firstName)}
-                    helperText={
-                      String(errors.firstName) !== "undefined"
-                        ? String(errors.firstName)
-                        : ""
-                    }
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    required
-                    fullWidth
-                    label="Apellido"
-                    name="lastName"
-                    type="text"
-                    onChange={handleChange}
-                    value={values.lastName}
-                    error={Boolean(errors.lastName)}
-                    helperText={
-                      String(errors.lastName) !== "undefined"
-                        ? String(errors.lastName)
-                        : ""
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    label="Email"
-                    name="email"
-                    type="email"
-                    onChange={handleChange}
-                    value={values.email}
-                    error={Boolean(errors.email)}
-                    helperText={
-                      String(errors.email) !== "undefined"
-                        ? String(errors.email)
-                        : ""
-                    }
-                  />
-                </Grid>
-                <Grid item xs={6} m={0}>
-                  <Card
-                    variant="outlined"
+                <Grid item md={4} xs={12}>
+                  <ImageButton
+                    focusRipple
                     style={{
-                      backgroundColor: values.is_active ? "#bbe1fa" : "",
-                      cursor: "pointer"
+                      width: "100%"
                     }}
-                    onClick={isActiveClick}
                   >
-                    <FormControlLabel
-                      name="is_active"
-                      onClick={isActiveClick}
-                      id="is_active"
-                      control={
-                        <Checkbox
-                          checked={values.is_active}
-                          onChange={handleCheckboxChange}
-                        />
-                      }
-                      label="Usuario activo"
-                      labelPlacement="start"
+                    <ImageSrc
+                      style={{
+                        backgroundImage: `url(${profileImage || fondoBarber})`
+                      }}
                     />
-                  </Card>
+                    <ImageBackdrop className="MuiImageBackdrop-root" />
+                    <Image>
+                      {/* <Button
+                        component="label"
+                        variant="contained"
+                        startIcon={<CloudUploadIcon />}
+                      >
+                        Upload file
+                        <VisuallyHiddenInput type="file" />
+                      </Button> */}
+                      <Typography
+                        component="span"
+                        variant="subtitle1"
+                        color="inherit"
+                        // sx={{
+                        //   position: "relative",
+                        //   p: 4,
+                        //   pt: 2,
+                        //   pb: (theme) => `calc(${theme.spacing(1)} + 6px)`
+                        // }}
+                      >
+                        <Button
+                          component="label"
+                          variant="contained"
+                          startIcon={<CloudUploadIcon />}
+                        >
+                          Subir Imágen
+                          <VisuallyHiddenInput
+                            type="file"
+                            onChange={handleImageChange}
+                          />
+                        </Button>
+                        <ImageMarked className="MuiImageMarked-root" />
+                      </Typography>
+                    </Image>
+                  </ImageButton>
                 </Grid>
-                <Grid item xs={6} m={0}>
-                  <Card
-                    style={{
-                      backgroundColor: values.is_admin ? "#bbe1fa" : "",
-                      cursor: "pointer"
-                    }}
-                    variant="outlined"
-                    onClick={isAdminClick}
-                  >
-                    <FormControlLabel
-                      value={values.is_admin}
-                      onClick={isAdminClick}
-                      name="is_admin"
-                      id="is_admin"
-                      control={
-                        <Checkbox
-                          checked={values.is_admin}
-                          onChange={handleCheckboxChange}
+                <Grid item md={8} xs={12}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                      <TextField
+                        name="firstName"
+                        required
+                        fullWidth
+                        label="Nombre"
+                        type="text"
+                        onChange={(e) =>
+                          handleInputChange("firstName", e.target.value)
+                        }
+                        value={values.firstName}
+                        error={Boolean(errors.firstName)}
+                        helperText={
+                          String(errors.firstName) !== "undefined"
+                            ? String(errors.firstName)
+                            : ""
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        required
+                        fullWidth
+                        label="Apellido"
+                        name="lastName"
+                        type="text"
+                        onChange={handleChange}
+                        value={values.lastName}
+                        error={Boolean(errors.lastName)}
+                        helperText={
+                          String(errors.lastName) !== "undefined"
+                            ? String(errors.lastName)
+                            : ""
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        label="Email"
+                        name="email"
+                        type="email"
+                        onChange={handleChange}
+                        value={values.email}
+                        error={Boolean(errors.email)}
+                        helperText={
+                          String(errors.email) !== "undefined"
+                            ? String(errors.email)
+                            : ""
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6} m={0}>
+                      <Card
+                        variant="outlined"
+                        style={{
+                          backgroundColor: values.is_active ? "#bbe1fa" : "",
+                          cursor: "pointer"
+                        }}
+                        onClick={isActiveClick}
+                      >
+                        <FormControlLabel
+                          name="is_active"
+                          onClick={isActiveClick}
+                          id="is_active"
+                          control={
+                            <Checkbox
+                              checked={values.is_active}
+                              onChange={handleCheckboxChange}
+                            />
+                          }
+                          label="Usuario activo"
+                          labelPlacement="start"
                         />
-                      }
-                      label="Es administrador"
-                      labelPlacement="start"
-                    />
-                  </Card>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={6} m={0}>
+                      <Card
+                        style={{
+                          backgroundColor: values.is_admin ? "#bbe1fa" : "",
+                          cursor: "pointer"
+                        }}
+                        variant="outlined"
+                        onClick={isAdminClick}
+                      >
+                        <FormControlLabel
+                          value={values.is_admin}
+                          onClick={isAdminClick}
+                          name="is_admin"
+                          id="is_admin"
+                          control={
+                            <Checkbox
+                              checked={values.is_admin}
+                              onChange={handleCheckboxChange}
+                            />
+                          }
+                          label="Es administrador"
+                          labelPlacement="start"
+                        />
+                      </Card>
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
             </motion.div>

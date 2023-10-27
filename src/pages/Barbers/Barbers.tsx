@@ -1,35 +1,39 @@
 import React, { useEffect, useState } from "react"
 import { AppBarComponent } from "pages/AppBar/AppBar"
-import { Box, Button, Card, Grid, Paper } from "@mui/material"
-import { useStyles } from "./styles"
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
-import FormService from "./FormService"
-import DataTable from "react-data-table-component"
-import DataTableExtensions from "react-data-table-component-extensions"
-import "react-data-table-component-extensions/dist/index.css"
-import { NotifyHelper, paginationOption } from "contants"
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import MotionComponent from "components/MotionComponent"
-import MotionModal from "components/Modal/Modal"
-import CloseIcon from "@mui/icons-material/Close"
+import Paper from "@mui/material/Paper"
+import DataTableExtensions from "react-data-table-component-extensions"
+import DataTable from "react-data-table-component"
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
+import { NotifyHelper, paginationOption } from "contants"
+import { useStyles } from "./styles"
 import { useDispatch, useSelector } from "react-redux"
 import store from "redux/store"
+import Grid from "@mui/material/Grid"
+import Card from "@mui/material/Card"
+import Button from "@mui/material/Button"
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
+import Box from "@mui/material/Box"
+import MotionModal from "components/Modal/Modal"
+import CloseIcon from "@mui/icons-material/Close"
+import FormUser from "./FormUser"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
 import { ToastContainer } from "react-toastify"
-import { getAllServices, removeService } from "redux/actions/servicesAction"
+import "react-toastify/dist/ReactToastify.css"
+import { getAllBarbers, removeBarber } from "redux/actions/barbersAction"
 
-const Services = () => {
+const Barbers = () => {
   const classes: any = useStyles()
   const [openModal, setOpenModal] = useState(false)
-  const [optionSelected, setOptionSelected] = useState("")
   const [dataSelected, setDataSelected] = useState({})
+  const [optionSelected, setOptionSelected] = useState("")
   const dispatch = useDispatch()
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
+  const { barbers } = useSelector((state: RootState) => storeComplete.barbers)
 
-  const { services } = useSelector((state: RootState) => storeComplete.services)
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})
@@ -40,39 +44,25 @@ const Services = () => {
     setOpenModal(false)
   }
 
-  const dataRowService = async (option: string, e: any) => {
+  const dataRow = async (option: string, e: any) => {
     if (option === "Editar") {
       handleOpenModal("Editar")
-      console.log(e)
       setDataSelected(e)
     } else {
       const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)
       if (rtaDelete) {
-        const rtaRemoveUser = await dispatch(removeService(id) as any)
-        if (rtaRemoveUser.rta === 1) {
-          NotifyHelper.notifySuccess(`Servicio eliminado correctamente.`)
-          handleCloseModal()
+        const rtaRemoveBarber = await dispatch(removeBarber(id) as any)
+        if (rtaRemoveBarber.rta === 1) {
+          NotifyHelper.notifySuccess(`Barbero eliminado correctamente.`)
         } else {
           NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
-          handleCloseModal()
         }
+        handleCloseModal()
       }
     }
   }
 
-  const ColorLabel = ({ color }: { color: string }) => {
-    const style = {
-      backgroundColor: color,
-      width: "24px",
-      height: "24px",
-      display: "inline-block",
-      borderRadius: "50%"
-    }
-
-    return <div style={style}></div>
-  }
-
-  const columnsTableServices = [
+  const columnsTableBarbers = [
     {
       name: "Id",
       selector: (row: any) => row.id,
@@ -81,24 +71,40 @@ const Services = () => {
     },
     {
       name: "Nombre",
-      selector: (row: any) => row.name_service,
+      selector: (row: any) => row.firstName,
       sortable: true
     },
     {
-      name: "Precio",
-      selector: (row: any) => `$ ${row.price_service}`,
+      name: "Apellido",
+      selector: (row: any) => row.lastName,
       sortable: true
     },
     {
-      name: "Minutos",
-      selector: (row: any) => row.minutes_service,
+      name: "Email",
+      selector: (row: any) => row.email,
       sortable: true
     },
     {
-      name: "Color evento",
-      // selector: (row: any) => row.event_color,
-      cell: (row: any) => <ColorLabel color={row.event_color} />,
+      name: "Teléfono",
+      selector: (row: any) => row.telefono,
       sortable: true
+    },
+    {
+      name: "Usuario Creado",
+      selector: (row: any) => new Date(row.fecha_creacion).toLocaleString(),
+      sortable: true
+    },
+    {
+      name: "Activo",
+      selector: (row: any) => (row.is_active === 1 ? "Si" : "No"),
+      sortable: true,
+      center: true
+    },
+    {
+      name: "Administrador",
+      selector: (row: any) => (row.is_admin === 1 ? "Si" : "No"),
+      sortable: true,
+      center: true
     },
     {
       name: "Acciones",
@@ -110,10 +116,10 @@ const Services = () => {
           variant="contained"
           type="button"
           className="btnTable"
-          title="Editar Usuario"
+          title="Editar Barbero"
           startIcon={<EditIcon />}
           color="primary"
-          onClick={() => dataRowService("Editar", d)}
+          onClick={() => dataRow("Editar", d)}
         ></Button>,
         <Button
           key={2}
@@ -122,9 +128,9 @@ const Services = () => {
           style={{ marginLeft: "3px", marginRight: "3px" }}
           className="btnTable"
           type="button"
-          title="Eliminar Usuario"
+          title="Eliminar Barbero"
           startIcon={<DeleteIcon />}
-          onClick={() => dataRowService("Eliminar", d)}
+          onClick={() => dataRow("Eliminar", d)}
         ></Button>
       ],
       grow: 2,
@@ -133,54 +139,52 @@ const Services = () => {
   ]
 
   const tableData = {
-    columns: columnsTableServices,
-    data: services
+    columns: columnsTableBarbers,
+    data: barbers
   }
 
   useEffect(() => {
-    dispatch(getAllServices() as any)
+    dispatch(getAllBarbers() as any)
   }, [dispatch])
 
   return (
     <AppBarComponent>
       <MotionComponent>
         <>
+          <MotionModal open={openModal} handleClose={handleCloseModal}>
+            <Box mt={1} position="relative">
+              <Box
+                position="absolute"
+                className={classes.close}
+                onClick={handleCloseModal}
+              >
+                <CloseIcon />
+              </Box>
+              <FormUser
+                dataForm={dataSelected}
+                optionSelected={optionSelected}
+                setOpenModal={setOpenModal}
+              />
+            </Box>
+          </MotionModal>
           <Card variant="outlined" className={classes.colorCard}>
             <Box px={2}>
-              <p className={classes.card_title}>Servicios</p>
+              <p className={classes.card_title}>Barberos</p>
             </Box>
           </Card>
           <Box mt={2}>
             <Card variant="outlined">
               <Box p={2}>
-                <div>
-                  <MotionModal open={openModal} handleClose={handleCloseModal}>
-                    <Box mt={1} position="relative">
-                      <Box
-                        position="absolute"
-                        className={classes.close}
-                        onClick={handleCloseModal}
-                      >
-                        <CloseIcon />
-                      </Box>
-                      <FormService
-                        dataFormService={dataSelected}
-                        optionSelected={optionSelected}
-                        setOpenModal={setOpenModal}
-                      />
-                    </Box>
-                  </MotionModal>
-                </div>
                 <Grid mb={2}>
                   <Card variant="outlined">
                     <Grid container justifyContent="flex-end" p={2}>
                       <Button
                         variant="contained"
                         startIcon={<AddCircleOutlineIcon />}
-                        onClick={() => handleOpenModal("NewClient")}
-                        className={classes.btnAddClient}
+                        onClick={() => handleOpenModal("NewUser")}
+                        className={classes.btnAddUser}
                       >
-                        Nuevo Servicio
+                        Nuevo Barbero
                       </Button>
                     </Grid>
                   </Card>
@@ -190,15 +194,16 @@ const Services = () => {
                     <Grid p={2}>
                       <DataTableExtensions {...tableData} px={0}>
                         <DataTable
-                          columns={columnsTableServices}
-                          data={services}
+                          columns={columnsTableBarbers}
+                          data={barbers}
                           pagination
                           sortIcon={<ArrowDownwardIcon />}
                           highlightOnHover
                           defaultSortAsc={true}
-                          title="Listado de Servicios"
+                          title="Listado de Barberos"
                           noDataComponent="No hay datos para mostrar"
                           paginationComponentOptions={paginationOption}
+                          expandableRowsHideExpander
                         />
                       </DataTableExtensions>
                     </Grid>
@@ -214,4 +219,4 @@ const Services = () => {
   )
 }
 
-export default Services
+export default Barbers
