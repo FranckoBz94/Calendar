@@ -7,8 +7,10 @@ import {
   turnReducer,
   usersReducer
 } from "./appReducers"
+import themeReducer from "./themeReducer"
 
 const reducers = combineReducers({
+  theme: themeReducer,
   users: usersReducer,
   clients: clientsReducer,
   services: serviceReducer,

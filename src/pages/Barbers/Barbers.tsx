@@ -151,7 +151,11 @@ const Barbers = () => {
     <AppBarComponent>
       <MotionComponent>
         <>
-          <MotionModal open={openModal} handleClose={handleCloseModal}>
+          <MotionModal
+            open={openModal}
+            handleClose={handleCloseModal}
+            size={"md"}
+          >
             <Box mt={1} position="relative">
               <Box
                 position="absolute"

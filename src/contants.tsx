@@ -97,7 +97,6 @@ export const availableEndHours: any = [
 ]
 
 export const transformarTurno = async (turn: any) => {
-  console.log(turn)
   return {
     idTurn: turn.id,
     dateBooking: new Date(turn.fecha_reserva),

@@ -99,7 +99,7 @@ const FormClient = (props: FormClientProps) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="md">
+      <Container component="main" maxWidth="md" style={{ padding: 0 }}>
         <CssBaseline />
         <Box
           sx={{
@@ -114,7 +114,7 @@ const FormClient = (props: FormClientProps) => {
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12}>
                 <TextField
                   id="nombre"
                   name="firstName"
@@ -131,7 +131,7 @@ const FormClient = (props: FormClientProps) => {
                   margin="normal"
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12}>
                 <TextField
                   id="apellido"
                   name="lastName"
@@ -165,7 +165,7 @@ const FormClient = (props: FormClientProps) => {
                   margin="normal"
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12}>
                 <TextField
                   id="telefono"
                   name="telefono"
@@ -182,7 +182,7 @@ const FormClient = (props: FormClientProps) => {
                   margin="normal"
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item md={6} xs={12}>
                 <TextField
                   label="DNI"
                   name="dni"

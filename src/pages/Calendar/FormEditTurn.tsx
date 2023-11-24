@@ -1,14 +1,5 @@
 import React, { useState } from "react"
-import { ThemeProvider } from "@mui/styles"
-import {
-  Box,
-  Container,
-  createTheme,
-  CssBaseline,
-  Grid,
-  TextField,
-  Typography
-} from "@mui/material"
+import { Box, Container, Grid, TextField } from "@mui/material"
 import { useFormik } from "formik"
 import { LoadingButton } from "@mui/lab"
 import Select from "react-select"
@@ -48,7 +39,6 @@ const FormEditTurn = (props: FormCalendarProps) => {
     idService,
     idTurn
   } = dataFormEvent
-  const theme = createTheme()
   const dispatch = useDispatch()
 
   const endTime = DateContants.calculateEndTime(
@@ -135,9 +125,8 @@ const FormEditTurn = (props: FormCalendarProps) => {
   console.log("selectedService", selectedService)
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Container component="main" maxWidth="md">
-        <CssBaseline />
         <Box
           sx={{
             marginTop: 3,
@@ -146,11 +135,6 @@ const FormEditTurn = (props: FormCalendarProps) => {
             alignItems: "center"
           }}
         >
-          <Box mb={4}>
-            <Typography component="h1" variant="h5">
-              Datos Turno
-            </Typography>
-          </Box>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} mb={2}>
@@ -262,7 +246,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
           </form>
         </Box>
       </Container>
-    </ThemeProvider>
+    </>
   )
 }
 

@@ -1,20 +1,22 @@
 import React, { useState } from "react"
 import { AnimatePresence } from "framer-motion"
-import { Modal, Fade } from "@mui/material"
-import { useStyles } from "./styles"
+import { Modal, ModalBody } from "react-modern-modal"
 
 interface ModalProps {
   open: boolean
   handleClose: () => void
+  size: any
   children: any
 }
 
-const MotionModal: React.FC<ModalProps> = ({ open, handleClose, children }) => {
-  const classes: any = useStyles()
-
+const MotionModal: React.FC<ModalProps> = ({
+  open,
+  handleClose,
+  size,
+  children
+}) => {
   const [isBrowser, setIsBrowser] = useState(false)
 
-  // Avoids server-side rendering errors
   React.useEffect(() => {
     setIsBrowser(true)
   }, [])
@@ -26,22 +28,14 @@ const MotionModal: React.FC<ModalProps> = ({ open, handleClose, children }) => {
   return (
     <AnimatePresence>
       {open && (
-        <div>
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={open}
-            onClose={handleClose}
-            slotProps={{
-              backdrop: {
-                TransitionComponent: Fade
-              }
-            }}
-          >
-            <div className={classes.modalContainer}>{children}</div>
-          </Modal>
-        </div>
+        <Modal
+          isOpen={open}
+          onClose={handleClose}
+          size={size}
+          backdropBlur={true}
+        >
+          <ModalBody>{children}</ModalBody>
+        </Modal>
       )}
     </AnimatePresence>
   )

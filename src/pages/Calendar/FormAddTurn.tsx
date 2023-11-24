@@ -6,8 +6,7 @@ import {
   createTheme,
   CssBaseline,
   Grid,
-  TextField,
-  Typography
+  TextField
 } from "@mui/material"
 import { useFormik } from "formik"
 import { LoadingButton } from "@mui/lab"
@@ -16,7 +15,12 @@ import { DateContants } from "utils/DateContants"
 import { addTurn, getAllTurns } from "redux/actions/turnsAction"
 import { useDispatch } from "react-redux"
 import { NotifyHelper } from "contants"
+import Tab from "@mui/material/Tab"
+import TabContext from "@mui/lab/TabContext"
+import TabList from "@mui/lab/TabList"
+import TabPanel from "@mui/lab/TabPanel"
 import moment from "moment"
+import FormClient from "pages/Clients/FormClient"
 
 interface FormCalendarProps {
   dataFormEvent: any
@@ -29,6 +33,8 @@ interface FormCalendarProps {
 
 const FormAddEdit = (props: FormCalendarProps) => {
   const [selectedOptionClient, setSelectedOptionClient] = useState(null)
+  const [value, setValue] = React.useState("1")
+
   const [selectedOptionService, setSelectedOptionService] = useState({
     label: "",
     value: 0
@@ -54,6 +60,10 @@ const FormAddEdit = (props: FormCalendarProps) => {
     start: new Date(dataFormEvent.start) || "",
     end: endTime,
     idService: null
+  }
+
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue)
   }
 
   const registerEvent = async (data: any) => {
@@ -113,93 +123,108 @@ const FormAddEdit = (props: FormCalendarProps) => {
             alignItems: "center"
           }}
         >
-          <Box mb={4}>
-            <Typography component="h1" variant="h5">
-              Nuevo Turno
-            </Typography>
-          </Box>
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} mb={2}>
-                <Select
-                  isSearchable={true}
-                  options={allClients.map((client: any) => ({
-                    label: client.firstName + " " + client.lastName,
-                    value: client.id
-                  }))}
-                  value={selectedOptionClient}
-                  onChange={handleChangeSelectClient}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  placeholder="Seleccione un cliente"
-                  required
-                />
-              </Grid>
+          <TabContext value={value}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <TabList
+                onChange={handleChangeTab}
+                aria-label="lab API tabs example"
+              >
+                <Tab label="Nuevo Turno" value="1" />
+                <Tab label="Nuevo Cliente" value="2" />
+              </TabList>
+            </Box>
+            <TabPanel value="1">
+              <form onSubmit={handleSubmit}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} mb={2}>
+                    <Select
+                      isSearchable={true}
+                      options={allClients.map((client: any) => ({
+                        label: client.firstName + " " + client.lastName,
+                        value: client.id
+                      }))}
+                      value={selectedOptionClient}
+                      onChange={handleChangeSelectClient}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      placeholder="Seleccione un cliente"
+                      required
+                    />
+                  </Grid>
 
-              <Grid item xs={6}>
-                <TextField
-                  id="date"
-                  type="date"
-                  label="Día"
-                  disabled
-                  value={values.dateBooking}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  id="time"
-                  label="Hora"
-                  disabled
-                  type="time"
-                  value={DateContants.formatDateTime(values.start)}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  id="text"
-                  name="note"
-                  label="Agregar Nota"
-                  onChange={handleChange}
-                  fullWidth
-                  margin="normal"
-                  multiline
-                  rows={3}
-                />
-              </Grid>
-              <Grid item xs={12} mb={2}>
-                <Select
-                  isSearchable={true}
-                  options={allServices.map((service: any) => ({
-                    label: service.name_service,
-                    value: service.id,
-                    minutes: service.minutes_service
-                  }))}
-                  value={selectedOptionService}
-                  onChange={handleChangeSelectService}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  placeholder="Seleccione un servicio"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Box display="flex" justifyContent="center">
-                  <LoadingButton
-                    size="small"
-                    type="submit"
-                    className="btnSubmitOption2"
-                    // loading={isLoading}
-                    variant="contained"
-                    sx={{ mt: 5, mb: 5, py: 2, px: 4 }}
-                  >
-                    <span>Guardar</span>
-                  </LoadingButton>
-                </Box>
-              </Grid>
-            </Grid>
-          </form>
+                  <Grid item md={6} xs={12}>
+                    <TextField
+                      id="date"
+                      type="date"
+                      label="Día"
+                      disabled
+                      value={values.dateBooking}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <TextField
+                      id="time"
+                      label="Hora"
+                      disabled
+                      type="time"
+                      value={DateContants.formatDateTime(values.start)}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      id="text"
+                      name="note"
+                      placeholder="Agregar Nota"
+                      onChange={handleChange}
+                      fullWidth
+                      margin="normal"
+                      multiline
+                      rows={3}
+                    />
+                  </Grid>
+                  <Grid item xs={12} mb={2}>
+                    <Select
+                      isSearchable={true}
+                      options={allServices.map((service: any) => ({
+                        label: service.name_service,
+                        value: service.id,
+                        minutes: service.minutes_service
+                      }))}
+                      value={selectedOptionService}
+                      onChange={handleChangeSelectService}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      placeholder="Seleccione un servicio"
+                      required
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box display="flex" justifyContent="center">
+                      <LoadingButton
+                        size="small"
+                        type="submit"
+                        className="btnSubmitOption2"
+                        // loading={isLoading}
+                        variant="contained"
+                        sx={{ mt: 5, mb: 5, py: 2, px: 4 }}
+                      >
+                        <span>Guardar</span>
+                      </LoadingButton>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </form>
+            </TabPanel>
+            <TabPanel value="2">
+              <FormClient
+                dataFormClient=""
+                optionSelected="NewClient"
+                setOpenModal={setOpenModal}
+              />
+            </TabPanel>
+          </TabContext>
         </Box>
       </Container>
     </ThemeProvider>

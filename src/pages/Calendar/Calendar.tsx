@@ -12,14 +12,12 @@ import { getAllBarbers } from "redux/actions/barbersAction"
 import store from "redux/store"
 import interactionPlugin from "@fullcalendar/interaction"
 import MotionModal from "components/Modal/Modal"
-import CloseIcon from "@mui/icons-material/Close"
 import FormAddTurn from "./FormAddTurn"
 import { getAllClients } from "redux/actions/clientsAction"
 import { getAllServices } from "redux/actions/servicesAction"
 import { getAllTurns, nextTurnAvailable } from "redux/actions/turnsAction"
 import FormEditTurn from "./FormEditTurn"
 import { ToastContainer } from "react-toastify"
-import { useStyles } from "./styles"
 import { NotifyHelper, newArrayServices, transformarTurno } from "contants"
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"
 import moment from "moment"
@@ -28,7 +26,6 @@ import { getAllHours } from "redux/actions/hoursAction"
 
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar | null>(null)
-  const classes: any = useStyles()
   const [openModal, setOpenModal] = useState(false)
   const [openModalEdit, setOpenModalEdit] = useState(false)
   const [openModalHours, setOpenModalHours] = useState(false)
@@ -348,15 +345,12 @@ const Calendar = () => {
               </Box>
             </Card>
           </Box>
-          <MotionModal open={openModal} handleClose={handleCloseModal}>
+          <MotionModal
+            open={openModal}
+            handleClose={handleCloseModal}
+            size={"md"}
+          >
             <Box mt={1} position="relative">
-              <Box
-                position="absolute"
-                className={classes.close}
-                onClick={handleCloseModal}
-              >
-                <CloseIcon />
-              </Box>
               <FormAddTurn
                 dataFormEvent={dataSelected}
                 setOpenModal={setOpenModal}
@@ -366,15 +360,12 @@ const Calendar = () => {
               />
             </Box>
           </MotionModal>
-          <MotionModal open={openModalEdit} handleClose={handleCloseModalEdit}>
+          <MotionModal
+            open={openModalEdit}
+            handleClose={handleCloseModalEdit}
+            size={"md"}
+          >
             <Box mt={1} position="relative">
-              <Box
-                position="absolute"
-                className={classes.close}
-                onClick={handleCloseModalEdit}
-              >
-                <CloseIcon />
-              </Box>
               <FormEditTurn
                 dataFormEvent={dataSelected}
                 setOpenModalEdit={setOpenModalEdit}
@@ -387,15 +378,9 @@ const Calendar = () => {
           <MotionModal
             open={openModalHours}
             handleClose={handleCloseModalHours}
+            size={"md"}
           >
             <Box mt={1} position="relative">
-              <Box
-                position="absolute"
-                className={classes.close}
-                onClick={handleCloseModalHours}
-              >
-                <CloseIcon />
-              </Box>
               <FormHoursCalendar
                 openingTime={openingTime}
                 closingTime={closingTime}

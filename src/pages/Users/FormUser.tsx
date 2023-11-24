@@ -116,22 +116,32 @@ const FormUser = (props: FormUserProps) => {
     lastName: dataForm.lastName || "",
     email: dataForm.email || "",
     is_active: !(false || dataForm.is_active === 0),
-    is_admin: !(false || dataForm.is_admin === 0)
+    is_admin: !(false || dataForm.is_admin === 0),
+    imageProfile: profileImage
   }
 
   const handleImageChange = (e: any) => {
     const selectedImage = e.target.files[0]
 
-    if (selectedImage) {
-      const imageUrl = URL.createObjectURL(selectedImage)
-      setProfileImage(imageUrl)
-    }
+    // if (selectedImage) {
+    //   const imageUrl = URL.createObjectURL(selectedImage)
+    // }
+    setProfileImage(selectedImage)
 
     // setProfileImage(selectedImage)
   }
 
   const registerUser = async (data: any) => {
     setIsLoading(true)
+    const formData = new FormData()
+    formData.append("firstName", data.firstName)
+    formData.append("lastName", data.lastName)
+    formData.append("email", data.email)
+    formData.append("password", data.password)
+    formData.append("is_active", data.is_active)
+    formData.append("is_admin", data.is_admin)
+    formData.append("imageProfile", profileImage)
+
     let rtaUpdateUser
     if (optionSelected === "Editar") {
       try {
@@ -151,7 +161,7 @@ const FormUser = (props: FormUserProps) => {
     } else {
       let rtaAddUser
       try {
-        rtaAddUser = await dispatch(addUser(data) as any)
+        rtaAddUser = await dispatch(addUser(formData) as any)
         if (rtaAddUser.rta === 1) {
           NotifyHelper.notifySuccess(rtaAddUser.message)
           setOpenModal(false)
@@ -218,6 +228,7 @@ const FormUser = (props: FormUserProps) => {
 
           <Box
             component="form"
+            encType="multipart/form-data"
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
@@ -238,24 +249,10 @@ const FormUser = (props: FormUserProps) => {
                     />
                     <ImageBackdrop className="MuiImageBackdrop-root" />
                     <Image>
-                      {/* <Button
-                        component="label"
-                        variant="contained"
-                        startIcon={<CloudUploadIcon />}
-                      >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                      </Button> */}
                       <Typography
                         component="span"
                         variant="subtitle1"
                         color="inherit"
-                        // sx={{
-                        //   position: "relative",
-                        //   p: 4,
-                        //   pt: 2,
-                        //   pb: (theme) => `calc(${theme.spacing(1)} + 6px)`
-                        // }}
                       >
                         <Button
                           component="label"

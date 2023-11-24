@@ -8446,6 +8446,13 @@ react-is@^18.0.0, react-is@^18.2.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
+react-modern-modal@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-modern-modal/-/react-modern-modal-1.0.7.tgz#01bac45fbab08c8d6ac80754413f1214278700bb"
+  integrity sha512-uKYwNQPcfbES13/ze+ADvoxZAm/CBbqTdk/BDB713ZEaWG+rwKiPeS2lE3zD4aInmfZ5CW8TxODgkmai06tpAw==
+  dependencies:
+    classnames "^2.3.2"
+
 react-redux@^8.0.5:
   version "8.0.5"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-8.0.5.tgz#e5fb8331993a019b8aaf2e167a93d10af469c7bd"

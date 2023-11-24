@@ -154,7 +154,11 @@ const Services = () => {
             <Card variant="outlined">
               <Box p={2}>
                 <div>
-                  <MotionModal open={openModal} handleClose={handleCloseModal}>
+                  <MotionModal
+                    open={openModal}
+                    handleClose={handleCloseModal}
+                    size={"md"}
+                  >
                     <Box mt={1} position="relative">
                       <Box
                         position="absolute"

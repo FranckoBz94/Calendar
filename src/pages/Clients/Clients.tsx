@@ -11,7 +11,6 @@ import { NotifyHelper, paginationOption } from "contants"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import MotionComponent from "components/MotionComponent"
 import MotionModal from "components/Modal/Modal"
-import CloseIcon from "@mui/icons-material/Close"
 import { useDispatch, useSelector } from "react-redux"
 import store from "redux/store"
 import { getAllClients, removeClient } from "redux/actions/clientsAction"
@@ -146,15 +145,12 @@ const Clients = () => {
             <Card variant="outlined">
               <Box p={2}>
                 <div>
-                  <MotionModal open={openModal} handleClose={handleCloseModal}>
+                  <MotionModal
+                    open={openModal}
+                    handleClose={handleCloseModal}
+                    size={"md"}
+                  >
                     <Box mt={1} position="relative">
-                      <Box
-                        position="absolute"
-                        className={classes.close}
-                        onClick={handleCloseModal}
-                      >
-                        <CloseIcon />
-                      </Box>
                       <FormClient
                         dataFormClient={dataSelected}
                         optionSelected={optionSelected}

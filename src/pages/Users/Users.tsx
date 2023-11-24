@@ -16,7 +16,6 @@ import Button from "@mui/material/Button"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import Box from "@mui/material/Box"
 import MotionModal from "components/Modal/Modal"
-import CloseIcon from "@mui/icons-material/Close"
 import FormUser from "./FormUser"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
@@ -69,6 +68,16 @@ const Users = () => {
       selector: (row: any) => row.id,
       sortable: true,
       omit: true
+    },
+    {
+      name: "Imagen",
+      cell: (row: any) => (
+        <img
+          src={`http://localhost:4000/${row.url_image}`}
+          alt={row.url_image}
+          style={{ width: "100px" }} // Ajusta el ancho de la imagen según tus necesidades
+        />
+      )
     },
     {
       name: "Nombre",
@@ -147,15 +156,12 @@ const Users = () => {
     <AppBarComponent>
       <MotionComponent>
         <>
-          <MotionModal open={openModal} handleClose={handleCloseModal}>
+          <MotionModal
+            open={openModal}
+            handleClose={handleCloseModal}
+            size={"lg"}
+          >
             <Box mt={1} position="relative">
-              <Box
-                position="absolute"
-                className={classes.close}
-                onClick={handleCloseModal}
-              >
-                <CloseIcon />
-              </Box>
               <FormUser
                 dataForm={dataSelected}
                 optionSelected={optionSelected}
