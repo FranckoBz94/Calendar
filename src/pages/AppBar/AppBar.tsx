@@ -96,7 +96,6 @@ export function AppBarComponent(props: Props) {
   const darkMode = useSelector((state: RootState) => state.theme.darkMode)
   const [localDarkMode, setLocalDarkMode] = React.useState(darkMode)
 
-  console.log(darkMode)
   const [open, setOpen] = React.useState(true)
   const toggleDrawer = () => {
     setOpen(!open)

@@ -46,6 +46,7 @@ const Users = () => {
   const dataRow = async (option: string, e: any) => {
     if (option === "Editar") {
       handleOpenModal("Editar")
+      console.log(e)
       setDataSelected(e)
     } else {
       const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)

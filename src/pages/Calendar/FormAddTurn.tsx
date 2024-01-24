@@ -35,10 +35,6 @@ const FormAddEdit = (props: FormCalendarProps) => {
   const [selectedOptionClient, setSelectedOptionClient] = useState(null)
   const [value, setValue] = React.useState("1")
 
-  const [selectedOptionService, setSelectedOptionService] = useState({
-    label: "",
-    value: 0
-  })
   const {
     dataFormEvent,
     allClients,
@@ -46,12 +42,16 @@ const FormAddEdit = (props: FormCalendarProps) => {
     setOpenModal,
     barberSelected
   } = props
+  const [selectedOptionService, setSelectedOptionService] = useState({
+    id: allServices[0]?.id,
+    minutes_service: allServices[0]?.minutes_service
+  })
+
   const theme = createTheme()
   const dispatch = useDispatch()
-
   const endTime = DateContants.calculateEndTime(
     dataFormEvent.start,
-    selectedOptionService
+    selectedOptionService.minutes_service
   )
   const initialValues = {
     title: null,
@@ -67,9 +67,7 @@ const FormAddEdit = (props: FormCalendarProps) => {
   }
 
   const registerEvent = async (data: any) => {
-    const idService = selectedOptionService
-      ? selectedOptionService.value
-      : undefined
+    const idService = selectedOptionService.id || undefined
     const dataComplete = {
       ...data,
       end: moment(endTime).toDate(),
@@ -106,9 +104,10 @@ const FormAddEdit = (props: FormCalendarProps) => {
     setSelectedOptionClient(selectedOption)
   }
 
-  const handleChangeSelectService = (selectedOption: any) => {
-    values.idService = selectedOption.value
-    setSelectedOptionService(selectedOption)
+  const handleChangeSelectService = (e: any) => {
+    const dataTurn = JSON.parse(e.target.value)
+    values.idService = dataTurn.id
+    setSelectedOptionService(JSON.parse(e.target.value))
   }
 
   return (
@@ -184,21 +183,26 @@ const FormAddEdit = (props: FormCalendarProps) => {
                       rows={3}
                     />
                   </Grid>
+
                   <Grid item xs={12} mb={2}>
-                    <Select
-                      isSearchable={true}
-                      options={allServices.map((service: any) => ({
-                        label: service.name_service,
-                        value: service.id,
-                        minutes: service.minutes_service
-                      }))}
-                      value={selectedOptionService}
+                    <select
+                      className="form-control custom_select"
                       onChange={handleChangeSelectService}
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      placeholder="Seleccione un servicio"
-                      required
-                    />
+                    >
+                      {allServices.map((service: any) => (
+                        <option
+                          value={JSON.stringify({
+                            id: service.id,
+                            minutes_service: service.minutes_service
+                          })}
+                          key={service.id}
+                          defaultValue={dataFormEvent?.idService}
+                          // onChange={handleChangeSelectService}
+                        >
+                          {service.name_service}
+                        </option>
+                      ))}
+                    </select>
                   </Grid>
                   <Grid item xs={12}>
                     <Box display="flex" justifyContent="center">
@@ -208,7 +212,7 @@ const FormAddEdit = (props: FormCalendarProps) => {
                         className="btnSubmitOption2"
                         // loading={isLoading}
                         variant="contained"
-                        sx={{ mt: 5, mb: 5, py: 2, px: 4 }}
+                        sx={{ py: 2, px: 4 }}
                       >
                         <span>Guardar</span>
                       </LoadingButton>

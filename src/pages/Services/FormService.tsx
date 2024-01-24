@@ -9,8 +9,6 @@ import {
   CssBaseline,
   FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
   TextField,
   Typography
 } from "@mui/material"
@@ -20,7 +18,7 @@ import { LoadingButton } from "@mui/lab"
 import { NotifyHelper } from "contants"
 import { useDispatch } from "react-redux"
 import { addService, updateService } from "redux/actions/servicesAction"
-import Select from "@mui/material/Select"
+import Select from "react-select"
 
 interface FormValues {
   name_service: string
@@ -73,6 +71,7 @@ const FormService: React.FC<FormServiceProps> = (props) => {
   }, [])
 
   const registerService = async (data: FormValues) => {
+    console.log(data)
     data.minutes_service = minutes
     data.event_color = selectedColor
     setIsLoading(true)
@@ -114,9 +113,14 @@ const FormService: React.FC<FormServiceProps> = (props) => {
   const theme = createTheme()
 
   const handleChangeSelect = (e: any) => {
-    setMinutes(e.target.value)
+    console.log(e)
+    setMinutes(e.value)
   }
-
+  const minuteServices = [
+    { value: "30", label: "30" },
+    { value: "60", label: "60" },
+    { value: "90", label: "90" }
+  ]
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="md">
@@ -149,24 +153,25 @@ const FormService: React.FC<FormServiceProps> = (props) => {
                   margin="normal"
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} style={{ height: "100%" }}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Minutos</InputLabel>
                   <Select
-                    label="Minutos"
-                    inputProps={{
-                      id: "outlined-age-native-simple",
-                      name: "minutos"
-                    }}
-                    value={minutes}
+                    isSearchable={true}
+                    className="custom-select"
+                    classNamePrefix="select"
+                    options={minuteServices}
+                    defaultValue={
+                      dataFormService
+                        ? {
+                            label: dataFormService?.minutes_service,
+                            value: dataFormService?.minutes_service
+                          }
+                        : null
+                    }
+                    placeholder="Minutos"
                     onChange={handleChangeSelect}
                     required
-                  >
-                    <MenuItem value={30}>30</MenuItem>
-                    <MenuItem value={60}>60</MenuItem>
-                    <MenuItem value={90}>90</MenuItem>
-                    <MenuItem value={120}>120</MenuItem>
-                  </Select>
+                  />
                 </FormControl>
               </Grid>
               <Grid item xs={6}>

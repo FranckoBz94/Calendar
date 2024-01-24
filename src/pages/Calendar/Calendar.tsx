@@ -172,7 +172,6 @@ const Calendar = () => {
       start_date: moment(event.start).format("YYYY-MM-DD HH:mm:ss"),
       endTimeCalendar: localStorage.getItem("newClosingTime")
     }
-    console.log("services1", services)
     setAllServices(services)
 
     await calculateNewArrayServices(dataTurn)

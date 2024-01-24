@@ -29,9 +29,11 @@ export class DateContants {
   }
 
   static calculateEndTime = (startDate: any, optionTimeEnd: any) => {
+    console.log("startDate", new Date(startDate))
+    console.log("optionTimeEnd", optionTimeEnd)
     if (optionTimeEnd !== null) {
       const end = new Date(startDate)
-      end.setMinutes(end.getMinutes() + optionTimeEnd.minutes)
+      end.setMinutes(end.getMinutes() + optionTimeEnd)
       return end
     }
   }

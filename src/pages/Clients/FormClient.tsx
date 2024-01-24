@@ -26,7 +26,6 @@ const FormClient = (props: FormClientProps) => {
   const { dataFormClient, optionSelected, setOpenModal } = props
   const [isLoading, setIsLoading] = React.useState(false)
   const dispatch = useDispatch()
-  console.log("formdata", dataFormClient)
   const initialValues = {
     firstName: dataFormClient.firstName || "",
     lastName: dataFormClient.lastName || "",
@@ -74,7 +73,7 @@ const FormClient = (props: FormClientProps) => {
         console.log("rtaAddClient", rtaAddClient)
         if (rtaAddClient.rta === 1) {
           NotifyHelper.notifySuccess(rtaAddClient.message)
-          setOpenModal(false)
+          // setOpenModal(false)
           setIsLoading(false)
         } else {
           NotifyHelper.notifyError(rtaAddClient.message)

@@ -55,6 +55,8 @@ export const getAllUsers = () => {
 // }
 
 export const addUser = (formData) => async (dispatch) => {
+  console.log("formdaa", formData)
+
   try {
     // Realiza una solicitud POST para agregar el usuario con la imagen
     const response = await axios.post(ruta + "users/", formData, {
@@ -71,9 +73,14 @@ export const addUser = (formData) => async (dispatch) => {
   }
 }
 
-export const updateUser = (data, id) => async (dispatch) => {
+export const updateUser = (formData, id) => async (dispatch) => {
+  console.log("formdaa", formData)
   try {
-    const response = await axios.put(ruta + "users/" + id, data)
+    const response = await axios.put(ruta + "users/" + id, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data" // Importante para la carga de archivos
+      }
+    })
     dispatch(setUpdateUser())
     dispatch(getAllUsers())
     return response.data

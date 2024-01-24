@@ -11,7 +11,6 @@ import { NotifyHelper, paginationOption } from "contants"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import MotionComponent from "components/MotionComponent"
 import MotionModal from "components/Modal/Modal"
-import CloseIcon from "@mui/icons-material/Close"
 import { useDispatch, useSelector } from "react-redux"
 import store from "redux/store"
 import EditIcon from "@mui/icons-material/Edit"
@@ -160,13 +159,6 @@ const Services = () => {
                     size={"md"}
                   >
                     <Box mt={1} position="relative">
-                      <Box
-                        position="absolute"
-                        className={classes.close}
-                        onClick={handleCloseModal}
-                      >
-                        <CloseIcon />
-                      </Box>
                       <FormService
                         dataFormService={dataSelected}
                         optionSelected={optionSelected}

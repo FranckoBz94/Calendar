@@ -6,18 +6,17 @@ import Grid from "@mui/material/Grid"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { motion } from "framer-motion"
-import { Button, Card, Checkbox, FormControlLabel } from "@mui/material"
+import { Card, Checkbox, FormControlLabel, Paper } from "@mui/material"
 import { useDispatch } from "react-redux"
 import { addUser, updateUser } from "redux/actions/usersAction"
 import { NotifyHelper } from "contants"
 import LoadingButton from "@mui/lab/LoadingButton"
-import ButtonBase from "@mui/material/ButtonBase"
-import fondoBarber from "../../images/fondo_barber.jpg"
-import CloudUploadIcon from "@mui/icons-material/CloudUpload"
+// import fondoBarber from "../../images/fondo_barber.jpg"
+// import CameraAltIcon from "@mui/icons-material/CameraAlt"
 
 const theme = createTheme()
 
@@ -27,86 +26,14 @@ interface FormUserProps {
   setOpenModal: (send: boolean) => void
 }
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1
-})
-
-const ImageButton = styled(ButtonBase)(({ theme }) => ({
-  position: "relative",
-  height: 200,
-  [theme.breakpoints.down("sm")]: {
-    width: "100% !important", // Overrides inline-style
-    height: 100
-  },
-  "&:hover, &.Mui-focusVisible": {
-    zIndex: 1,
-    "& .MuiImageBackdrop-root": {
-      opacity: 0.15
-    },
-    "& .MuiImageMarked-root": {
-      opacity: 0
-    },
-    "& .MuiTypography-root": {
-      border: "4px solid currentColor"
-    }
-  }
-}))
-
-const ImageSrc = styled("span")({
-  position: "absolute",
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-  backgroundSize: "cover",
-  backgroundPosition: "center 40%"
-})
-
-const Image = styled("span")(({ theme }) => ({
-  position: "absolute",
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: theme.palette.common.white
-}))
-
-const ImageBackdrop = styled("span")(({ theme }) => ({
-  position: "absolute",
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-  backgroundColor: theme.palette.common.black,
-  opacity: 0.4,
-  transition: theme.transitions.create("opacity")
-}))
-
-const ImageMarked = styled("span")(({ theme }) => ({
-  height: 3,
-  width: 18,
-  backgroundColor: theme.palette.common.white,
-  position: "absolute",
-  bottom: -2,
-  left: "calc(50% - 9px)",
-  transition: theme.transitions.create("opacity")
-}))
+const urlBase = "http://localhost:4000/"
 
 const FormUser = (props: FormUserProps) => {
   const [isAdminChecked, setIsAdminChecked] = React.useState(false)
   const [isActiveChecked, setIsActiveChecked] = React.useState(false)
-  const [profileImage, setProfileImage] = React.useState("")
+  // const [profileImage, setProfileImage] = React.useState("")
+  const [profileImage, setProfileImage] = React.useState<File | null>(null)
+
   const [isLoading, setIsLoading] = React.useState(false)
   const dispatch = useDispatch()
 
@@ -117,35 +44,29 @@ const FormUser = (props: FormUserProps) => {
     email: dataForm.email || "",
     is_active: !(false || dataForm.is_active === 0),
     is_admin: !(false || dataForm.is_admin === 0),
-    imageProfile: profileImage
+    imageProfile:
+      dataForm.url_image === undefined
+        ? (dataForm.url_image = "uploads/profile.png")
+        : dataForm.url_image
   }
-
-  const handleImageChange = (e: any) => {
-    const selectedImage = e.target.files[0]
-
-    // if (selectedImage) {
-    //   const imageUrl = URL.createObjectURL(selectedImage)
-    // }
-    setProfileImage(selectedImage)
-
-    // setProfileImage(selectedImage)
-  }
-
+  console.log(dataForm.url_image)
   const registerUser = async (data: any) => {
     setIsLoading(true)
     const formData = new FormData()
     formData.append("firstName", data.firstName)
     formData.append("lastName", data.lastName)
     formData.append("email", data.email)
-    formData.append("password", data.password)
     formData.append("is_active", data.is_active)
     formData.append("is_admin", data.is_admin)
-    formData.append("imageProfile", profileImage)
-
+    if (profileImage) {
+      formData.append("imageProfile", profileImage)
+    }
+    console.log(Object.fromEntries(formData.entries()))
+    console.log(data)
     let rtaUpdateUser
     if (optionSelected === "Editar") {
       try {
-        rtaUpdateUser = await dispatch(updateUser(data, dataForm.id) as any)
+        rtaUpdateUser = await dispatch(updateUser(formData, dataForm.id) as any)
         if (rtaUpdateUser.rta === 1) {
           NotifyHelper.notifySuccess(rtaUpdateUser.message)
           setOpenModal(false)
@@ -160,6 +81,8 @@ const FormUser = (props: FormUserProps) => {
       }
     } else {
       let rtaAddUser
+      formData.append("password", data.password)
+
       try {
         rtaAddUser = await dispatch(addUser(formData) as any)
         if (rtaAddUser.rta === 1) {
@@ -208,6 +131,12 @@ const FormUser = (props: FormUserProps) => {
     setFieldValue(field, value)
   }
 
+  const loadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setProfileImage(event.target.files[0])
+    }
+  }
+
   React.useEffect(() => {}, [])
 
   return (
@@ -236,39 +165,46 @@ const FormUser = (props: FormUserProps) => {
             <motion.div>
               <Grid container spacing={2}>
                 <Grid item md={4} xs={12}>
-                  <ImageButton
-                    focusRipple
-                    style={{
-                      width: "100%"
-                    }}
-                  >
-                    <ImageSrc
-                      style={{
-                        backgroundImage: `url(${profileImage || fondoBarber})`
-                      }}
-                    />
-                    <ImageBackdrop className="MuiImageBackdrop-root" />
-                    <Image>
-                      <Typography
-                        component="span"
-                        variant="subtitle1"
-                        color="inherit"
+                  <Paper style={{ width: "auto" }}>
+                    <label htmlFor="file" style={{ cursor: "pointer" }}>
+                      <Box
+                        width="auto"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        flexDirection="column"
                       >
-                        <Button
-                          component="label"
-                          variant="contained"
-                          startIcon={<CloudUploadIcon />}
-                        >
-                          Subir Imágen
-                          <VisuallyHiddenInput
-                            type="file"
-                            onChange={handleImageChange}
-                          />
-                        </Button>
-                        <ImageMarked className="MuiImageMarked-root" />
-                      </Typography>
-                    </Image>
-                  </ImageButton>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          name="image"
+                          id="file"
+                          onChange={loadFile}
+                          style={{ display: "none" }}
+                        />
+                        <Typography variant="caption">
+                          {" "}
+                          Imagen del usuario{" "}
+                        </Typography>
+
+                        <img
+                          src={urlBase + dataForm.url_image}
+                          id="output"
+                          width="200"
+                          alt="test"
+                        />
+                      </Box>
+                    </label>
+                    {/* <Box
+                      display="flex"
+                      justifyContent="flex-end"
+                      padding="10px 20px"
+                    >
+                      <label htmlFor="file" style={{ cursor: "pointer" }}>
+                        <CameraAltIcon />
+                      </label>
+                    </Box> */}
+                  </Paper>
                 </Grid>
                 <Grid item md={8} xs={12}>
                   <Grid container spacing={1}>

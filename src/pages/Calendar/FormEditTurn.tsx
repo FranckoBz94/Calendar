@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Box, Container, Grid, TextField } from "@mui/material"
+import { Box, Container, Grid, TextField, Typography } from "@mui/material"
 import { useFormik } from "formik"
 import { LoadingButton } from "@mui/lab"
 import Select from "react-select"
@@ -19,10 +19,6 @@ interface FormCalendarProps {
 }
 
 const FormEditTurn = (props: FormCalendarProps) => {
-  const [selectedOptionService, setSelectedOptionService] = useState({
-    label: "",
-    value: 0
-  })
   const {
     dataFormEvent,
     allServices,
@@ -39,6 +35,9 @@ const FormEditTurn = (props: FormCalendarProps) => {
     idService,
     idTurn
   } = dataFormEvent
+  const [selectedOptionService, setSelectedOptionService] = useState(
+    dataFormEvent?.idService
+  )
   const dispatch = useDispatch()
 
   const endTime = DateContants.calculateEndTime(
@@ -57,9 +56,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
   // console.log("dataFormEvent", dataFormEvent.idService)
 
   const updateEvent = async (data: any) => {
-    const idService = selectedOptionService
-      ? selectedOptionService.value
-      : undefined
+    const idService = selectedOptionService || undefined
     const dataComplete = {
       ...data,
       end: moment(endTime).toDate(),
@@ -107,22 +104,23 @@ const FormEditTurn = (props: FormCalendarProps) => {
     }
   }
 
-  const handleChangeSelectService = (selectedOption: any) => {
-    values.idService = selectedOption.value
-    setSelectedOptionService(selectedOption)
+  const handleChangeSelectService = (event: any) => {
+    console.log(event.target.value)
+    values.idService = event.target.value
+    setSelectedOptionService(event.target.value)
   }
 
   const selectedClient: any = allClients.find(
     (client: any) => client.id === values.idClient
   )
 
-  const selectedService: any = allServices.find(
-    (service: any) => service.id === values.idService
-  )
+  // const selectedService: any = allServices.find(
+  //   (service: any) => service.id === values.idService
+  // )
 
   // console.log("values", values)
   // console.log("selectData", selectedClient)
-  console.log("selectedService", selectedService)
+  console.log("dataFormEvent", dataFormEvent)
 
   return (
     <>
@@ -137,6 +135,17 @@ const FormEditTurn = (props: FormCalendarProps) => {
         >
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
+              <Grid item xs={12} mb={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center"
+                  }}
+                >
+                  <Typography variant="h5">Editar turno</Typography>
+                </Box>
+              </Grid>
               <Grid item xs={12} mb={2}>
                 <Select
                   isSearchable={true}
@@ -197,27 +206,21 @@ const FormEditTurn = (props: FormCalendarProps) => {
                 />
               </Grid>
               <Grid item xs={12} mb={2}>
-                <Select
-                  isSearchable={true}
-                  options={allServices.map((service: any) => ({
-                    label: service.name_service,
-                    value: service.id,
-                    minutes: service.minutes_service
-                  }))}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  placeholder="Servicio"
-                  defaultValue={
-                    selectedService
-                      ? {
-                          label: selectedService?.name_service,
-                          value: selectedService?.id
-                        }
-                      : null
-                  }
+                <select
+                  className="form-control custom_select"
                   onChange={handleChangeSelectService}
-                  required
-                />
+                >
+                  {allServices.map((service: any) => (
+                    <option
+                      value={service.id}
+                      key={service.id}
+                      defaultValue={dataFormEvent?.idService}
+                      onChange={handleChangeSelectService}
+                    >
+                      {service.name_service}
+                    </option>
+                  ))}
+                </select>
               </Grid>
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="center">
