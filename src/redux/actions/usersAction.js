@@ -43,19 +43,8 @@ export const getAllUsers = () => {
   }
 }
 
-// export const addUser = (user) => async (dispatch) => {
-//   try {
-//     const response = await axios.post(ruta + "users/", user)
-//     dispatch(setAddUser())
-//     dispatch(getAllUsers())
-//     return response.data
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
-
 export const addUser = (formData) => async (dispatch) => {
-  console.log("formdaa", formData)
+  console.log(formData)
 
   try {
     // Realiza una solicitud POST para agregar el usuario con la imagen

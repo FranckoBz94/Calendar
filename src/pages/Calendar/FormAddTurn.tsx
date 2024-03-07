@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ThemeProvider } from "@mui/styles"
 import {
   Box,
@@ -10,7 +10,7 @@ import {
 } from "@mui/material"
 import { useFormik } from "formik"
 import { LoadingButton } from "@mui/lab"
-import Select from "react-select"
+import Select, { components } from "react-select"
 import { DateContants } from "utils/DateContants"
 import { addTurn, getAllTurns } from "redux/actions/turnsAction"
 import { useDispatch } from "react-redux"
@@ -21,6 +21,7 @@ import TabList from "@mui/lab/TabList"
 import TabPanel from "@mui/lab/TabPanel"
 import moment from "moment"
 import FormClient from "pages/Clients/FormClient"
+// import Modal from "@atlaskit/modal-dialog"
 
 interface FormCalendarProps {
   dataFormEvent: any
@@ -31,10 +32,9 @@ interface FormCalendarProps {
   barberSelected: any
 }
 
-const FormAddEdit = (props: FormCalendarProps) => {
+const FormAddTurn = (props: FormCalendarProps) => {
   const [selectedOptionClient, setSelectedOptionClient] = useState(null)
   const [value, setValue] = React.useState("1")
-
   const {
     dataFormEvent,
     allClients,
@@ -46,7 +46,6 @@ const FormAddEdit = (props: FormCalendarProps) => {
     id: allServices[0]?.id,
     minutes_service: allServices[0]?.minutes_service
   })
-
   const theme = createTheme()
   const dispatch = useDispatch()
   const endTime = DateContants.calculateEndTime(
@@ -68,6 +67,12 @@ const FormAddEdit = (props: FormCalendarProps) => {
 
   const registerEvent = async (data: any) => {
     const idService = selectedOptionService.id || undefined
+    const endTime = DateContants.calculateEndTime(
+      dataFormEvent.start,
+      selectedOptionService.minutes_service
+    )
+    console.log("endTime", endTime)
+
     const dataComplete = {
       ...data,
       end: moment(endTime).toDate(),
@@ -77,18 +82,28 @@ const FormAddEdit = (props: FormCalendarProps) => {
     let rtaAddTurn
     try {
       rtaAddTurn = await dispatch(addTurn(dataComplete) as any)
+      console.log(rtaAddTurn)
       if (rtaAddTurn.rta === 1) {
-        setOpenModal(false)
         dispatch(getAllTurns(barberSelected.id) as any)
         NotifyHelper.notifySuccess(rtaAddTurn.message)
+
+        setOpenModal(false)
       } else {
         NotifyHelper.notifyError(rtaAddTurn.message)
       }
     } catch (err) {
       NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
     }
-    // addEvent(dataComplete)
   }
+
+  useEffect(() => {
+    if (allServices && allServices.length > 0) {
+      setSelectedOptionService({
+        id: allServices[0]?.id,
+        minutes_service: allServices[0]?.minutes_service
+      });
+    }
+  }, [allServices]);
 
   const formik = useFormik({
     initialValues,
@@ -105,18 +120,25 @@ const FormAddEdit = (props: FormCalendarProps) => {
   }
 
   const handleChangeSelectService = (e: any) => {
-    const dataTurn = JSON.parse(e.target.value)
+    const dataTurn = JSON.parse(e.value)
     values.idService = dataTurn.id
-    setSelectedOptionService(JSON.parse(e.target.value))
+    setSelectedOptionService(JSON.parse(e.value))
+  }
+
+  const Option = (props: any) => {
+    return (
+      <components.Option {...props}>
+        <div dangerouslySetInnerHTML={{ __html: props.label }} />
+      </components.Option>
+    );
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="md">
+      <Container component="main" maxWidth="md" >
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 3,
             display: "flex",
             flexDirection: "column",
             alignItems: "center"
@@ -126,7 +148,6 @@ const FormAddEdit = (props: FormCalendarProps) => {
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <TabList
                 onChange={handleChangeTab}
-                aria-label="lab API tabs example"
               >
                 <Tab label="Nuevo Turno" value="1" />
                 <Tab label="Nuevo Cliente" value="2" />
@@ -185,24 +206,32 @@ const FormAddEdit = (props: FormCalendarProps) => {
                   </Grid>
 
                   <Grid item xs={12} mb={2}>
-                    <select
-                      className="form-control custom_select"
+                    <Select
+                      isSearchable={true}
+                      options={allServices.map((service: any) => ({
+                        label: service.name_service + " <small>(" + service.minutes_service + " minutos)</small>",
+                        value: JSON.stringify({
+                          id: service.id,
+                          minutes_service: service.minutes_service
+                        })
+                      }))}
+                      components={{ Option: Option }}
+
                       onChange={handleChangeSelectService}
-                    >
-                      {allServices.map((service: any) => (
-                        <option
-                          value={JSON.stringify({
-                            id: service.id,
-                            minutes_service: service.minutes_service
-                          })}
-                          key={service.id}
-                          defaultValue={dataFormEvent?.idService}
-                          // onChange={handleChangeSelectService}
-                        >
-                          {service.name_service}
-                        </option>
-                      ))}
-                    </select>
+                      className="basic-single select-modal"
+                      classNamePrefix="select"
+                      placeholder="Seleccione un servicio"
+                      required
+                      styles={{
+                        menu: provided => ({
+                          ...provided,
+                          height: 'auto',
+                          maxHeight: '200px', // Ajusta esta altura según tus necesidades
+                          overflowY: 'auto',
+                          borderRadius: '5px'
+                        }),
+                      }}
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <Box display="flex" justifyContent="center">
@@ -235,4 +264,4 @@ const FormAddEdit = (props: FormCalendarProps) => {
   )
 }
 
-export default FormAddEdit
+export default FormAddTurn

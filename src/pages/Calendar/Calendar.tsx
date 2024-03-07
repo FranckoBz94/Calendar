@@ -23,6 +23,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"
 import moment from "moment"
 import FormHoursCalendar from "./FormHoursCalendar"
 import { getAllHours } from "redux/actions/hoursAction"
+// import isEqual from 'lodash/isEqual';
 
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar | null>(null)
@@ -68,7 +69,6 @@ const Calendar = () => {
   const { clients } = useSelector((state: RootState) => storeComplete.clients)
   const { services } = useSelector((state: RootState) => storeComplete.services)
   const [allServices, setAllServices] = useState([])
-
   useEffect(() => {
     setOpeningTime(hours?.min_hour_calendar)
     setClosingTime(hours?.max_hour_calendar)
@@ -101,6 +101,8 @@ const Calendar = () => {
     let rtaAvailableTurn
     try {
       rtaAvailableTurn = await dispatch(nextTurnAvailable(dataTurn) as any)
+      console.log("rtaAvailableTurn", rtaAvailableTurn)
+
       if (rtaAvailableTurn.rta === 1) {
         let startDate
         let endHoutTime
@@ -113,6 +115,7 @@ const Calendar = () => {
           endHoutTime =
             nextEndHours + " " + localStorage.getItem("newClosingTime")
         }
+        console.log("allServices", allServices)
         const newServices = await newArrayServices(
           allServices,
           endHoutTime,
@@ -152,8 +155,6 @@ const Calendar = () => {
       ),
       endTimeCalendar: localStorage.getItem("newClosingTime")
     }
-    setAllServices(services)
-
     await calculateNewArrayServices(dataTurn)
     setDataSelected(turnoSeleccionado)
 
@@ -161,20 +162,23 @@ const Calendar = () => {
   }
 
   const handleDateSelect = async (event: any) => {
-    const currentView = calendarRef.current?.getApi().view.type
-    if (currentView === "timeGridWeek") {
-      setOpenModal(true)
-      setDataSelected(event)
+    if (barbers.length > 0) {
+      const currentView = calendarRef.current?.getApi().view.type
+      if (currentView === "timeGridWeek") {
+        setOpenModal(true)
+        setDataSelected(event)
+      }
+      const dataTurn = {
+        idBarber: barberSelected?.id,
+        dateBooking: moment(event.start).format("YYYY-MM-DD"),
+        start_date: moment(event.start).format("YYYY-MM-DD HH:mm:ss"),
+        endTimeCalendar: localStorage.getItem("newClosingTime")
+      }
+      await calculateNewArrayServices(dataTurn)
+    } else {
+      NotifyHelper.notifyWarning("Debe agregar un barbero para agregar un turno.")
     }
-    const dataTurn = {
-      idBarber: barberSelected?.id,
-      dateBooking: moment(event.start).format("YYYY-MM-DD"),
-      start_date: moment(event.start).format("YYYY-MM-DD HH:mm:ss"),
-      endTimeCalendar: localStorage.getItem("newClosingTime")
-    }
-    setAllServices(services)
 
-    await calculateNewArrayServices(dataTurn)
   }
 
   const selectBarber = async () => {
@@ -190,7 +194,9 @@ const Calendar = () => {
   }, [])
 
   useEffect(() => {
-    selectBarber()
+    if (Array.isArray(barbers) && barbers.length > 0) {
+      selectBarber()
+    }
   }, [barbers])
 
   useEffect(() => {
@@ -266,44 +272,49 @@ const Calendar = () => {
                           }}
                           variant="outlined"
                         >
-                          {barbers && barbers.length === 0 ? (
-                            <Stack sx={{ width: "100%" }} spacing={2}>
-                              <Alert
-                                variant="outlined"
-                                severity="warning"
-                                style={{ justifyContent: "center" }}
+                          <Box sx={{ width: 1 }}>
+                            {barbers && barbers.length === 0 ? (
+                              <Box mt={1}>
+                                <Stack sx={{ width: "100%" }} spacing={2}>
+                                  <Alert
+                                    variant="outlined"
+                                    severity="warning"
+                                    style={{ justifyContent: "center" }}
+                                  >
+                                    Aún no hay barberos cargados en el sistema.
+                                  </Alert>
+                                </Stack>
+                              </Box>
+                            ) : (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center"
+                                }}
                               >
-                                Aún no hay barberos cargados en el sistema.
-                              </Alert>
-                            </Stack>
-                          ) : (
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center"
-                              }}
-                            >
-                              <InputLabel htmlFor="my-input">
-                                Agenda de:
-                              </InputLabel>
-                              <h4>
-                                {barberSelected
-                                  ? barberSelected.firstName +
+                                <InputLabel htmlFor="my-input">
+                                  Agenda de:
+                                </InputLabel>
+                                <h4>
+                                  {barberSelected
+                                    ? barberSelected.firstName +
                                     " " +
                                     barberSelected.lastName
-                                  : ""}
-                              </h4>
-                            </div>
-                          )}
-                          <Box display="flex" alignItems={"center"}>
-                            <Button
-                              variant="contained"
-                              endIcon={<CalendarMonthIcon />}
-                              onClick={() => setOpenModalHours(true)}
-                            >
-                              Horarios Calendario
-                            </Button>
+                                    : ""}
+                                </h4>
+                              </div>
+                            )}
+                            <Box display="flex" alignItems={"center"} sx={{ width: 1 }} my={1}>
+                              <Button
+                                variant="contained"
+                                endIcon={<CalendarMonthIcon />}
+                                onClick={() => setOpenModalHours(true)}
+                                sx={{ width: 1 }}
+                              >
+                                Horarios Calendario
+                              </Button>
+                            </Box>
                           </Box>
                         </Card>
                         <FullCalendar
@@ -345,24 +356,25 @@ const Calendar = () => {
             </Card>
           </Box>
           <MotionModal
-            open={openModal}
+            isOpen={openModal}
             handleClose={handleCloseModal}
-            size={"md"}
           >
-            <Box mt={1} position="relative">
-              <FormAddTurn
-                dataFormEvent={dataSelected}
-                setOpenModal={setOpenModal}
-                allClients={clients}
-                allServices={filteredServices}
-                barberSelected={barberSelected}
-              />
+            <Box mt={1} >
+              {filteredServices && (
+                <FormAddTurn
+                  dataFormEvent={dataSelected}
+                  setOpenModal={setOpenModal}
+                  allClients={clients}
+                  allServices={filteredServices}
+                  barberSelected={barberSelected}
+                />
+              )}
             </Box>
           </MotionModal>
+
           <MotionModal
-            open={openModalEdit}
+            isOpen={openModalEdit}
             handleClose={handleCloseModalEdit}
-            size={"md"}
           >
             <Box mt={1} position="relative">
               <FormEditTurn
@@ -375,9 +387,8 @@ const Calendar = () => {
             </Box>
           </MotionModal>
           <MotionModal
-            open={openModalHours}
+            isOpen={openModalHours}
             handleClose={handleCloseModalHours}
-            size={"md"}
           >
             <Box mt={1} position="relative">
               <FormHoursCalendar

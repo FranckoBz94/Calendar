@@ -15,7 +15,7 @@ import Button from "@mui/material/Button"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import Box from "@mui/material/Box"
 import MotionModal from "components/Modal/Modal"
-import FormUser from "./FormUser"
+import FormBarber from "./FormBarber"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
@@ -67,6 +67,16 @@ const Barbers = () => {
       selector: (row: any) => row.id,
       sortable: true,
       omit: true
+    },
+    {
+      name: "Imagen",
+      cell: (row: any) => (
+        <img
+          src={`${process.env.REACT_APP_URL_BASE}${row.imagen}`}
+          alt={row.url_image}
+          style={{ width: "100px", padding: "10px" }} // Ajusta el ancho de la imagen según tus necesidades
+        />
+      )
     },
     {
       name: "Nombre",
@@ -151,12 +161,11 @@ const Barbers = () => {
       <MotionComponent>
         <>
           <MotionModal
-            open={openModal}
+            isOpen={openModal}
             handleClose={handleCloseModal}
-            size={"md"}
           >
             <Box mt={1} position="relative">
-              <FormUser
+              <FormBarber
                 dataForm={dataSelected}
                 optionSelected={optionSelected}
                 setOpenModal={setOpenModal}

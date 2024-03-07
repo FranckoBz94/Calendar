@@ -26,7 +26,7 @@ body {
   padding-right: 0px;
 }
 
-.data-table-extensions > .data-table-extensions-filter {
+.data-table-extensions>.data-table-extensions-filter {
   float: right;
   width: 30%;
   border: 1px solid var(--option1-color);
@@ -37,11 +37,11 @@ body {
   background: var(--primary-color);
 }
 
-.data-table-extensions > .data-table-extensions-filter > .icon {
+.data-table-extensions>.data-table-extensions-filter>.icon {
   height: 35px;
 }
 
-.data-table-extensions > .data-table-extensions-filter > .filter-text {
+.data-table-extensions>.data-table-extensions-filter>.filter-text {
   float: left;
   width: 90%;
   height: 35px;
@@ -61,7 +61,7 @@ body {
   color: #fff;
 }
 
-.glnTqc > .kXLoVw {
+.glnTqc>.kXLoVw {
   text-align: left !important;
 }
 
@@ -70,7 +70,7 @@ body {
   height: 60px !important;
 }
 
-.iSAVrt > .glyQNg {
+.iSAVrt>.glyQNg {
   font-size: 16px;
   font-weight: 500;
 }
@@ -83,7 +83,7 @@ body {
   border: 1px solid #dbe7e2;
 }
 
-.btnTable > span {
+.btnTable>span {
   margin: 0px;
 }
 
@@ -101,14 +101,17 @@ body {
 }
 
 #react-select-3-listbox {
-  background-color: #fff; /* color de fondo del elemento option */
-  color: #333; /* color del texto del elemento option */
+  background-color: #fff;
+  /* color de fondo del elemento option */
+  color: #333;
+  /* color del texto del elemento option */
   z-index: 999;
 }
 
 /* Estilo personalizado para la flecha que indica que se puede desplegar el select */
 .react-select__indicator {
-  color: #333; /* color de la flecha */
+  color: #333;
+  /* color de la flecha */
 }
 
 .my-swal-container {
@@ -126,11 +129,13 @@ inputDisabled input[type="time"] {
   background-color: #f5f5f5 !important;
   cursor: not-allowed;
 }
-.css-mhc70k-MuiGrid-root > .MuiGrid-item,
+
+.css-mhc70k-MuiGrid-root>.MuiGrid-item,
 .MuiGrid-root .custom-select,
 .custom-select .select__control {
   height: 100%;
 }
+
 .Select__menu-list {
   height: 100%;
 }
@@ -147,5 +152,16 @@ inputDisabled input[type="time"] {
   padding: 20px;
   width: 100%;
   border-color: #c4c4c4;
+  border-radius: 4px;
+}
+
+.select-modal::-webkit-scrollbar {
+  -webkit-appearance: none;
+
+  width: 18px;
+}
+
+.select-modal::-webkit-scrollbar-thumb {
+  background-color: red;
   border-radius: 4px;
 }

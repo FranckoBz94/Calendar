@@ -37,18 +37,17 @@ export const paginationOption = {
 
 export class NotifyHelper {
   static notifySuccess: (text: string) => void = (text: string) => {
-    if (text) {
-      toast.success(text, {
-        autoClose: 3000,
-        closeOnClick: true,
-        draggable: true,
-        hideProgressBar: false,
-        pauseOnHover: true,
-        position: "bottom-right",
-        progress: undefined,
-        theme: "light"
-      })
-    }
+    toast.success(text, {
+      autoClose: 5000,
+      closeOnClick: true,
+      draggable: true,
+      hideProgressBar: false,
+      pauseOnHover: true,
+      position: "bottom-right",
+      progress: undefined,
+      theme: "dark"
+    })
+
   }
 
   static notifyError: (text: string) => void = (text: string) => {
@@ -60,7 +59,20 @@ export class NotifyHelper {
       pauseOnHover: true,
       position: "bottom-right",
       progress: undefined,
-      theme: "light"
+      theme: "dark"
+    })
+  }
+
+  static notifyWarning: (text: string) => void = (text: string) => {
+    toast.warning(text, {
+      autoClose: 3000,
+      closeOnClick: true,
+      draggable: true,
+      hideProgressBar: false,
+      pauseOnHover: true,
+      position: "bottom-right",
+      progress: undefined,
+      theme: "dark"
     })
   }
 }

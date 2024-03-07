@@ -76,7 +76,7 @@ const Users = () => {
         <img
           src={`http://localhost:4000/${row.url_image}`}
           alt={row.url_image}
-          style={{ width: "100px" }} // Ajusta el ancho de la imagen según tus necesidades
+          style={{ width: "100px", padding: "10px" }} // Ajusta el ancho de la imagen según tus necesidades
         />
       )
     },
@@ -158,9 +158,8 @@ const Users = () => {
       <MotionComponent>
         <>
           <MotionModal
-            open={openModal}
+            isOpen={openModal}
             handleClose={handleCloseModal}
-            size={"lg"}
           >
             <Box mt={1} position="relative">
               <FormUser

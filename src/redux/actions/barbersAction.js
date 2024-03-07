@@ -43,9 +43,14 @@ export const getAllBarbers = () => {
   }
 }
 
-export const addBarber = (barber) => async (dispatch) => {
+export const addBarber = (formData) => async (dispatch) => {
+  console.log(formData)
   try {
-    const response = await axios.post(ruta + "barbers/", barber)
+    const response = await axios.post(ruta + "barbers/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data" // Importante para la carga de archivos
+      }
+    })
     dispatch(setAddBarber())
     dispatch(getAllBarbers())
     return response.data
@@ -54,9 +59,13 @@ export const addBarber = (barber) => async (dispatch) => {
   }
 }
 
-export const updateBarber = (data, id) => async (dispatch) => {
+export const updateBarber = (formData, id) => async (dispatch) => {
   try {
-    const response = await axios.put(ruta + "barbers/" + id, data)
+    const response = await axios.put(ruta + "barbers/" + id, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data" // Importante para la carga de archivos
+      }
+    })
     dispatch(setUpdateBarber())
     dispatch(getAllBarbers())
     return response.data

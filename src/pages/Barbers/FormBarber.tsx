@@ -12,15 +12,13 @@ import * as Yup from "yup"
 import { motion } from "framer-motion"
 import { Card, Checkbox, FormControlLabel, Paper } from "@mui/material"
 import { useDispatch } from "react-redux"
-import { addUser, updateUser } from "redux/actions/usersAction"
 import { NotifyHelper } from "contants"
 import LoadingButton from "@mui/lab/LoadingButton"
-// import fondoBarber from "../../images/fondo_barber.jpg"
-// import CameraAltIcon from "@mui/icons-material/CameraAlt"
+import { addBarber, updateBarber } from "redux/actions/barbersAction"
 
 const theme = createTheme()
 
-interface FormUserProps {
+interface FormBarberProps {
   dataForm: any
   optionSelected: string
   setOpenModal: (send: boolean) => void
@@ -28,12 +26,12 @@ interface FormUserProps {
 
 const urlBase = process.env.REACT_APP_URL_BASE
 
-const FormUser = (props: FormUserProps) => {
+const FormBarber = (props: FormBarberProps) => {
   const [isAdminChecked, setIsAdminChecked] = React.useState(false)
   const [isActiveChecked, setIsActiveChecked] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
   const [profileImage, setProfileImage] = React.useState<File | null>(null)
 
-  const [isLoading, setIsLoading] = React.useState(false)
   const dispatch = useDispatch()
 
   const { dataForm, optionSelected, setOpenModal } = props
@@ -41,21 +39,23 @@ const FormUser = (props: FormUserProps) => {
     firstName: dataForm.firstName || "",
     lastName: dataForm.lastName || "",
     email: dataForm.email || "",
-    is_active: !(false || dataForm.is_active === 0),
-    is_admin: !(false || dataForm.is_admin === 0),
+    telefono: dataForm.telefono || "",
     imageProfile:
-      dataForm.url_image === undefined
-        ? (dataForm.url_image = "uploads/profile.png")
-        : dataForm.url_image
+      dataForm.imagen === undefined
+        ? (dataForm.imagen = "uploads/imageBarbers/profile.png")
+        : dataForm.imagen,
+    is_active: !(false || dataForm.is_active === 0),
+    is_admin: !(false || dataForm.is_admin === 0)
   }
-  console.log(dataForm.url_image)
 
-  const registerUser = async (data: any) => {
+  const registerBarber = async (data: any) => {
+    console.log(data)
     setIsLoading(true)
     const formData = new FormData()
     formData.append("firstName", data.firstName)
     formData.append("lastName", data.lastName)
     formData.append("email", data.email)
+    formData.append("telefono", data.telefono)
     formData.append("is_active", data.is_active)
     formData.append("is_admin", data.is_admin)
     if (profileImage) {
@@ -64,7 +64,7 @@ const FormUser = (props: FormUserProps) => {
     let rtaUpdateUser
     if (optionSelected === "Editar") {
       try {
-        rtaUpdateUser = await dispatch(updateUser(formData, dataForm.id) as any)
+        rtaUpdateUser = await dispatch(updateBarber(formData, dataForm.id) as any)
         if (rtaUpdateUser.rta === 1) {
           NotifyHelper.notifySuccess(rtaUpdateUser.message)
           setOpenModal(false)
@@ -78,21 +78,20 @@ const FormUser = (props: FormUserProps) => {
         setIsLoading(false)
       }
     } else {
-      let rtaAddUser
-      formData.append("password", data.password)
-      console.log(formData)
+      let rtaAddBarber
       try {
-        rtaAddUser = await dispatch(addUser(formData) as any)
-        if (rtaAddUser.rta === 1) {
-          NotifyHelper.notifySuccess(rtaAddUser.message)
+        console.log(formData)
+        rtaAddBarber = await dispatch(addBarber(formData) as any)
+        if (rtaAddBarber.rta === 1) {
+          NotifyHelper.notifySuccess(rtaAddBarber.message)
           setOpenModal(false)
           setIsLoading(false)
         } else {
-          NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+          NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.` + rtaAddBarber.message)
           setIsLoading(false)
         }
       } catch (err) {
-        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamentee.` + err)
         setIsLoading(false)
       }
     }
@@ -107,7 +106,7 @@ const FormUser = (props: FormUserProps) => {
         email: Yup.string().required("Debes ingresar un email")
       }),
       validateOnChange: false,
-      onSubmit: registerUser
+      onSubmit: registerBarber
     })
 
   const isAdminClick = () => {
@@ -135,11 +134,9 @@ const FormUser = (props: FormUserProps) => {
     }
   }
 
-  React.useEffect(() => { }, [])
-
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="md">
+      <Container component="main" >
         <CssBaseline />
         <Box
           sx={{
@@ -150,12 +147,11 @@ const FormUser = (props: FormUserProps) => {
           }}
         >
           <Typography component="h1" variant="h5">
-            {optionSelected === "Editar" ? "Datos Usuario" : "Nuevo Usuario"}
+            {optionSelected === "Editar" ? "Datos Barbero" : "Nuevo Barbero"}
           </Typography>
 
           <Box
             component="form"
-            encType="multipart/form-data"
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
@@ -185,10 +181,9 @@ const FormUser = (props: FormUserProps) => {
 
                         {optionSelected === "Editar" ? (
                           <img
-                            src={urlBase + dataForm.url_image}
+                            src={urlBase + dataForm.imagen}
                             id="output"
                             width="200"
-                            alt="Imagen del usuario"
                           />
                         ) : (
                           <img
@@ -213,7 +208,7 @@ const FormUser = (props: FormUserProps) => {
                   </Paper>
                 </Grid>
                 <Grid item md={8} xs={12}>
-                  <Grid container spacing={1}>
+                  <Grid container spacing={2}>
                     <Grid item xs={6}>
                       <TextField
                         name="firstName"
@@ -260,6 +255,23 @@ const FormUser = (props: FormUserProps) => {
                         onChange={handleChange}
                         value={values.email}
                         error={Boolean(errors.email)}
+                        helperText={
+                          String(errors.email) !== "undefined"
+                            ? String(errors.email)
+                            : ""
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        label="Teléfono"
+                        name="telefono"
+                        type="telefono"
+                        onChange={handleChange}
+                        value={values.telefono}
+                        error={Boolean(errors.telefono)}
                         helperText={
                           String(errors.email) !== "undefined"
                             ? String(errors.email)
@@ -341,4 +353,4 @@ const FormUser = (props: FormUserProps) => {
   )
 }
 
-export default FormUser
+export default FormBarber

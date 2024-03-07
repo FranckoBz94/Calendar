@@ -1,18 +1,30 @@
 import React, { useState } from "react"
 import { AnimatePresence } from "framer-motion"
-import { Modal, ModalBody } from "react-modern-modal"
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
 interface ModalProps {
-  open: boolean
+  isOpen: boolean
   handleClose: () => void
-  size: any
   children: any
 }
 
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  // width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #ddd',
+  borderRadius: '5px',
+  boxShadow: 24,
+  p: 4,
+};
+
 const MotionModal: React.FC<ModalProps> = ({
-  open,
+  isOpen,
   handleClose,
-  size,
   children
 }) => {
   const [isBrowser, setIsBrowser] = useState(false)
@@ -27,14 +39,16 @@ const MotionModal: React.FC<ModalProps> = ({
 
   return (
     <AnimatePresence>
-      {open && (
+      {isOpen && (
         <Modal
-          isOpen={open}
+          open={isOpen}
           onClose={handleClose}
-          size={size}
-          backdropBlur={true}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
         >
-          <ModalBody>{children}</ModalBody>
+          <Box sx={style}>
+            {children}
+          </Box>
         </Modal>
       )}
     </AnimatePresence>

@@ -2,9 +2,8 @@ export class DateContants {
   static formatDateTime = (fecha: any) => {
     const hora = fecha.getHours()
     const minutos = fecha.getMinutes()
-    const horaMinutos = `${hora < 10 ? "0" + hora : hora}:${
-      minutos < 10 ? "0" + minutos : minutos
-    }`
+    const horaMinutos = `${hora < 10 ? "0" + hora : hora}:${minutos < 10 ? "0" + minutos : minutos
+      }`
     return horaMinutos
   }
 
@@ -29,11 +28,8 @@ export class DateContants {
   }
 
   static calculateEndTime = (startDate: any, optionTimeEnd: any) => {
-    console.log("startDate", new Date(startDate))
-    console.log("optionTimeEnd", optionTimeEnd)
     if (optionTimeEnd !== null) {
-      const end = new Date(startDate)
-      end.setMinutes(end.getMinutes() + optionTimeEnd)
+      const end = new Date(startDate.getTime() + (optionTimeEnd * 60000));
       return end
     }
   }

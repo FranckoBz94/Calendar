@@ -146,9 +146,8 @@ const Clients = () => {
               <Box p={2}>
                 <div>
                   <MotionModal
-                    open={openModal}
+                    isOpen={openModal}
                     handleClose={handleCloseModal}
-                    size={"md"}
                   >
                     <Box mt={1} position="relative">
                       <FormClient
