@@ -46,6 +46,7 @@ const Barbers = () => {
   const dataRow = async (option: string, e: any) => {
     if (option === "Editar") {
       handleOpenModal("Editar")
+      console.log("e", e)
       setDataSelected(e)
     } else {
       const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)
@@ -74,7 +75,7 @@ const Barbers = () => {
         <img
           src={`${process.env.REACT_APP_URL_BASE}${row.imagen}`}
           alt={row.url_image}
-          style={{ width: "100px", padding: "10px" }} // Ajusta el ancho de la imagen según tus necesidades
+          style={{ width: "80px", height: "80px", objectFit: "cover", padding: "10px" }} // Ajusta el ancho de la imagen según tus necesidades
         />
       )
     },

@@ -7,6 +7,7 @@ import Users from "pages/Users"
 import Services from "pages/Services"
 import MyCalendar from "pages/Calendar"
 import Barbers from "pages/Barbers"
+import InactivePeriod from "pages/InactivePeriod"
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/services" element={<Services />}></Route>
           <Route path="/usuarios" element={<Users />}></Route>
           <Route path="/barbers" element={<Barbers />}></Route>
+          <Route path="/inactive" element={<InactivePeriod />}></Route>
         </Routes>
       </BrowserRouter>
     </Provider>

@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import MotionComponent from "components/MotionComponent"
-import { Alert, Box, Button, Card, InputLabel, Stack } from "@mui/material"
+import { Alert, Box, Button, Card, InputLabel, Stack, Tooltip } from "@mui/material"
 import { AppBarComponent } from "pages/AppBar/AppBar"
 import esLocale from "@fullcalendar/core/locales/es"
 import { Tabs, Tab, Content } from "../../components/Tabs/tabs"
@@ -23,7 +23,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"
 import moment from "moment"
 import FormHoursCalendar from "./FormHoursCalendar"
 import { getAllHours } from "redux/actions/hoursAction"
-// import isEqual from 'lodash/isEqual';
+import { EventApi } from "@fullcalendar/core"
 
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar | null>(null)
@@ -97,12 +97,31 @@ const Calendar = () => {
     }
   }
 
+  const [tooltipContent, setTooltipContent] = useState<React.ReactNode | null>(null);
+
+  const handleEventMouseEnter = (mouseEnterInfo: any) => {
+    const event = mouseEnterInfo.event as EventApi;
+    if (event) {
+      const eventData = event.extendedProps;
+      const content = (
+        <div>
+          <small style={{ margin: 0 }}>ddd</small>
+          <h5 style={{ margin: 0 }}>{event.title}</h5>
+          <small style={{ margin: 0 }}>Turno: {eventData.description}</small>
+        </div>
+      );
+      setTooltipContent(content);
+    }
+  };
+
+  const handleEventMouseLeave = () => {
+    setTooltipContent(null);
+  };
+
   const calculateNewArrayServices = async (dataTurn: any) => {
     let rtaAvailableTurn
     try {
       rtaAvailableTurn = await dispatch(nextTurnAvailable(dataTurn) as any)
-      console.log("rtaAvailableTurn", rtaAvailableTurn)
-
       if (rtaAvailableTurn.rta === 1) {
         let startDate
         let endHoutTime
@@ -115,7 +134,6 @@ const Calendar = () => {
           endHoutTime =
             nextEndHours + " " + localStorage.getItem("newClosingTime")
         }
-        console.log("allServices", allServices)
         const newServices = await newArrayServices(
           allServices,
           endHoutTime,
@@ -130,10 +148,12 @@ const Calendar = () => {
 
   const handleEventClick = async (clickInfo: any) => {
     const { event } = clickInfo
+    console.log("erv", event)
     const eventData = event.extendedProps
     const start = event.start ? event.start.toISOString() : null
     const end = event.end ? event.end.toISOString() : null
     const { title } = event._def
+    const nameService = event.nameService;
     const transformarTurno = async (turno: any) => {
       return {
         idTurn: turno.idTurn,
@@ -143,7 +163,8 @@ const Calendar = () => {
         idClient: turno.idClient,
         idService: turno.idService,
         startTurn: new Date(start),
-        titleTurn: title
+        titleTurn: title,
+        description: nameService
       }
     }
     const turnoSeleccionado = await transformarTurno(eventData)
@@ -157,11 +178,11 @@ const Calendar = () => {
     }
     await calculateNewArrayServices(dataTurn)
     setDataSelected(turnoSeleccionado)
-
     setOpenModalEdit(true)
   }
 
   const handleDateSelect = async (event: any) => {
+    console.log("e", event)
     if (barbers.length > 0) {
       const currentView = calendarRef.current?.getApi().view.type
       if (currentView === "timeGridWeek") {
@@ -343,11 +364,28 @@ const Calendar = () => {
                           allDaySlot={false}
                           locales={[esLocale]}
                           events={events}
+                          eventContent={(eventInfo) => {
+                            const eventData = eventInfo.event.extendedProps;
+                            return (
+                              <div style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                <small style={{ margin: 0 }}>{eventInfo.timeText}</small>
+                                <h5 style={{ margin: 0 }}>{eventInfo.event.title}</h5>
+                                <small style={{ margin: 0 }}>Turno: {eventData.description}</small>
+                              </div>
+                            );
+                          }}
+                          eventMouseEnter={handleEventMouseEnter}
+                          eventMouseLeave={handleEventMouseLeave}
                           eventClick={handleEventClick}
                           height={"auto"}
                           selectable={true}
                           select={handleDateSelect}
                         />
+                        {tooltipContent && (
+                          <Tooltip title={tooltipContent} placement="top" arrow>
+                            <div style={{ display: "none" }}></div>
+                          </Tooltip>
+                        )}
                       </Box>
                     </Card>
                   </Content>

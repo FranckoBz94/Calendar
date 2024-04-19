@@ -41,61 +41,45 @@ const FormBarber = (props: FormBarberProps) => {
     email: dataForm.email || "",
     telefono: dataForm.telefono || "",
     imageProfile:
-      dataForm.imagen === undefined
-        ? (dataForm.imagen = "uploads/imageBarbers/profile.png")
-        : dataForm.imagen,
+      dataForm.imagen ? dataForm.imagen : "uploads/imageBarbers/profile.png",
     is_active: !(false || dataForm.is_active === 0),
     is_admin: !(false || dataForm.is_admin === 0)
   }
 
   const registerBarber = async (data: any) => {
-    console.log(data)
-    setIsLoading(true)
-    const formData = new FormData()
-    formData.append("firstName", data.firstName)
-    formData.append("lastName", data.lastName)
-    formData.append("email", data.email)
-    formData.append("telefono", data.telefono)
-    formData.append("is_active", data.is_active)
-    formData.append("is_admin", data.is_admin)
-    if (profileImage) {
-      formData.append("imageProfile", profileImage)
-    }
-    let rtaUpdateUser
-    if (optionSelected === "Editar") {
-      try {
-        rtaUpdateUser = await dispatch(updateBarber(formData, dataForm.id) as any)
-        if (rtaUpdateUser.rta === 1) {
-          NotifyHelper.notifySuccess(rtaUpdateUser.message)
-          setOpenModal(false)
-          setIsLoading(false)
-        } else {
-          NotifyHelper.notifyError(rtaUpdateUser.message)
-          setIsLoading(false)
-        }
-      } catch (err) {
-        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
-        setIsLoading(false)
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName);
+      formData.append("email", data.email);
+      formData.append("telefono", data.telefono);
+      formData.append("is_active", data.is_active);
+      formData.append("is_admin", data.is_admin);
+      formData.append("imageProfile", profileImage || data.imageProfile);
+
+      let rta;
+      if (optionSelected === "Editar") {
+        rta = await dispatch(updateBarber(formData, dataForm.id) as any);
+      } else {
+        rta = await dispatch(addBarber(formData) as any);
       }
-    } else {
-      let rtaAddBarber
-      try {
-        console.log(formData)
-        rtaAddBarber = await dispatch(addBarber(formData) as any)
-        if (rtaAddBarber.rta === 1) {
-          NotifyHelper.notifySuccess(rtaAddBarber.message)
-          setOpenModal(false)
-          setIsLoading(false)
-        } else {
-          NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.` + rtaAddBarber.message)
-          setIsLoading(false)
-        }
-      } catch (err) {
-        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamentee.` + err)
-        setIsLoading(false)
+
+      if (rta.rta === 1) {
+        NotifyHelper.notifySuccess(rta.message);
+        setOpenModal(false);
+      } else {
+        NotifyHelper.notifyError(`Ocurrió un error: ${rta.message}`);
       }
+    } catch (err: any) {
+      NotifyHelper.notifyError(`Ocurrió un error: ${err.message}`);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
+
+
 
   const { handleSubmit, handleChange, values, errors, setFieldValue } =
     useFormik({
@@ -130,6 +114,7 @@ const FormBarber = (props: FormBarberProps) => {
 
   const loadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
+      console.log(event.target.files[0])
       setProfileImage(event.target.files[0])
     }
   }
@@ -159,8 +144,7 @@ const FormBarber = (props: FormBarberProps) => {
             <motion.div>
               <Grid container spacing={2}>
                 <Grid item md={4} xs={12}>
-                  <Paper style={{ width: "auto", height: "200px", border: "1px solid #ddd" }}
-                  >
+                  <Paper style={{ width: "auto", height: "200px", border: "1px solid #ddd" }}>
                     <label htmlFor="file" style={{ cursor: "pointer", display: "flex", height: "100%" }}>
                       <Box
                         width="100%"
@@ -177,36 +161,26 @@ const FormBarber = (props: FormBarberProps) => {
                           onChange={loadFile}
                           style={{ display: "none" }}
                         />
-
-
                         {optionSelected === "Editar" ? (
                           <img
-                            src={urlBase + dataForm.imagen}
-                            id="output"
-                            width="200"
+                            src={profileImage ? URL.createObjectURL(profileImage) : urlBase + dataForm.imagen}
+                            id="edit-output"
+                            style={{ maxWidth: "100%", maxHeight: "100%" }}
+                            alt="Imagen de perfil"
                           />
                         ) : (
                           <img
                             src={profileImage ? URL.createObjectURL(profileImage) : urlBase + "uploads/profile.png"}
-                            id="output"
-                            width="200"
-                            style={{ padding: "1px" }}
+                            id="preview-output"
+                            style={{ maxWidth: "100%", maxHeight: "100%", padding: "1px" }}
                             alt="Vista previa"
                           />
                         )}
                       </Box>
                     </label>
-                    {/* <Box
-                      display="flex"
-                      justifyContent="flex-end"
-                      padding="10px 20px"
-                    >
-                      <label htmlFor="file" style={{ cursor: "pointer" }}>
-                        <CameraAltIcon />
-                      </label>
-                    </Box> */}
                   </Paper>
                 </Grid>
+
                 <Grid item md={8} xs={12}>
                   <Grid container spacing={2}>
                     <Grid item xs={6}>

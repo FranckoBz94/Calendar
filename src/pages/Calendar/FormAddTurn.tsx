@@ -71,7 +71,6 @@ const FormAddTurn = (props: FormCalendarProps) => {
       dataFormEvent.start,
       selectedOptionService.minutes_service
     )
-    console.log("endTime", endTime)
 
     const dataComplete = {
       ...data,
@@ -82,7 +81,6 @@ const FormAddTurn = (props: FormCalendarProps) => {
     let rtaAddTurn
     try {
       rtaAddTurn = await dispatch(addTurn(dataComplete) as any)
-      console.log(rtaAddTurn)
       if (rtaAddTurn.rta === 1) {
         dispatch(getAllTurns(barberSelected.id) as any)
         NotifyHelper.notifySuccess(rtaAddTurn.message)
@@ -132,6 +130,12 @@ const FormAddTurn = (props: FormCalendarProps) => {
       </components.Option>
     );
   }
+
+  const SingleValue = (props: any) => (
+    <components.SingleValue {...props}>
+      <div dangerouslySetInnerHTML={{ __html: props.data.label }} />
+    </components.SingleValue>
+  );
 
   return (
     <ThemeProvider theme={theme}>
@@ -215,13 +219,13 @@ const FormAddTurn = (props: FormCalendarProps) => {
                           minutes_service: service.minutes_service
                         })
                       }))}
-                      components={{ Option: Option }}
-
+                      isMulti={false}
                       onChange={handleChangeSelectService}
                       className="basic-single select-modal"
                       classNamePrefix="select"
                       placeholder="Seleccione un servicio"
                       required
+                      components={{ Option: Option, SingleValue: SingleValue }}
                       styles={{
                         menu: provided => ({
                           ...provided,

@@ -14,13 +14,14 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  // width: 400,
+  width: "70%",
   bgcolor: 'background.paper',
-  border: '2px solid #ddd',
+  border: '2px solid #ddd !important',
   borderRadius: '5px',
   boxShadow: 24,
   p: 4,
 };
+
 
 const MotionModal: React.FC<ModalProps> = ({
   isOpen,
@@ -45,6 +46,7 @@ const MotionModal: React.FC<ModalProps> = ({
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
+          style={{ border: 'none' }}
         >
           <Box sx={style}>
             {children}

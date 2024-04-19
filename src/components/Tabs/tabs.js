@@ -21,12 +21,14 @@ export const Tab = styled.button`
   font-size: 1em;
   border: ${(props) => (props.active ? "1px solid #ccc" : "")};
   border-bottom: ${(props) => (props.active ? "none" : "")};
-  background-color: ${(props) => (props.active ? "#bbe1fa" : "lightgray")};
+  background-color: ${(props) => (props.active ? "#6a1b9a" : "#ce93d8")};
   height: ${(props) => (props.active ? "3em" : "2.6em; top:.4em")};
   transition: background-color 0.5s ease-in-out;
+  color:#fff;
+  border-radius: ${(props) => (props.active ? "5px" : "opx")};
 
   :hover {
-    background-color: #d3d3d38a;
+    background-color: #ba68c8;
   }
 `
 export const Content = styled.div`

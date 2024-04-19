@@ -81,3 +81,12 @@ export const nextTurnAvailable = (data) => async () => {
     console.log(err)
   }
 }
+
+export const availableDate = (data) => async () => {
+  try {
+    const response = await axios.post(ruta + "turns/availableDate", data)
+    return response.data
+  } catch (err) {
+    console.log(err)
+  }
+}

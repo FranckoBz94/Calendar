@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #1b262c;
+  --primary-color: #0b0e3a;
   --secondary-color: #0f4c75;
   --option1-color: #3282b8;
   --option2-color: #bbe1fa;
@@ -164,4 +164,194 @@ inputDisabled input[type="time"] {
 .select-modal::-webkit-scrollbar-thumb {
   background-color: red;
   border-radius: 4px;
+}
+
+.fc-event-main {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.background_page {
+  background-color: rgb(238, 242, 246);
+  border-radius: 4px 4px 0px 0px;
+  min-height: calc(-88px + 100vh);
+}
+
+@media (max-width: 899.95px) {
+  .background_page {
+    margin-left: 20px;
+    width: calc(100% - 260px);
+    padding: 16px;
+  }
+}
+
+.react-datepicker__time-container {
+  width: 200px;
+}
+
+.react-datepicker__time-box {
+  width: 100% !important;
+}
+
+.react-datepicker-time__header {
+  background-color: #4f4e4e;
+  color: #ffffff !important;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 10px;
+  font-weight: bold;
+}
+
+
+
+.custom-calendar-time {
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+  width: 100%;
+}
+
+.react-datepicker__time-list-item--selected {
+  background-color: #4f4e4e !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+.custom-input-time {
+  background-color: #fff;
+  border: none;
+  border-radius: 8px;
+  color: #333;
+  font-size: 14px;
+  padding: 10px;
+  width: 70%;
+  box-sizing: border-box;
+}
+
+.custom-input-time:focus {
+  outline: none;
+}
+
+.custom-calendar {
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+  width: 100%;
+}
+
+.custom-input {
+  background-color: #fff;
+  border-radius: 8px;
+  color: #333;
+  font-size: 14px;
+  padding: 10px;
+  width: 70%;
+  box-sizing: border-box;
+}
+
+.custom-input:focus {
+  outline: none;
+}
+
+.react-datepicker__header {
+  background-color: #4f4e4e;
+  color: "#fffff !important";
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.react-datepicker__navigation {
+  color: #fff !important;
+}
+
+.react-datepicker__current-month {
+  color: #fff !important;
+}
+
+.react-datepicker__day-name {
+  color: #4f4e4e !important;
+  font-weight: bold;
+}
+
+.react-datepicker__day {
+  color: #333 !important;
+  font-weight: normal;
+}
+
+.react-datepicker__day--selected {
+  background-color: #4f4e4e !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #4f4e4e !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+.basic-multi-select {
+  z-index: 999;
+}
+
+.input-datepicker {
+  font: inherit;
+  letter-spacing: inherit;
+  color: currentColor;
+  background: none;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+  display: block;
+  width: 100%;
+  -webkit-animation-name: mui-auto-fill-cancel;
+  animation-name: mui-auto-fill-cancel;
+  -webkit-animation-duration: 10ms;
+  animation-duration: 10ms;
+  padding: 16.5px 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.react-datepicker__navigation--next--with-time:not(.react-datepicker__navigation--next--with-today-button) {
+  right: 200px !important;
+}
+
+.appBar {
+  background-color: #fff !important;
+  box-shadow: none !important;
+}
+
+.css-16ac5r2-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
+  background-color: rgb(94, 53, 177) !important;
+  border-radius: 5px;
+}
+
+.css-16ac5r2-MuiButtonBase-root-MuiListItemButton-root.Mui-selected .MuiListItemIcon-root {
+  color: #fff;
+}
+
+.css-16ac5r2-MuiButtonBase-root-MuiListItemButton-root.Mui-selected .MuiListItemText-root {
+  color: #fff;
 }

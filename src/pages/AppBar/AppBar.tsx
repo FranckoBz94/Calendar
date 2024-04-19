@@ -1,78 +1,69 @@
-import * as React from "react"
+import * as React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import CssBaseline from '@mui/material/CssBaseline';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { type ReactElement } from "react"
+import { List } from '@mui/material';
+import { mainListItems } from './listItem';
 
-import { styled } from "@mui/material/styles"
-import MuiDrawer from "@mui/material/Drawer"
-import Box from "@mui/material/Box"
-import MuiAppBar, {
-  type AppBarProps as MuiAppBarProps
-} from "@mui/material/AppBar"
-import Toolbar from "@mui/material/Toolbar"
-import List from "@mui/material/List"
-import Typography from "@mui/material/Typography"
-import Divider from "@mui/material/Divider"
-import IconButton from "@mui/material/IconButton"
-import Badge from "@mui/material/Badge"
-import MenuIcon from "@mui/icons-material/Menu"
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
-import { mainListItems } from "./listItem"
-import PersonIcon from "@mui/icons-material/Person"
-import Brightness4Icon from "@mui/icons-material/Brightness4" // Icono de modo oscuro
-import Brightness7Icon from "@mui/icons-material/Brightness7"
-import { useTheme, ThemeProvider } from "@mui/system"
-import { CssBaseline } from "@mui/material"
-import { useDispatch, useSelector } from "react-redux"
-import { toggleDarkMode } from "redux/actions/themeAction"
+const drawerWidth = 240;
 
-const drawerWidth: number = 240
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+  open?: boolean;
+}>(({ theme, open }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  transition: theme.transitions.create('margin', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: `-${drawerWidth}px`,
+  ...(open && {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
+  }),
+}));
 
 interface AppBarProps extends MuiAppBarProps {
-  open?: boolean
+  open?: boolean;
 }
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open"
+  shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
+  transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
+    duration: theme.transitions.duration.leavingScreen,
   }),
-  ...(open === true && {
-    marginLeft: drawerWidth,
+  ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  })
-}))
-
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open"
-})(({ theme, open }) => ({
-  "& .MuiDrawer-paper": {
-    position: "relative",
-    whiteSpace: "nowrap",
-    width: drawerWidth,
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
+    marginLeft: `${drawerWidth}px`,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    boxSizing: "border-box",
-    ...(!(open ?? false) && {
-      overflowX: "hidden",
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      }),
-      width: theme.spacing(7),
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9)
-      }
-    })
-  }
-}))
+  }),
+}));
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: 'flex-end',
+}));
 
 interface Props {
   window?: () => Window
@@ -80,124 +71,67 @@ interface Props {
 }
 
 export function AppBarComponent(props: Props) {
-  const { window, children } = props
-  const dispatch = useDispatch()
+  const theme = useTheme();
+  const { children } = props
 
-  interface ThemeState {
-    darkMode: boolean
-  }
+  const [open, setOpen] = React.useState(true);
 
-  // Estado global de la aplicación
-  interface RootState {
-    theme: ThemeState
-    // Otros reducers...
-  }
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
 
-  const darkMode = useSelector((state: RootState) => state.theme.darkMode)
-  const [localDarkMode, setLocalDarkMode] = React.useState(darkMode)
-
-  const [open, setOpen] = React.useState(true)
-  const toggleDrawer = () => {
-    setOpen(!open)
-  }
-  const theme = useTheme()
-
-  const handleDarkModeToggle = () => {
-    dispatch(toggleDarkMode())
-  }
-
-  React.useEffect(() => {
-    setLocalDarkMode(darkMode)
-  }, [darkMode])
-
-  const container: any =
-    window !== undefined ? () => window().document.body : undefined
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <>
-      <Box sx={{ display: "flex" }}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <AppBar position="absolute" open={open}>
-            <Toolbar
-              sx={{
-                pr: "24px" // keep right padding when drawer closed
-              }}
-            >
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                onClick={toggleDrawer}
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" })
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography
-                component="h1"
-                variant="h6"
-                color="inherit"
-                noWrap
-                sx={{ flexGrow: 1 }}
-              >
-                Dashboard
-              </Typography>
-              <IconButton color="inherit" onClick={handleDarkModeToggle}>
-                {!localDarkMode ? (
-                  <Brightness4Icon /> // Icono de modo oscuro
-                ) : (
-                  <Brightness7Icon /> // Icono de modo claro
-                )}
-              </IconButton>
-              <IconButton color="inherit">
-                <Badge color="secondary">
-                  <PersonIcon />
-                </Badge>
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-          <Drawer variant="permanent" open={open} container={container}>
-            <Toolbar
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
-                px: [1]
-              }}
-            >
-              <IconButton onClick={toggleDrawer}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </Toolbar>
-            <Divider />
-            <List component="nav">
-              {mainListItems}
-              <Divider sx={{ my: 1 }} />
-            </List>
-          </Drawer>
-          <Box
-            component="main"
-            sx={{
-              backgroundColor: (theme) =>
-                theme.palette.mode === "light"
-                  ? theme.palette.grey[100]
-                  : theme.palette.grey[900],
-              flexGrow: 1,
-              height: "100vh",
-              overflow: "auto"
-            }}
-            className="background_page"
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar className="appBar" position="fixed" open={open}>
+        <Toolbar >
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{ mr: 2, ...(open && { display: 'none' }) }}
           >
-            {/* <Toolbar /> */}
-            <Box mt={11} mx={3}>
-              {children}
-            </Box>
-          </Box>
-        </ThemeProvider>
-      </Box>
-    </>
-  )
+            <MenuIcon sx={{ color: "#000" }} />
+          </IconButton>
+          <Typography variant="h6" component="div" color="black">
+            Calendar
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+            borderRight: "none"
+          },
+        }}
+        variant="persistent"
+        anchor="left"
+        open={open}
+      >
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </DrawerHeader>
+        <Box mt={2}>
+          <List component="nav">
+            {mainListItems()}
+          </List>
+        </Box>
+      </Drawer>
+      <Main open={open} className="background_page">
+        <DrawerHeader />
+        {children}
+      </Main>
+    </Box>
+  );
 }

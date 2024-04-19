@@ -61,6 +61,7 @@ export const addBarber = (formData) => async (dispatch) => {
 
 export const updateBarber = (formData, id) => async (dispatch) => {
   try {
+    console.log("forem", formData)
     const response = await axios.put(ruta + "barbers/" + id, formData, {
       headers: {
         "Content-Type": "multipart/form-data" // Importante para la carga de archivos

@@ -117,6 +117,7 @@ export const transformarTurno = async (turn: any) => {
     idService: turn.service_id,
     start: new Date(turn.start_date),
     title: turn.nameClient + " " + turn.lastNameClient,
+    description: turn.nameService,
     backgroundColor: turn.colorEvent
   }
 }
