@@ -1,3 +1,5 @@
+import { ThemeOptions } from "@mui/material";
+import { MUIDataTableOptions } from "mui-datatables";
 import { toast } from "react-toastify"
 
 export const options = {
@@ -34,6 +36,64 @@ export const paginationOption = {
   selectAllRowsItem: false,
   selectAllRowsItemText: "Todos"
 }
+
+
+export const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
+
+export const optionsTable: Partial<MUIDataTableOptions> = {
+  selectableRows: "none",
+  responsive: 'standard',
+  textLabels: {
+    body: {
+      noMatch: "No se encontraron registros",
+      toolTip: "Ordenar",
+    },
+    pagination: {
+      next: "Siguiente",
+      previous: "Anterior",
+      rowsPerPage: "Filas por página:",
+      displayRows: "de",
+    },
+    toolbar: {
+      search: "Buscar",
+      downloadCsv: "Descargar CSV",
+      print: "Imprimir",
+      viewColumns: "Ver columnas",
+      filterTable: "Filtrar tabla",
+    },
+    filter: {
+      all: "Todos",
+      title: "FILTROS",
+      reset: "RESETEAR",
+    },
+    viewColumns: {
+      title: "Mostrar columnas",
+      titleAria: "Mostrar/Ocultar columnas",
+    },
+    selectedRows: {
+      text: "fila(s) seleccionada(s)",
+      delete: "Eliminar",
+      deleteAria: "Eliminar filas seleccionadas",
+    },
+  },
+};
+
+export const getMuiTheme = (color: string): ThemeOptions => ({
+  components: {
+    MUIDataTableHeadCell: {
+      styleOverrides: {
+        fixedHeader: { backgroundColor: color + "!important", color: "#fff" },
+        sortActive: { color: "#ddd" },
+        sortAction: { color: "#ddd !important" },
+        sortLabelRoot: { color: "#ddd !important" },
+        hintIconWithSortIcon: { color: "#ddd !important" },
+      },
+    },
+  }
+})
 
 export class NotifyHelper {
   static notifySuccess: (text: string) => void = (text: string) => {

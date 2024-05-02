@@ -12,7 +12,6 @@ import {
   TextField,
   Typography
 } from "@mui/material"
-
 import { ThemeProvider } from "@mui/styles"
 import { LoadingButton } from "@mui/lab"
 import { NotifyHelper } from "contants"
@@ -39,6 +38,7 @@ const FormService: React.FC<FormServiceProps> = (props) => {
   const [isLoading, setIsLoading] = React.useState(false)
   const [minutes, setMinutes] = useState(minuteInitialSelect)
   const [selectedColor, setSelectedColor] = useState("#000000") // Initial color
+  const [formattedPrice, setFormattedPrice] = useState('0');
 
   const handleColorChange = (event: any) => {
     setSelectedColor(event.target.value)
@@ -59,6 +59,7 @@ const FormService: React.FC<FormServiceProps> = (props) => {
     if (optionSelected === "Editar") {
       initialValues.name_service = dataFormService.name_service
       initialValues.price_service = dataFormService.price_service
+      setFormattedPrice(dataFormService.price_service)
       setSelectedColor(dataFormService.event_color)
       setMinutes(dataFormService.minutes_service)
     } else {
@@ -74,9 +75,11 @@ const FormService: React.FC<FormServiceProps> = (props) => {
     console.log(data)
     data.minutes_service = minutes
     data.event_color = selectedColor
+    data.price_service = formattedPrice
     setIsLoading(true)
     try {
       if (optionSelected === "Editar") {
+        console.log(data)
         const response = await dispatch(
           updateService(data, dataFormService.id) as any
         )
@@ -116,11 +119,32 @@ const FormService: React.FC<FormServiceProps> = (props) => {
     console.log(e)
     setMinutes(e.value)
   }
+
+  const formatCurrency = (value: any) => {
+    const options = { style: 'currency', currency: 'USD' };
+    const numberFormat = new Intl.NumberFormat('en-US', options);
+    const formattedValue = numberFormat.format(value / 100); // Dividir por 100 para obtener el valor en dólares y centavos
+    return formattedValue;
+  };
+
+  const handleChangePrice = (event: any) => {
+    const input = event.target.value;
+
+    // Eliminar caracteres no numéricos y el punto decimal
+    const numericInput = input.replace(/[^\d]/g, '');
+
+    // Formatear el valor con dos decimales
+    const formattedValue = formatCurrency(numericInput);
+
+    setFormattedPrice(formattedValue);
+  };
+
   const minuteServices = [
     { value: "30", label: "30" },
     { value: "60", label: "60" },
     { value: "90", label: "90" }
   ]
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="md">
@@ -163,9 +187,9 @@ const FormService: React.FC<FormServiceProps> = (props) => {
                     defaultValue={
                       dataFormService
                         ? {
-                            label: dataFormService?.minutes_service,
-                            value: dataFormService?.minutes_service
-                          }
+                          label: dataFormService?.minutes_service,
+                          value: dataFormService?.minutes_service
+                        }
                         : null
                     }
                     placeholder="Minutos"
@@ -178,11 +202,11 @@ const FormService: React.FC<FormServiceProps> = (props) => {
                 <FormControl fullWidth>
                   <TextField
                     id="price_service"
-                    type="number"
+                    type="text"
                     name="price_service"
                     label="Precio"
-                    onChange={handleChange}
-                    value={values.price_service}
+                    onChange={handleChangePrice}
+                    value={formattedPrice}
                     error={Boolean(errors.price_service)}
                     helperText={errors.price_service}
                     fullWidth

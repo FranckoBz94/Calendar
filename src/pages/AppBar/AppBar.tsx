@@ -20,6 +20,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
+  marginTop: 65,
   padding: theme.spacing(3),
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
@@ -129,9 +130,10 @@ export function AppBarComponent(props: Props) {
         </Box>
       </Drawer>
       <Main open={open} className="background_page">
-        <DrawerHeader />
-        {children}
-      </Main>
-    </Box>
+        <Box >
+          {children}
+        </Box>
+      </Main >
+    </Box >
   );
 }

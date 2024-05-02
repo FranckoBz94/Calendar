@@ -2,7 +2,6 @@ import { AppBarComponent } from "pages/AppBar/AppBar"
 import MotionComponent from "components/MotionComponent"
 
 import { useStyles } from "./styles"
-import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { Box, Card, Grid, TextField, Tooltip, Typography } from "@mui/material"
 import { useFormik } from "formik"
@@ -261,7 +260,7 @@ const InactivePeriod = () => {
                           <LoadingButton
                             size="small"
                             type="submit"
-                            className="btnSubmitOption2"
+                            className="btnSubmitOption2 w-50"
                             // loading={isLoading}
                             variant="contained"
                             sx={{ py: 2, px: 4 }}
@@ -313,7 +312,6 @@ const InactivePeriod = () => {
               </Box>
             </Card>
           </Box>
-          <ToastContainer />
         </Box>
       </MotionComponent>
     </AppBarComponent >

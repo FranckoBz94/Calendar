@@ -19,7 +19,6 @@ import FormBarber from "./FormBarber"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
-import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { getAllBarbers, removeBarber } from "redux/actions/barbersAction"
 
@@ -157,6 +156,54 @@ const Barbers = () => {
     dispatch(getAllBarbers() as any)
   }, [dispatch])
 
+  function convertArrayOfObjectsToCSV(array: any[]): string {
+    let result = '';
+
+    const columnDelimiter = ',';
+    const lineDelimiter = '\n';
+    const keys = Object.keys(barbers[0]);
+
+    result += keys.join(columnDelimiter);
+    result += lineDelimiter;
+
+    array.forEach(item => {
+      let ctr = 0;
+      keys.forEach(key => {
+        if (ctr > 0) result += columnDelimiter;
+
+        result += item[key];
+
+        ctr++;
+      });
+      result += lineDelimiter;
+    });
+
+    return result;
+  }
+
+  // Descarga un CSV a partir de un array de objetos
+  function downloadCSV(array: any[]) {
+    console.log("bar", barbers)
+    const link = document.createElement('a');
+    let csv = convertArrayOfObjectsToCSV(array);
+    if (csv == null) return;
+
+    const filename = 'export.csv';
+
+    if (!csv.match(/^data:text\/csv/i)) {
+      csv = `data:text/csv;charset=utf-8,${csv}`;
+    }
+
+    link.setAttribute('href', encodeURI(csv));
+    link.setAttribute('download', filename);
+    link.click();
+  }
+
+  const Export = () => <Button variant="outlined" onClick={() => downloadCSV(barbers)}>Exportar CSV</Button>;
+
+  const actionsMemo = React.useMemo(() => <Export />, []);
+
+
   return (
     <AppBarComponent>
       <MotionComponent>
@@ -210,6 +257,7 @@ const Barbers = () => {
                           noDataComponent="No hay datos para mostrar"
                           paginationComponentOptions={paginationOption}
                           expandableRowsHideExpander
+                          actions={actionsMemo}
                         />
                       </DataTableExtensions>
                     </Grid>
@@ -218,7 +266,6 @@ const Barbers = () => {
               </Box>
             </Card>
           </Box>
-          <ToastContainer />
         </>
       </MotionComponent>
     </AppBarComponent>

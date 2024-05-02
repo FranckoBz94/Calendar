@@ -17,7 +17,6 @@ import { getAllClients } from "redux/actions/clientsAction"
 import { getAllServices } from "redux/actions/servicesAction"
 import { getAllTurns, nextTurnAvailable } from "redux/actions/turnsAction"
 import FormEditTurn from "./FormEditTurn"
-import { ToastContainer } from "react-toastify"
 import { NotifyHelper, newArrayServices, transformarTurno } from "contants"
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"
 import moment from "moment"
@@ -258,28 +257,27 @@ const Calendar = () => {
 
   return (
     <AppBarComponent>
-      <MotionComponent>
-        <>
-          <Box mt={2}>
-            <Card variant="outlined">
-              <Box p={4}>
-                <Tabs>
-                  {barbers &&
-                    barbers?.map((barber: any, index: number) => {
-                      return (
-                        <Tab
-                          key={index}
-                          onClick={() => handleClick(barber)}
-                          active={active === barber.id}
-                          id={barber.id}
-                        >
-                          {barber.firstName} {barber.lastName}
-                        </Tab>
-                      )
-                    })}
-                </Tabs>
-
-                <MotionComponent>
+      <>
+        <MotionComponent>
+          <>
+            <Box mt={2}>
+              <Card variant="outlined">
+                <Box p={4}>
+                  <Tabs>
+                    {barbers &&
+                      barbers?.map((barber: any, index: number) => {
+                        return (
+                          <Tab
+                            key={index}
+                            onClick={() => handleClick(barber)}
+                            active={active === barber.id}
+                            id={barber.id}
+                          >
+                            {barber.firstName} {barber.lastName}
+                          </Tab>
+                        )
+                      })}
+                  </Tabs>
                   <Content active>
                     <Card className="cardCalendar" variant="outlined">
                       <Box p={4}>
@@ -329,6 +327,7 @@ const Calendar = () => {
                             <Box display="flex" alignItems={"center"} sx={{ width: 1 }} my={1}>
                               <Button
                                 variant="contained"
+                                className="fc-button"
                                 endIcon={<CalendarMonthIcon />}
                                 onClick={() => setOpenModalHours(true)}
                                 sx={{ width: 1 }}
@@ -389,58 +388,57 @@ const Calendar = () => {
                       </Box>
                     </Card>
                   </Content>
-                </MotionComponent>
+                </Box>
+              </Card>
+            </Box>
+            <MotionModal
+              isOpen={openModal}
+              handleClose={handleCloseModal}
+            >
+              <Box mt={1} >
+                {filteredServices && (
+                  <FormAddTurn
+                    dataFormEvent={dataSelected}
+                    setOpenModal={setOpenModal}
+                    allClients={clients}
+                    allServices={filteredServices}
+                    barberSelected={barberSelected}
+                  />
+                )}
               </Box>
-            </Card>
-          </Box>
-          <MotionModal
-            isOpen={openModal}
-            handleClose={handleCloseModal}
-          >
-            <Box mt={1} >
-              {filteredServices && (
-                <FormAddTurn
+            </MotionModal>
+
+            <MotionModal
+              isOpen={openModalEdit}
+              handleClose={handleCloseModalEdit}
+            >
+              <Box mt={1} position="relative">
+                <FormEditTurn
                   dataFormEvent={dataSelected}
-                  setOpenModal={setOpenModal}
+                  setOpenModalEdit={setOpenModalEdit}
                   allClients={clients}
                   allServices={filteredServices}
                   barberSelected={barberSelected}
                 />
-              )}
-            </Box>
-          </MotionModal>
-
-          <MotionModal
-            isOpen={openModalEdit}
-            handleClose={handleCloseModalEdit}
-          >
-            <Box mt={1} position="relative">
-              <FormEditTurn
-                dataFormEvent={dataSelected}
-                setOpenModalEdit={setOpenModalEdit}
-                allClients={clients}
-                allServices={filteredServices}
-                barberSelected={barberSelected}
-              />
-            </Box>
-          </MotionModal>
-          <MotionModal
-            isOpen={openModalHours}
-            handleClose={handleCloseModalHours}
-          >
-            <Box mt={1} position="relative">
-              <FormHoursCalendar
-                openingTime={openingTime}
-                closingTime={closingTime}
-                idHoursCalendar={idHoursCalendar}
-                setOpenModalHours={setOpenModalHours}
-                updateCalendarData={updateCalendarData}
-              />
-            </Box>
-          </MotionModal>
-          <ToastContainer />
-        </>
-      </MotionComponent>
+              </Box>
+            </MotionModal>
+            <MotionModal
+              isOpen={openModalHours}
+              handleClose={handleCloseModalHours}
+            >
+              <Box mt={1} position="relative">
+                <FormHoursCalendar
+                  openingTime={openingTime}
+                  closingTime={closingTime}
+                  idHoursCalendar={idHoursCalendar}
+                  setOpenModalHours={setOpenModalHours}
+                  updateCalendarData={updateCalendarData}
+                />
+              </Box>
+            </MotionModal>
+          </>
+        </MotionComponent>
+      </>
     </AppBarComponent>
   )
 }

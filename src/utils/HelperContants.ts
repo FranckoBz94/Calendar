@@ -52,7 +52,6 @@ export class HelperContants {
         rtaDelete = false
       }
     })
-    console.log(idTurn, rtaDelete)
     return { idTurn, rtaDelete }
   }
 }

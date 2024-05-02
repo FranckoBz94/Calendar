@@ -45,7 +45,6 @@ const FormClient = (props: FormClientProps) => {
   })
 
   const registerClient = async (data: any) => {
-    console.log("optionSelected", optionSelected)
     setIsLoading(true)
     let rtaUpdateClient
     if (optionSelected === "Editar") {
@@ -73,7 +72,7 @@ const FormClient = (props: FormClientProps) => {
         console.log("rtaAddClient", rtaAddClient)
         if (rtaAddClient.rta === 1) {
           NotifyHelper.notifySuccess(rtaAddClient.message)
-          // setOpenModal(false)
+          setOpenModal(false)
           setIsLoading(false)
         } else {
           NotifyHelper.notifyError(rtaAddClient.message)

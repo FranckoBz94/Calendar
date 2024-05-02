@@ -16,7 +16,6 @@ import store from "redux/store"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
-import { ToastContainer } from "react-toastify"
 import { getAllServices, removeService } from "redux/actions/servicesAction"
 
 const Services = () => {
@@ -85,7 +84,7 @@ const Services = () => {
     },
     {
       name: "Precio",
-      selector: (row: any) => `$ ${row.price_service}`,
+      selector: (row: any) => row.price_service,
       sortable: true
     },
     {
@@ -202,7 +201,6 @@ const Services = () => {
               </Box>
             </Card>
           </Box>
-          <ToastContainer />
         </>
       </MotionComponent>
     </AppBarComponent>

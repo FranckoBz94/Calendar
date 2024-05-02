@@ -20,8 +20,6 @@ import FormUser from "./FormUser"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
 
 const Users = () => {
   const classes: any = useStyles()
@@ -214,7 +212,6 @@ const Users = () => {
               </Box>
             </Card>
           </Box>
-          <ToastContainer />
         </>
       </MotionComponent>
     </AppBarComponent>

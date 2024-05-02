@@ -90,3 +90,14 @@ export const availableDate = (data) => async () => {
     console.log(err)
   }
 }
+
+
+export const searchTurnsProfits = (data) => async () => {
+  try {
+    const response = await axios.post(ruta + "turns/searchTurnsProfits", data)
+    return response.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+

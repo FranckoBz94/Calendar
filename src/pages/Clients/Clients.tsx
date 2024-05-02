@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react"
 import { AppBarComponent } from "pages/AppBar/AppBar"
 import { Box, Button, Card, Grid, Paper } from "@mui/material"
 import { useStyles } from "./styles"
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
 import FormClient from "./FormClient"
-import DataTable from "react-data-table-component"
-import DataTableExtensions from "react-data-table-component-extensions"
 import "react-data-table-component-extensions/dist/index.css"
-import { NotifyHelper, paginationOption } from "contants"
+import { NotifyHelper, getMuiTheme, optionsTable } from "contants"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import MotionComponent from "components/MotionComponent"
 import MotionModal from "components/Modal/Modal"
@@ -17,7 +14,8 @@ import { getAllClients, removeClient } from "redux/actions/clientsAction"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
-import { ToastContainer } from "react-toastify"
+import { ThemeProvider } from "@mui/styles"
+import MUIDataTable from "mui-datatables"
 
 const Clients = () => {
   const classes: any = useStyles()
@@ -41,11 +39,20 @@ const Clients = () => {
   }
 
   const dataRowClient = async (option: string, e: any) => {
+    const values = {
+      id: e[0],
+      firstName: e[1],
+      lastName: e[2],
+      email: e[3],
+      telefono: e[4],
+      dni: e[5]
+    };
+    console.log(values)
     if (option === "Editar") {
       handleOpenModal("Editar")
-      setDataSelected(e)
+      setDataSelected(values)
     } else {
-      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)
+      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(values)
       if (rtaDelete) {
         const rtaRemoveUser = await dispatch(removeClient(id) as any)
         if (rtaRemoveUser.rta === 1) {
@@ -61,72 +68,67 @@ const Clients = () => {
 
   const columnsTableClients = [
     {
-      name: "Id",
-      selector: (row: any) => row.id,
-      sortable: true
+      name: "id",
+      label: "ID",
+      options: {
+        display: false,
+      }
     },
     {
-      name: "Nombre",
-      selector: (row: any) => row.firstName,
-      sortable: true
+      name: "firstName",
+      label: "Nombre",
     },
     {
-      name: "Apellido",
-      selector: (row: any) => row.lastName,
-      sortable: true
+      name: "lastName",
+      label: "Apellido",
     },
     {
-      name: "Email",
-      selector: (row: any) => row.email,
-      sortable: true
+      name: "email",
+      label: "Email",
     },
     {
-      name: "Dni",
-      selector: (row: any) => row.dni,
-      sortable: true
+      name: "dni",
+      label: "Dni",
     },
     {
       name: "telefono",
-      selector: (row: any) => row.telefono,
-      sortable: true,
-      center: true
+      label: "telefono"
     },
     {
-      name: "Acciones",
-      sortable: false,
-      cell: (d: any) => [
-        <Button
-          key={1}
-          style={{ marginLeft: "3px", marginRight: "3px" }}
-          variant="contained"
-          type="button"
-          className="btnTable"
-          title="Editar Usuario"
-          startIcon={<EditIcon />}
-          color="primary"
-          onClick={() => dataRowClient("Editar", d)}
-        ></Button>,
-        <Button
-          key={2}
-          variant="contained"
-          color="error"
-          style={{ marginLeft: "3px", marginRight: "3px" }}
-          className="btnTable"
-          type="button"
-          title="Eliminar Usuario"
-          startIcon={<DeleteIcon />}
-          onClick={() => dataRowClient("Eliminar", d)}
-        ></Button>
-      ],
-      grow: 2,
-      center: true
-    }
-  ]
+      name: "actions",
+      label: "Acciones",
+      options: {
+        customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+          return (
+            <div style={{ display: "flex" }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<EditIcon />}
+                style={{ marginRight: "4px" }}
 
-  const tableData = {
-    columns: columnsTableClients,
-    data: clients
-  }
+                onClick={() => dataRowClient("Editar", tableMeta.rowData)}
+              >
+
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+
+                onClick={() => dataRowClient("Eliminar", tableMeta.rowData)}
+              >
+
+              </Button>
+            </div>
+          );
+        },
+      },
+    },
+  ];
+
+
 
   useEffect(() => {
     dispatch(getAllClients() as any)
@@ -134,69 +136,63 @@ const Clients = () => {
 
   return (
     <AppBarComponent>
-      <MotionComponent>
-        <>
-          <Card variant="outlined" className={classes.colorCard}>
-            <Box px={2}>
-              <p className={classes.card_title}>Clientes</p>
-            </Box>
-          </Card>
-          <Box mt={2}>
-            <Card variant="outlined">
-              <Box p={2}>
-                <div>
-                  <MotionModal
-                    isOpen={openModal}
-                    handleClose={handleCloseModal}
-                  >
-                    <Box mt={1} position="relative">
-                      <FormClient
-                        dataFormClient={dataSelected}
-                        optionSelected={optionSelected}
-                        setOpenModal={setOpenModal}
-                      />
-                    </Box>
-                  </MotionModal>
-                </div>
-                <Grid mb={2}>
-                  <Card variant="outlined">
-                    <Grid container justifyContent="flex-end" p={2}>
-                      <Button
-                        variant="contained"
-                        startIcon={<AddCircleOutlineIcon />}
-                        onClick={() => handleOpenModal("NewClient")}
-                        className={classes.btnAddClient}
-                      >
-                        Nuevo Cliente
-                      </Button>
-                    </Grid>
-                  </Card>
-                </Grid>
-                <Paper className={classes.cardTable}>
-                  <Card variant="outlined">
-                    <Grid p={2}>
-                      <DataTableExtensions {...tableData} px={0}>
-                        <DataTable
-                          columns={columnsTableClients}
-                          data={clients}
-                          pagination
-                          sortIcon={<ArrowDownwardIcon />}
-                          highlightOnHover
-                          defaultSortAsc={true}
-                          title="Listado de Clientes"
-                          noDataComponent="No hay datos para mostrar"
-                          paginationComponentOptions={paginationOption}
-                        />
-                      </DataTableExtensions>
-                    </Grid>
-                  </Card>
-                </Paper>
+      <>
+        <MotionComponent>
+          <>
+            <Card variant="outlined" className={classes.colorCard}>
+              <Box px={2}>
+                <p className={classes.card_title}>Clientes</p>
               </Box>
             </Card>
-          </Box>
-          <ToastContainer />
-        </>
-      </MotionComponent>
+            <Box mt={2}>
+              <Card variant="outlined">
+                <Box p={2}>
+                  <div>
+                    <MotionModal
+                      isOpen={openModal}
+                      handleClose={handleCloseModal}
+                    >
+                      <Box mt={1} position="relative">
+                        <FormClient
+                          dataFormClient={dataSelected}
+                          optionSelected={optionSelected}
+                          setOpenModal={setOpenModal}
+                        />
+                      </Box>
+                    </MotionModal>
+                  </div>
+                  <Grid mb={2}>
+                    <Card variant="outlined">
+                      <Grid container justifyContent="flex-end" p={2}>
+                        <Button
+                          variant="contained"
+                          startIcon={<AddCircleOutlineIcon />}
+                          onClick={() => handleOpenModal("NewClient")}
+                          className={classes.btnAddClient}
+                        >
+                          Nuevo Cliente
+                        </Button>
+                      </Grid>
+                    </Card>
+                  </Grid>
+                  <Paper >
+                    <Grid>
+                      <ThemeProvider theme={getMuiTheme("#0b0e3a")}>
+                        <MUIDataTable
+                          title={"Clientes"}
+                          data={clients}
+                          columns={columnsTableClients}
+                          options={optionsTable}
+                        />
+                      </ThemeProvider>
+                    </Grid>
+                  </Paper>
+                </Box>
+              </Card>
+            </Box>
+          </>
+        </MotionComponent>
+      </>
     </AppBarComponent>
   )
 }

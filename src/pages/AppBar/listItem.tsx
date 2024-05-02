@@ -55,7 +55,7 @@ export const mainListItems = () => {
           </ListItemIcon>
           <ListItemText primary="Usuarios" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/ganancias" selected={isActive("/ganancias")}>
+        <ListItemButton component={Link} to="/profits" selected={isActive("/profits")}>
           <ListItemIcon>
             <WaterfallChartIcon />
           </ListItemIcon>

@@ -14,6 +14,7 @@ body {
 .btnSubmitOption2 {
   background: var(--primary-color) !important;
   border: 1px solid var(--option1-color) !important;
+  border-radius: 35px !important;
 }
 
 .btnSubmitOption2:hover {
@@ -30,7 +31,7 @@ body {
   float: right;
   width: 30%;
   border: 1px solid var(--option1-color);
-  border-radius: 14px;
+  border-radius: 5px;
 }
 
 .css-m9mp0w-MuiToolbar-root {
@@ -45,10 +46,6 @@ body {
   float: left;
   width: 90%;
   height: 35px;
-}
-
-.data-table-extensions-action {
-  display: none;
 }
 
 .kNUuTe {
@@ -89,6 +86,18 @@ body {
 
 .w-100 {
   width: 100% !important;
+}
+
+.w-75 {
+  width: 75% !important;
+}
+
+.w-50 {
+  width: 50% !important;
+}
+
+.w-25 {
+  width: 25% !important;
 }
 
 .d-none {
@@ -354,4 +363,34 @@ inputDisabled input[type="time"] {
 
 .css-16ac5r2-MuiButtonBase-root-MuiListItemButton-root.Mui-selected .MuiListItemText-root {
   color: #fff;
+}
+
+.fc-button {
+  background-color: rgb(94, 53, 177) !important;
+  color: #fff;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin: 5px;
+  border: none;
+}
+
+.fc-button:hover {
+  background-color: rgba(94, 53, 177, 0.541) !important;
+}
+
+.error {
+  border: 1px solid red;
+  border-radius: 4px;
+}
+
+.MuiTableSortLabel-icon {
+  color: #ddd !important
+}
+
+.MuiButton-startIcon {
+  margin: 0 !important
+}
+
+.css-1ygcj2i-MuiTableCell-root {
+  padding: 16px 16px 16px 0px !important;
 }

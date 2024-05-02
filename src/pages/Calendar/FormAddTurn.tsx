@@ -21,7 +21,6 @@ import TabList from "@mui/lab/TabList"
 import TabPanel from "@mui/lab/TabPanel"
 import moment from "moment"
 import FormClient from "pages/Clients/FormClient"
-// import Modal from "@atlaskit/modal-dialog"
 
 interface FormCalendarProps {
   dataFormEvent: any
@@ -44,7 +43,8 @@ const FormAddTurn = (props: FormCalendarProps) => {
   } = props
   const [selectedOptionService, setSelectedOptionService] = useState({
     id: allServices[0]?.id,
-    minutes_service: allServices[0]?.minutes_service
+    minutes_service: allServices[0]?.minutes_service,
+    price: allServices[0]?.price
   })
   const theme = createTheme()
   const dispatch = useDispatch()
@@ -76,6 +76,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
       ...data,
       end: moment(endTime).toDate(),
       idBarber: barberSelected.id,
+      price: selectedOptionService.price,
       idService
     }
     let rtaAddTurn
@@ -98,7 +99,8 @@ const FormAddTurn = (props: FormCalendarProps) => {
     if (allServices && allServices.length > 0) {
       setSelectedOptionService({
         id: allServices[0]?.id,
-        minutes_service: allServices[0]?.minutes_service
+        minutes_service: allServices[0]?.minutes_service,
+        price: allServices[0].price
       });
     }
   }, [allServices]);
@@ -216,7 +218,8 @@ const FormAddTurn = (props: FormCalendarProps) => {
                         label: service.name_service + " <small>(" + service.minutes_service + " minutos)</small>",
                         value: JSON.stringify({
                           id: service.id,
-                          minutes_service: service.minutes_service
+                          minutes_service: service.minutes_service,
+                          price: service.price_service
                         })
                       }))}
                       isMulti={false}
