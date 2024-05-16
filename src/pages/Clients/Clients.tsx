@@ -14,7 +14,7 @@ import { getAllClients, removeClient } from "redux/actions/clientsAction"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
-import { ThemeProvider } from "@mui/styles"
+import { ThemeProvider } from '@mui/material/styles'
 import MUIDataTable from "mui-datatables"
 
 const Clients = () => {
@@ -47,7 +47,6 @@ const Clients = () => {
       telefono: e[4],
       dni: e[5]
     };
-    console.log(values)
     if (option === "Editar") {
       handleOpenModal("Editar")
       setDataSelected(values)
@@ -72,6 +71,7 @@ const Clients = () => {
       label: "ID",
       options: {
         display: false,
+        viewColumns: false,
       }
     },
     {
@@ -177,9 +177,9 @@ const Clients = () => {
                   </Grid>
                   <Paper >
                     <Grid>
-                      <ThemeProvider theme={getMuiTheme("#0b0e3a")}>
+                      <ThemeProvider theme={getMuiTheme("#404258")}>
                         <MUIDataTable
-                          title={"Clientes"}
+                          title={"Listado de clientes"}
                           data={clients}
                           columns={columnsTableClients}
                           options={optionsTable}

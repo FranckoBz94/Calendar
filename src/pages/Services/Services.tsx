@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react"
 import { AppBarComponent } from "pages/AppBar/AppBar"
 import { Box, Button, Card, Grid, Paper } from "@mui/material"
 import { useStyles } from "./styles"
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
 import FormService from "./FormService"
-import DataTable from "react-data-table-component"
-import DataTableExtensions from "react-data-table-component-extensions"
 import "react-data-table-component-extensions/dist/index.css"
-import { NotifyHelper, paginationOption } from "contants"
+import { NotifyHelper, getMuiTheme, optionsTable } from "contants"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import MotionComponent from "components/MotionComponent"
 import MotionModal from "components/Modal/Modal"
@@ -17,6 +14,8 @@ import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
 import { getAllServices, removeService } from "redux/actions/servicesAction"
+import { ThemeProvider } from '@mui/material/styles'
+import MUIDataTable from "mui-datatables"
 
 const Services = () => {
   const classes: any = useStyles()
@@ -39,12 +38,19 @@ const Services = () => {
   }
 
   const dataRowService = async (option: string, e: any) => {
+    const values = {
+      id: e[0],
+      name_service: e[1],
+      price_service: e[2],
+      minutes_service: e[3],
+      event_color: e[4],
+    };
     if (option === "Editar") {
       handleOpenModal("Editar")
-      console.log(e)
-      setDataSelected(e)
+      console.log(values)
+      setDataSelected(values)
     } else {
-      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)
+      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(values)
       if (rtaDelete) {
         const rtaRemoveUser = await dispatch(removeService(id) as any)
         if (rtaRemoveUser.rta === 1) {
@@ -72,68 +78,67 @@ const Services = () => {
 
   const columnsTableServices = [
     {
-      name: "Id",
-      selector: (row: any) => row.id,
-      sortable: true,
-      omit: true
+      name: "id",
+      label: "ID",
+      options: {
+        display: false,
+        viewColumns: false,
+      }
     },
     {
-      name: "Nombre",
-      selector: (row: any) => row.name_service,
-      sortable: true
+      name: "name_service",
+      label: "Nombre",
     },
     {
-      name: "Precio",
-      selector: (row: any) => row.price_service,
-      sortable: true
+      name: "price_service",
+      label: "Precio",
     },
     {
-      name: "Minutos",
-      selector: (row: any) => row.minutes_service,
-      sortable: true
+      name: "minutes_service",
+      label: "Minutos",
     },
     {
-      name: "Color evento",
-      // selector: (row: any) => row.event_color,
-      cell: (row: any) => <ColorLabel color={row.event_color} />,
-      sortable: true
+      name: "event_color",
+      label: "Color del evento",
+      options: {
+        customBodyRender: (value: string) => <div >
+          <ColorLabel color={value} />
+        </div>,
+      },
     },
     {
-      name: "Acciones",
-      sortable: false,
-      cell: (d: any) => [
-        <Button
-          key={1}
-          style={{ marginLeft: "3px", marginRight: "3px" }}
-          variant="contained"
-          type="button"
-          className="btnTable"
-          title="Editar Usuario"
-          startIcon={<EditIcon />}
-          color="primary"
-          onClick={() => dataRowService("Editar", d)}
-        ></Button>,
-        <Button
-          key={2}
-          variant="contained"
-          color="error"
-          style={{ marginLeft: "3px", marginRight: "3px" }}
-          className="btnTable"
-          type="button"
-          title="Eliminar Usuario"
-          startIcon={<DeleteIcon />}
-          onClick={() => dataRowService("Eliminar", d)}
-        ></Button>
-      ],
-      grow: 2,
-      center: true
-    }
-  ]
+      name: "actions",
+      label: "Acciones",
+      options: {
+        customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+          return (
+            <div style={{ display: "flex" }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<EditIcon />}
+                style={{ marginRight: "4px" }}
 
-  const tableData = {
-    columns: columnsTableServices,
-    data: services
-  }
+                onClick={() => dataRowService("Editar", tableMeta.rowData)}
+              >
+
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+
+                onClick={() => dataRowService("Eliminar", tableMeta.rowData)}
+              >
+
+              </Button>
+            </div>
+          );
+        },
+      },
+    },
+  ];
 
   useEffect(() => {
     dispatch(getAllServices() as any)
@@ -180,23 +185,16 @@ const Services = () => {
                   </Card>
                 </Grid>
                 <Paper className={classes.cardTable}>
-                  <Card variant="outlined">
-                    <Grid p={2}>
-                      <DataTableExtensions {...tableData} px={0}>
-                        <DataTable
-                          columns={columnsTableServices}
-                          data={services}
-                          pagination
-                          sortIcon={<ArrowDownwardIcon />}
-                          highlightOnHover
-                          defaultSortAsc={true}
-                          title="Listado de Servicios"
-                          noDataComponent="No hay datos para mostrar"
-                          paginationComponentOptions={paginationOption}
-                        />
-                      </DataTableExtensions>
-                    </Grid>
-                  </Card>
+                  <Grid>
+                    <ThemeProvider theme={getMuiTheme("#404258")}>
+                      <MUIDataTable
+                        title={"Listado de Servicios"}
+                        data={services}
+                        columns={columnsTableServices}
+                        options={optionsTable}
+                      />
+                    </ThemeProvider>
+                  </Grid>
                 </Paper>
               </Box>
             </Card>

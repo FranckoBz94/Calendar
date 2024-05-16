@@ -43,6 +43,18 @@ export const getAllUsers = () => {
   }
 }
 
+export const getMyUser = (id) => {
+  return async function () {
+    try {
+      const response = await axios.get(`${ruta}users/myprofile/${id}`);
+      return response.data[0];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+}
+
 export const addUser = (formData) => async (dispatch) => {
   console.log(formData)
 
@@ -86,5 +98,16 @@ export const removeUser = (id) => async (dispatch) => {
     return response.data
   } catch (error) {
     console.error(error)
+  }
+}
+
+export const loginUser = (dataUser) => async () => {
+  console.log(dataUser)
+  try {
+    const response = await axios.post(ruta + "users/login", dataUser)
+    return response.data
+  } catch (err) {
+    return { rta: -1, message: "Ocurrio un errorrr." + err }
+    // console.log(err)
   }
 }

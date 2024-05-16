@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react"
 import { AppBarComponent } from "pages/AppBar/AppBar"
 import MotionComponent from "components/MotionComponent"
 import Paper from "@mui/material/Paper"
-import DataTableExtensions from "react-data-table-component-extensions"
-import DataTable from "react-data-table-component"
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
-import { NotifyHelper, paginationOption } from "contants"
+import { NotifyHelper, optionsTable, getMuiTheme } from "contants"
 import { useStyles } from "./styles"
 import { getAllUsers, removeUser } from "redux/actions/usersAction"
 import { useDispatch, useSelector } from "react-redux"
@@ -20,6 +17,10 @@ import FormUser from "./FormUser"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
+import moment from "moment"
+import MUIDataTable from "mui-datatables"
+import { ThemeProvider } from '@mui/material/styles'
+import { Avatar } from "@mui/material"
 
 const Users = () => {
   const classes: any = useStyles()
@@ -42,12 +43,23 @@ const Users = () => {
   }
 
   const dataRow = async (option: string, e: any) => {
+    const values = {
+      id: e[0],
+      url_image: e[1],
+      firstName: e[2],
+      lastName: e[3],
+      email: e[4],
+      fecha_creacion: e[5],
+      is_barber: e[6],
+      is_admin: e[7],
+    };
+    console.log(e)
     if (option === "Editar") {
       handleOpenModal("Editar")
-      console.log(e)
-      setDataSelected(e)
+      console.log(values)
+      setDataSelected(values)
     } else {
-      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)
+      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(values)
       if (rtaDelete) {
         const rtaRemoveUser = await dispatch(removeUser(id) as any)
         if (rtaRemoveUser.rta === 1) {
@@ -63,89 +75,94 @@ const Users = () => {
 
   const columnsTableUsers = [
     {
-      name: "Id",
-      selector: (row: any) => row.id,
-      sortable: true,
-      omit: true
+      name: "id",
+      label: "ID",
+      options: {
+        display: false,
+        viewColumns: false,
+      }
     },
     {
-      name: "Imagen",
-      cell: (row: any) => (
-        <img
-          src={`http://localhost:4000/${row.url_image}`}
-          alt={row.url_image}
-          style={{ width: "100px", padding: "10px" }} // Ajusta el ancho de la imagen según tus necesidades
-        />
-      )
+      name: "url_image",
+      label: "Imagen",
+      options: {
+        textAlign: "center",
+        customBodyRender: (imagen: any) => <div>
+          <Avatar
+            alt="Imagen"
+            src={`${process.env.REACT_APP_URL_BASE}${imagen}`}
+            sx={{ width: 70, height: 70, objectFit: "cover" }}
+          />
+        </div>,
+      },
     },
     {
-      name: "Nombre",
-      selector: (row: any) => row.firstName,
-      sortable: true
+      name: "firstName",
+      label: "Nombre",
     },
     {
-      name: "Apellido",
-      selector: (row: any) => row.lastName,
-      sortable: true
+      name: "lastName",
+      label: "Apellido",
     },
     {
-      name: "Email",
-      selector: (row: any) => row.email,
-      sortable: true
+      name: "email",
+      label: "Email",
     },
     {
-      name: "Usuario Creado",
-      selector: (row: any) => new Date(row.fecha_creacion).toLocaleString(),
-      sortable: true
+      name: "fecha_creacion",
+      label: "Usuario Creado",
+      options: {
+        customBodyRender: (value: any) => moment(value).format("DD/MM/YYYY"),
+      },
     },
     {
-      name: "Activo",
-      selector: (row: any) => (row.is_active === 1 ? "Si" : "No"),
-      sortable: true,
-      center: true
+      name: "is_barber",
+      label: "Barbero",
+      options: {
+        customBodyRender: (row: any) => (row === 1 ? "Si" : "No")
+      },
     },
     {
-      name: "Administrador",
-      selector: (row: any) => (row.is_admin === 1 ? "Si" : "No"),
-      sortable: true,
-      center: true
+      name: "is_admin",
+      label: "Administrador",
+      options: {
+        customBodyRender: (row: any) => (row === 1 ? "Si" : "No")
+      },
     },
     {
-      name: "Acciones",
-      sortable: false,
-      cell: (d: any) => [
-        <Button
-          key={1}
-          style={{ marginLeft: "3px", marginRight: "3px" }}
-          variant="contained"
-          type="button"
-          className="btnTable"
-          title="Editar Usuario"
-          startIcon={<EditIcon />}
-          color="primary"
-          onClick={() => dataRow("Editar", d)}
-        ></Button>,
-        <Button
-          key={2}
-          variant="contained"
-          color="error"
-          style={{ marginLeft: "3px", marginRight: "3px" }}
-          className="btnTable"
-          type="button"
-          title="Eliminar Usuario"
-          startIcon={<DeleteIcon />}
-          onClick={() => dataRow("Eliminar", d)}
-        ></Button>
-      ],
-      grow: 2,
-      center: true
-    }
+      name: "actions",
+      label: "Acciones",
+      options: {
+        customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+          return (
+            <div style={{ display: "flex" }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<EditIcon />}
+                style={{ marginRight: "4px" }}
+
+                onClick={() => dataRow("Editar", tableMeta.rowData)}
+              >
+
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+
+                onClick={() => dataRow("Eliminar", tableMeta.rowData)}
+              >
+
+              </Button>
+            </div>
+          );
+        },
+      },
+    },
   ]
 
-  const tableData = {
-    columns: columnsTableUsers,
-    data: users
-  }
 
   useEffect(() => {
     dispatch(getAllUsers() as any)
@@ -190,24 +207,16 @@ const Users = () => {
                   </Card>
                 </Grid>
                 <Paper className={classes.cardTable}>
-                  <Card variant="outlined">
-                    <Grid p={2}>
-                      <DataTableExtensions {...tableData} px={0}>
-                        <DataTable
-                          columns={columnsTableUsers}
-                          data={users}
-                          pagination
-                          sortIcon={<ArrowDownwardIcon />}
-                          highlightOnHover
-                          defaultSortAsc={true}
-                          title="Listado de Usuarios"
-                          noDataComponent="No hay datos para mostrar"
-                          paginationComponentOptions={paginationOption}
-                          expandableRowsHideExpander
-                        />
-                      </DataTableExtensions>
-                    </Grid>
-                  </Card>
+                  <Grid >
+                    <ThemeProvider theme={getMuiTheme("#0f4c75")}>
+                      <MUIDataTable
+                        title={"Listado de Usuarios"}
+                        data={users}
+                        columns={columnsTableUsers}
+                        options={optionsTable}
+                      />
+                    </ThemeProvider>
+                  </Grid>
                 </Paper>
               </Box>
             </Card>

@@ -52,7 +52,6 @@ const formProfits = () => {
       return;
     }
     setNameBarber(selectedOptionBarber?.label)
-    setIsSearch(true)
     values.idBarber = selectedOptionBarber?.value
     try {
       const dataSearch = {
@@ -75,7 +74,10 @@ const formProfits = () => {
       console.error(err)
     }
     setError('');
-    setIsLoading(false); // Detiene la carga después de la petición
+    setTimeout(() => {
+      setIsSearch(true)
+      setIsLoading(false);
+    }, 3000);
   }
 
   const handleChangeSelectBarber = (e: any) => {
@@ -143,6 +145,10 @@ const formProfits = () => {
       label: "Cliente",
     },
     {
+      name: "name_service",
+      label: "Servicio",
+    },
+    {
       name: "price_service",
       label: "Costo",
     }
@@ -160,9 +166,7 @@ const formProfits = () => {
       <>
         {isLoading && <Loader />}
         <MotionComponent>
-
           <Box>
-
             <Card variant="outlined" className={classes.colorCard}>
               <Box px={2}>
                 <p className={classes.card_title}>Periodo de Vacaciones / Inactivo</p>
@@ -265,7 +269,7 @@ const formProfits = () => {
                     <Grid >
                       <Box>
                         {isSearch && (
-                          <ThemeProvider theme={getMuiTheme("#0b0e3a")}>
+                          <ThemeProvider theme={getMuiTheme("#0f4c75")}>
                             <MUIDataTable
                               title={nameBarber ? `Ganancias de ${nameBarber}` : ""}
                               data={modifiedData}

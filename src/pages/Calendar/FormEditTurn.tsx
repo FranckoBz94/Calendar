@@ -158,6 +158,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
                 </Box>
               </Grid>
               <Grid item xs={12} mb={2}>
+                <small style={{ marginLeft: "15px", marginBottom: "-4px", color: "rgb(158 158 158)" }}>Cliente</small>
                 <Select
                   isSearchable={true}
                   className="basic-multi-select"

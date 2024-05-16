@@ -11,8 +11,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { type ReactElement } from "react"
-import { List } from '@mui/material';
+import { Avatar, List, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
 import { mainListItems } from './listItem';
+import { Link, useNavigate } from "react-router-dom"
+import Divider from '@mui/material/Divider';
+import Logout from '@mui/icons-material/Logout';
 
 const drawerWidth = 240;
 
@@ -71,12 +74,21 @@ interface Props {
   children?: ReactElement
 }
 
+interface User {
+  firstName: string;
+  lastName: string;
+  url_image: string
+}
+
 export function AppBarComponent(props: Props) {
   const theme = useTheme();
   const { children } = props
 
   const [open, setOpen] = React.useState(true);
-
+  const [user, setUser] = React.useState<User | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openMenu = Boolean(anchorEl);
+  const navigate = useNavigate()
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -84,6 +96,35 @@ export function AppBarComponent(props: Props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleLogout = () => {
+    // Eliminar datos del localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+
+    // Opcional: invalidar el token en el servidor
+    // fetch('/api/logout', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Authorization': `Bearer ${tokenFromLocalStorage}`
+    //   }
+    // });
+    navigate('/login');
+  };
+
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  React.useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -99,9 +140,63 @@ export function AppBarComponent(props: Props) {
           >
             <MenuIcon sx={{ color: "#000" }} />
           </IconButton>
-          <Typography variant="h6" component="div" color="black">
+          <Typography variant="h6" component="div" color="black" sx={{ flexGrow: 1 }}>
             Calendar
           </Typography>
+          <React.Fragment>
+            <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+              <Tooltip title="Account settings">
+                <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
+                  <Avatar sx={{ width: 32, height: 32 }} src={`${process.env.REACT_APP_URL_BASE}${user?.url_image}`}></Avatar>
+                </IconButton>
+              </Tooltip>
+            </Box>
+            <Menu
+              anchorEl={anchorEl}
+              open={openMenu}
+              onClose={handleClose}
+              onClick={handleClose}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: 'visible',
+                  filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                  mt: 1.5,
+                  '& .MuiAvatar-root': {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 1,
+                  },
+                  '&:before': {
+                    content: '""',
+                    display: 'block',
+                    position: 'absolute',
+                    top: 0,
+                    right: 14,
+                    width: 10,
+                    height: 10,
+                    bgcolor: 'background.paper',
+                    transform: 'translateY(-50%) rotate(45deg)',
+                    zIndex: 0,
+                  },
+                },
+              }}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            >
+              <MenuItem onClick={handleClose} component={Link} to="/profile">
+                <Avatar /> Perfil
+              </MenuItem>
+              <Divider />
+              <MenuItem onClick={handleLogout}>
+                <ListItemIcon>
+                  <Logout fontSize="small" />
+                </ListItemIcon>
+                Cerrar sesión
+              </MenuItem>
+            </Menu>
+          </React.Fragment>
         </Toolbar>
       </AppBar>
       <Drawer

@@ -15,8 +15,7 @@ import { useDispatch } from "react-redux"
 import { addUser, updateUser } from "redux/actions/usersAction"
 import { NotifyHelper } from "contants"
 import LoadingButton from "@mui/lab/LoadingButton"
-// import fondoBarber from "../../images/fondo_barber.jpg"
-// import CameraAltIcon from "@mui/icons-material/CameraAlt"
+import { addBarber } from "redux/actions/barbersAction"
 
 const theme = createTheme()
 
@@ -40,15 +39,34 @@ const FormUser = (props: FormUserProps) => {
   const initialValues = {
     firstName: dataForm.firstName || "",
     lastName: dataForm.lastName || "",
+    telefono: dataForm.telefono || "",
     email: dataForm.email || "",
-    is_active: !(false || dataForm.is_active === 0),
+    is_barber: !(false || dataForm.is_barber === 0),
     is_admin: !(false || dataForm.is_admin === 0),
     imageProfile:
-      dataForm.url_image === undefined
-        ? (dataForm.url_image = "uploads/profile.png")
-        : dataForm.url_image
+      dataForm.url_image ? dataForm.url_image : "uploads/profile.png"
   }
-  console.log(dataForm.url_image)
+
+  const addBarberBeforeUser = async (data: any) => {
+    try {
+      const formData = new FormData();
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName);
+      formData.append("email", data.email);
+      formData.append("telefono", data.telefono);
+      formData.append("is_barber", data.is_barber);
+      formData.append("is_admin", data.is_admin);
+      formData.append("imageProfile", profileImage || data.imageProfile);
+      const rta = await dispatch(addBarber(formData) as any);
+      if (rta.rta === 1) {
+        return rta.barberId
+      }
+    } catch (err) {
+      console.error(err)
+      return -1
+    }
+    return -1
+  }
 
   const registerUser = async (data: any) => {
     setIsLoading(true)
@@ -56,13 +74,14 @@ const FormUser = (props: FormUserProps) => {
     formData.append("firstName", data.firstName)
     formData.append("lastName", data.lastName)
     formData.append("email", data.email)
-    formData.append("is_active", data.is_active)
+    formData.append("is_barber", data.is_barber)
     formData.append("is_admin", data.is_admin)
-    if (profileImage) {
-      formData.append("imageProfile", profileImage)
-    }
+    formData.append("imageProfile", profileImage || data.imageProfile)
+    console.log(optionSelected)
+
     let rtaUpdateUser
     if (optionSelected === "Editar") {
+      console.log(optionSelected)
       try {
         rtaUpdateUser = await dispatch(updateUser(formData, dataForm.id) as any)
         if (rtaUpdateUser.rta === 1) {
@@ -74,25 +93,34 @@ const FormUser = (props: FormUserProps) => {
           setIsLoading(false)
         }
       } catch (err) {
-        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+        NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
         setIsLoading(false)
       }
     } else {
-      let rtaAddUser
-      formData.append("password", data.password)
-      console.log(formData)
-      try {
-        rtaAddUser = await dispatch(addUser(formData) as any)
-        if (rtaAddUser.rta === 1) {
-          NotifyHelper.notifySuccess(rtaAddUser.message)
-          setOpenModal(false)
-          setIsLoading(false)
-        } else {
-          NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+      const barberId = await addBarberBeforeUser(data)
+      if (barberId !== -1) {
+
+        let rtaAddUser
+        formData.append("password", data.password)
+        formData.append("id_barbero", barberId)
+
+        console.log(JSON.stringify(formData))
+        try {
+          rtaAddUser = await dispatch(addUser(formData) as any)
+          if (rtaAddUser.rta === 1) {
+            NotifyHelper.notifySuccess(rtaAddUser.message)
+            setOpenModal(false)
+            setIsLoading(false)
+          } else {
+            NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
+            setIsLoading(false)
+          }
+        } catch (err) {
+          NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
           setIsLoading(false)
         }
-      } catch (err) {
-        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+      } else {
+        NotifyHelper.notifyError(`Ocurrio un error al crear el barbero. Intente nuevamente`)
         setIsLoading(false)
       }
     }
@@ -115,8 +143,8 @@ const FormUser = (props: FormUserProps) => {
     setIsAdminChecked(!isAdminChecked)
   }
 
-  const isActiveClick = () => {
-    values.is_active = !values.is_active
+  const isBarberClick = () => {
+    values.is_barber = !values.is_barber
     setIsActiveChecked(!isActiveChecked)
   }
 
@@ -201,15 +229,6 @@ const FormUser = (props: FormUserProps) => {
                         )}
                       </Box>
                     </label>
-                    {/* <Box
-                      display="flex"
-                      justifyContent="flex-end"
-                      padding="10px 20px"
-                    >
-                      <label htmlFor="file" style={{ cursor: "pointer" }}>
-                        <CameraAltIcon />
-                      </label>
-                    </Box> */}
                   </Paper>
                 </Grid>
                 <Grid item md={8} xs={12}>
@@ -254,6 +273,23 @@ const FormUser = (props: FormUserProps) => {
                       <TextField
                         required
                         fullWidth
+                        label="Teléfono"
+                        name="telefono"
+                        type="telefono"
+                        onChange={handleChange}
+                        value={values.telefono}
+                        error={Boolean(errors.telefono)}
+                        helperText={
+                          String(errors.email) !== "undefined"
+                            ? String(errors.email)
+                            : ""
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
                         label="Email"
                         name="email"
                         type="email"
@@ -271,22 +307,22 @@ const FormUser = (props: FormUserProps) => {
                       <Card
                         variant="outlined"
                         style={{
-                          backgroundColor: values.is_active ? "#bbe1fa" : "",
+                          backgroundColor: values.is_barber ? "#bbe1fa" : "",
                           cursor: "pointer"
                         }}
-                        onClick={isActiveClick}
+                        onClick={isBarberClick}
                       >
                         <FormControlLabel
-                          name="is_active"
-                          onClick={isActiveClick}
-                          id="is_active"
+                          name="is_barber"
+                          onClick={isBarberClick}
+                          id="is_barber"
                           control={
                             <Checkbox
-                              checked={values.is_active}
+                              checked={values.is_barber}
                               onChange={handleCheckboxChange}
                             />
                           }
-                          label="Usuario activo"
+                          label="Barbero"
                           labelPlacement="start"
                         />
                       </Card>

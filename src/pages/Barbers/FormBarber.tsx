@@ -48,7 +48,6 @@ const FormBarber = (props: FormBarberProps) => {
 
   const registerBarber = async (data: any) => {
     setIsLoading(true);
-
     try {
       const formData = new FormData();
       formData.append("firstName", data.firstName);
@@ -58,7 +57,6 @@ const FormBarber = (props: FormBarberProps) => {
       formData.append("is_active", data.is_active);
       formData.append("is_admin", data.is_admin);
       formData.append("imageProfile", profileImage || data.imageProfile);
-
       let rta;
       if (optionSelected === "Editar") {
         rta = await dispatch(updateBarber(formData, dataForm.id) as any);
@@ -114,7 +112,6 @@ const FormBarber = (props: FormBarberProps) => {
 
   const loadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      console.log(event.target.files[0])
       setProfileImage(event.target.files[0])
     }
   }

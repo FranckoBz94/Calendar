@@ -2,8 +2,7 @@ import React, { useRef, useState, useEffect } from "react"
 import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
-import MotionComponent from "components/MotionComponent"
-import { Alert, Box, Button, Card, InputLabel, Stack, Tooltip } from "@mui/material"
+import { Alert, Avatar, Box, Button, Card, InputLabel, Stack, Tooltip } from "@mui/material"
 import { AppBarComponent } from "pages/AppBar/AppBar"
 import esLocale from "@fullcalendar/core/locales/es"
 import { Tabs, Tab, Content } from "../../components/Tabs/tabs"
@@ -23,6 +22,15 @@ import moment from "moment"
 import FormHoursCalendar from "./FormHoursCalendar"
 import { getAllHours } from "redux/actions/hoursAction"
 import { EventApi } from "@fullcalendar/core"
+import SkeletonCalendar from "./SkeletonCalendar"
+
+interface Barber {
+  id: string;
+  firstName: string;
+  lastName: string;
+  imagen: string;
+  is_active: number;
+}
 
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar | null>(null)
@@ -32,16 +40,14 @@ const Calendar = () => {
   const [openingTime, setOpeningTime] = useState("")
   const [idHoursCalendar, setIdHoursCalendar] = useState(0)
   const [closingTime, setClosingTime] = useState("")
-  const [barberSelected, setBarberSelected] = useState({
-    id: "",
-    firstName: "",
-    lastName: ""
-  })
+  const [barbersActive, setBarberActive] = useState<Barber[]>([]);
+  const [barberSelected, setBarberSelected] = useState<Barber | null>(null);
+  const [loadingTurns, setLoadingTurns] = useState(false)
   const [dataSelected, setDataSelected] = useState({})
   const [filteredServices, setFilteredServices] = useState([])
 
   const [events, setEvents] = useState([{}])
-  const [active, setActive] = useState(0)
+  const [active, setActive] = useState<string | null>(null);
 
   const dispatch = useDispatch()
   const getHoursCalendar = async () => {
@@ -88,7 +94,7 @@ const Calendar = () => {
   }
 
   const handleClick = (e: any) => {
-    const index = parseInt(e.id, 0)
+    const index = e.id
     if (index !== active) {
       setActive(index)
       setBarberSelected(e)
@@ -147,7 +153,6 @@ const Calendar = () => {
 
   const handleEventClick = async (clickInfo: any) => {
     const { event } = clickInfo
-    console.log("erv", event)
     const eventData = event.extendedProps
     const start = event.start ? event.start.toISOString() : null
     const end = event.end ? event.end.toISOString() : null
@@ -181,8 +186,7 @@ const Calendar = () => {
   }
 
   const handleDateSelect = async (event: any) => {
-    console.log("e", event)
-    if (barbers.length > 0) {
+    if (barbersActive.length > 0) {
       const currentView = calendarRef.current?.getApi().view.type
       if (currentView === "timeGridWeek") {
         setOpenModal(true)
@@ -198,16 +202,15 @@ const Calendar = () => {
     } else {
       NotifyHelper.notifyWarning("Debe agregar un barbero para agregar un turno.")
     }
-
   }
 
-  const selectBarber = async () => {
-    if (barbers) {
-      setBarberSelected(barbers[0])
-      setActive(barbers[0]?.id)
-      dispatch(getAllTurns(barbers[0]?.id) as any)
+  const selectBarber = (barbers: Barber[]) => {
+    if (barbers.length > 0) {
+      setBarberSelected(barbers[0]);
+      setActive(barbers[0].id);
+      dispatch(getAllTurns(barbers[0].id) as any);
     }
-  }
+  };
 
   useEffect(() => {
     getHoursCalendar()
@@ -215,41 +218,54 @@ const Calendar = () => {
 
   useEffect(() => {
     if (Array.isArray(barbers) && barbers.length > 0) {
-      selectBarber()
+      const activeBarbers = barbers.filter((barber: Barber) => barber.is_active === 1);
+      setBarberActive(activeBarbers);
+      selectBarber(activeBarbers);
     }
-  }, [barbers])
+  }, [barbers]);
+
+  const fetchTurns = async () => {
+    try {
+      if (turns && barbersActive.length > 0 && turns.length > 0) {
+        const turnosTransformados = await Promise.all(turns.map(transformarTurno));
+        setEvents(turnosTransformados);
+      } else {
+        setEvents([]);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    console.log("termino")
+  };
 
   useEffect(() => {
-    const fetchTurns = async () => {
-      try {
-        if (turns && turns.length > 0) {
-          const turnosTransformados = await Promise.all(
-            turns.map(transformarTurno)
-          )
-          setEvents(turnosTransformados)
-        } else {
-          setEvents([])
-        }
-      } catch (e) {
-        console.error(e)
-      }
-    }
+    const fetchData = async () => {
+      setLoadingTurns(false);
+      await fetchTurns();
+      setLoadingTurns(true);
+      console.log("termino ultimo");
+    };
 
-    fetchTurns()
-  }, [turns])
+    fetchData();
+  }, [turns]);
+
+  useEffect(() => {
+    console.log("llama")
+    fetchTurns();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch(getAllBarbers() as any)
-        dispatch(getAllClients() as any)
-        dispatch(getAllServices() as any)
+        await dispatch(getAllBarbers() as any);
+        dispatch(getAllClients() as any);
+        dispatch(getAllServices() as any);
       } catch (error) {
-        console.error("Error al obtener los datos:", error)
+        console.error('Error al obtener los datos:', error);
       }
-    }
-    fetchData()
-  }, [dispatch])
+    };
+    fetchData();
+  }, [dispatch]);
 
   useEffect(() => {
     setAllServices(services)
@@ -258,85 +274,95 @@ const Calendar = () => {
   return (
     <AppBarComponent>
       <>
-        <MotionComponent>
-          <>
-            <Box mt={2}>
-              <Card variant="outlined">
-                <Box p={4}>
-                  <Tabs>
-                    {barbers &&
-                      barbers?.map((barber: any, index: number) => {
-                        return (
-                          <Tab
-                            key={index}
-                            onClick={() => handleClick(barber)}
-                            active={active === barber.id}
-                            id={barber.id}
-                          >
-                            {barber.firstName} {barber.lastName}
-                          </Tab>
-                        )
-                      })}
-                  </Tabs>
-                  <Content active>
-                    <Card className="cardCalendar" variant="outlined">
-                      <Box p={4}>
-                        <Card
-                          style={{
-                            marginBottom: "20px",
-                            padding: "0px 10px",
-                            position: "relative",
-                            display: "flex",
-                            justifyContent: "space-between"
-                          }}
-                          variant="outlined"
-                        >
-                          <Box sx={{ width: 1 }}>
-                            {barbers && barbers.length === 0 ? (
-                              <Box mt={1}>
-                                <Stack sx={{ width: "100%" }} spacing={2}>
-                                  <Alert
-                                    variant="outlined"
-                                    severity="warning"
-                                    style={{ justifyContent: "center" }}
-                                  >
-                                    Aún no hay barberos cargados en el sistema.
-                                  </Alert>
-                                </Stack>
-                              </Box>
-                            ) : (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center"
-                                }}
+        <Box mt={2}>
+          <Card variant="outlined">
+            <Box p={4}>
+              <Tabs>
+                {barbersActive && barbersActive
+                  .filter((barber: any) => barber.is_active === 1)
+                  .map((barber: any, index: number) => (
+                    <Tab
+                      key={index}
+                      onClick={() => handleClick(barber)}
+                      active={active === barber.id}
+                      id={barber.id}
+                    >
+                      <Box display="flex" alignItems="center" justifyContent="center">
+                        <Avatar
+                          alt="Imagen"
+                          src={`${process.env.REACT_APP_URL_BASE}${barber.imagen}`}
+                          sx={{ width: 30, height: 30, marginRight: "10px", objectFit: "cover" }}
+                        />
+                        <p>
+                          {barber.firstName} {barber.lastName}
+                        </p>
+                      </Box>
+                    </Tab>
+                  ))}
+              </Tabs>
+              <Content active>
+                <Card className="cardCalendar" variant="outlined">
+                  <Box p={4}>
+                    <Card
+                      style={{
+                        marginBottom: "20px",
+                        padding: "0px 10px",
+                        position: "relative",
+                        display: "flex",
+                        justifyContent: "space-between"
+                      }}
+                      variant="outlined"
+                    >
+                      <Box sx={{ width: 1 }}>
+                        {barbersActive && barbersActive.length === 0 ? (
+                          <Box mt={1}>
+                            <Stack sx={{ width: "100%" }} spacing={2}>
+                              <Alert
+                                variant="outlined"
+                                severity="warning"
+                                style={{ justifyContent: "center" }}
                               >
-                                <InputLabel htmlFor="my-input">
-                                  Agenda de:
-                                </InputLabel>
-                                <h4>
-                                  {barberSelected
-                                    ? barberSelected.firstName +
-                                    " " +
-                                    barberSelected.lastName
-                                    : ""}
-                                </h4>
-                              </div>
-                            )}
-                            <Box display="flex" alignItems={"center"} sx={{ width: 1 }} my={1}>
-                              <Button
-                                variant="contained"
-                                className="fc-button"
-                                endIcon={<CalendarMonthIcon />}
-                                onClick={() => setOpenModalHours(true)}
-                                sx={{ width: 1 }}
-                              >
-                                Horarios Calendario
-                              </Button>
-                            </Box>
+                                Aún no hay barberos cargados en el sistema.
+                              </Alert>
+                            </Stack>
                           </Box>
-                        </Card>
+                        ) : (
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center"
+                            }}
+                          >
+                            <InputLabel htmlFor="my-input">
+                              Agenda de:
+                            </InputLabel>
+                            <h4>
+                              {barberSelected
+                                ? barberSelected.firstName +
+                                " " +
+                                barberSelected.lastName
+                                : ""}
+                            </h4>
+                          </div>
+                        )}
+                        <Box display="flex" alignItems={"center"} sx={{ width: 1 }} my={1}>
+                          <Button
+                            variant="contained"
+                            className="fc-button"
+                            endIcon={<CalendarMonthIcon />}
+                            onClick={() => setOpenModalHours(true)}
+                            sx={{ width: 1 }}
+                          >
+                            Horarios Calendario
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Card>
+                    <div id="calendar-container">
+                      {!loadingTurns ? (
+                        <SkeletonCalendar />
+                      ) : (barbersActive.length > 0 && (
                         <FullCalendar
                           ref={calendarRef}
                           plugins={[
@@ -380,64 +406,65 @@ const Calendar = () => {
                           selectable={true}
                           select={handleDateSelect}
                         />
-                        {tooltipContent && (
-                          <Tooltip title={tooltipContent} placement="top" arrow>
-                            <div style={{ display: "none" }}></div>
-                          </Tooltip>
-                        )}
-                      </Box>
-                    </Card>
-                  </Content>
-                </Box>
-              </Card>
+                      )
+                      )}
+                    </div>
+                    {tooltipContent && (
+                      <Tooltip title={tooltipContent} placement="top" arrow>
+                        <div style={{ display: "none" }}></div>
+                      </Tooltip>
+                    )}
+                  </Box>
+                </Card>
+              </Content>
             </Box>
-            <MotionModal
-              isOpen={openModal}
-              handleClose={handleCloseModal}
-            >
-              <Box mt={1} >
-                {filteredServices && (
-                  <FormAddTurn
-                    dataFormEvent={dataSelected}
-                    setOpenModal={setOpenModal}
-                    allClients={clients}
-                    allServices={filteredServices}
-                    barberSelected={barberSelected}
-                  />
-                )}
-              </Box>
-            </MotionModal>
+          </Card>
+        </Box>
+        <MotionModal
+          isOpen={openModal}
+          handleClose={handleCloseModal}
+        >
+          <Box mt={1} >
+            {filteredServices && (
+              <FormAddTurn
+                dataFormEvent={dataSelected}
+                setOpenModal={setOpenModal}
+                allClients={clients}
+                allServices={filteredServices}
+                barberSelected={barberSelected}
+              />
+            )}
+          </Box>
+        </MotionModal>
 
-            <MotionModal
-              isOpen={openModalEdit}
-              handleClose={handleCloseModalEdit}
-            >
-              <Box mt={1} position="relative">
-                <FormEditTurn
-                  dataFormEvent={dataSelected}
-                  setOpenModalEdit={setOpenModalEdit}
-                  allClients={clients}
-                  allServices={filteredServices}
-                  barberSelected={barberSelected}
-                />
-              </Box>
-            </MotionModal>
-            <MotionModal
-              isOpen={openModalHours}
-              handleClose={handleCloseModalHours}
-            >
-              <Box mt={1} position="relative">
-                <FormHoursCalendar
-                  openingTime={openingTime}
-                  closingTime={closingTime}
-                  idHoursCalendar={idHoursCalendar}
-                  setOpenModalHours={setOpenModalHours}
-                  updateCalendarData={updateCalendarData}
-                />
-              </Box>
-            </MotionModal>
-          </>
-        </MotionComponent>
+        <MotionModal
+          isOpen={openModalEdit}
+          handleClose={handleCloseModalEdit}
+        >
+          <Box mt={1} position="relative">
+            <FormEditTurn
+              dataFormEvent={dataSelected}
+              setOpenModalEdit={setOpenModalEdit}
+              allClients={clients}
+              allServices={filteredServices}
+              barberSelected={barberSelected}
+            />
+          </Box>
+        </MotionModal>
+        <MotionModal
+          isOpen={openModalHours}
+          handleClose={handleCloseModalHours}
+        >
+          <Box mt={1} position="relative">
+            <FormHoursCalendar
+              openingTime={openingTime}
+              closingTime={closingTime}
+              idHoursCalendar={idHoursCalendar}
+              setOpenModalHours={setOpenModalHours}
+              updateCalendarData={updateCalendarData}
+            />
+          </Box>
+        </MotionModal>
       </>
     </AppBarComponent>
   )

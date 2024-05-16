@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react"
 import { AppBarComponent } from "pages/AppBar/AppBar"
 import MotionComponent from "components/MotionComponent"
 import Paper from "@mui/material/Paper"
-import DataTableExtensions from "react-data-table-component-extensions"
-import DataTable from "react-data-table-component"
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
-import { NotifyHelper, paginationOption } from "contants"
+import { NotifyHelper, getMuiTheme, optionsTable } from "contants"
 import { useStyles } from "./styles"
 import { useDispatch, useSelector } from "react-redux"
 import store from "redux/store"
@@ -21,6 +18,10 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
 import "react-toastify/dist/ReactToastify.css"
 import { getAllBarbers, removeBarber } from "redux/actions/barbersAction"
+import { ThemeProvider } from '@mui/material/styles'
+import MUIDataTable from "mui-datatables"
+import moment from "moment"
+import { Avatar } from "@mui/material"
 
 const Barbers = () => {
   const classes: any = useStyles()
@@ -31,7 +32,7 @@ const Barbers = () => {
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
   const { barbers } = useSelector((state: RootState) => storeComplete.barbers)
-
+  console.log(barbers)
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})
@@ -43,12 +44,24 @@ const Barbers = () => {
   }
 
   const dataRow = async (option: string, e: any) => {
+    console.log(e)
+    const values = {
+      id: e[0],
+      imagen: e[1],
+      firstName: e[2],
+      lastName: e[3],
+      email: e[4],
+      telefono: e[5],
+      fecha_creacion: e[6],
+      is_active: e[7],
+      is_admin: e[8],
+    };
     if (option === "Editar") {
       handleOpenModal("Editar")
-      console.log("e", e)
-      setDataSelected(e)
+      console.log("e", values)
+      setDataSelected(values)
     } else {
-      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(e)
+      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(values)
       if (rtaDelete) {
         const rtaRemoveBarber = await dispatch(removeBarber(id) as any)
         if (rtaRemoveBarber.rta === 1) {
@@ -63,146 +76,100 @@ const Barbers = () => {
 
   const columnsTableBarbers = [
     {
-      name: "Id",
-      selector: (row: any) => row.id,
-      sortable: true,
-      omit: true
+      name: "id",
+      label: "ID",
+      options: {
+        display: false,
+        viewColumns: false,
+      }
     },
     {
-      name: "Imagen",
-      cell: (row: any) => (
-        <img
-          src={`${process.env.REACT_APP_URL_BASE}${row.imagen}`}
-          alt={row.url_image}
-          style={{ width: "80px", height: "80px", objectFit: "cover", padding: "10px" }} // Ajusta el ancho de la imagen según tus necesidades
-        />
-      )
+      name: "imagen",
+      label: "Imagen",
+      options: {
+        textAlign: "center",
+        customBodyRender: (imagen: any) => <div>
+          <Avatar
+            alt="Imagen"
+            src={`${process.env.REACT_APP_URL_BASE}${imagen}`}
+            sx={{ width: 70, height: 70, objectFit: "cover" }}
+          />
+        </div>,
+      },
     },
     {
-      name: "Nombre",
-      selector: (row: any) => row.firstName,
-      sortable: true
+      name: "firstName",
+      label: "Nombre",
     },
     {
-      name: "Apellido",
-      selector: (row: any) => row.lastName,
-      sortable: true
+      name: "lastName",
+      label: "Apellido",
     },
     {
-      name: "Email",
-      selector: (row: any) => row.email,
-      sortable: true
+      name: "email",
+      label: "Email",
     },
     {
-      name: "Teléfono",
-      selector: (row: any) => row.telefono,
-      sortable: true
+      name: "telefono",
+      label: "Telefono",
     },
     {
-      name: "Usuario Creado",
-      selector: (row: any) => new Date(row.fecha_creacion).toLocaleString(),
-      sortable: true
+      name: "fecha_creacion",
+      label: "Usuario Creado",
+      options: {
+        customBodyRender: (value: any) => moment(value).format("DD/MM/YYYY"),
+      },
     },
     {
-      name: "Activo",
-      selector: (row: any) => (row.is_active === 1 ? "Si" : "No"),
-      sortable: true,
-      center: true
+      name: "is_active",
+      label: "Activo",
+      options: {
+        customBodyRender: (row: any) => (row === 1 ? "Si" : "No")
+      },
     },
     {
-      name: "Administrador",
-      selector: (row: any) => (row.is_admin === 1 ? "Si" : "No"),
-      sortable: true,
-      center: true
+      name: "is_admin",
+      label: "Administrador",
+      options: {
+        customBodyRender: (row: any) => (row === 1 ? "Si" : "No")
+      },
     },
     {
-      name: "Acciones",
-      sortable: false,
-      cell: (d: any) => [
-        <Button
-          key={1}
-          style={{ marginLeft: "3px", marginRight: "3px" }}
-          variant="contained"
-          type="button"
-          className="btnTable"
-          title="Editar Barbero"
-          startIcon={<EditIcon />}
-          color="primary"
-          onClick={() => dataRow("Editar", d)}
-        ></Button>,
-        <Button
-          key={2}
-          variant="contained"
-          color="error"
-          style={{ marginLeft: "3px", marginRight: "3px" }}
-          className="btnTable"
-          type="button"
-          title="Eliminar Barbero"
-          startIcon={<DeleteIcon />}
-          onClick={() => dataRow("Eliminar", d)}
-        ></Button>
-      ],
-      grow: 2,
-      center: true
-    }
-  ]
+      name: "actions",
+      label: "Acciones",
+      options: {
+        customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+          return (
+            <div style={{ display: "flex" }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<EditIcon />}
+                style={{ marginRight: "4px" }}
 
-  const tableData = {
-    columns: columnsTableBarbers,
-    data: barbers
-  }
+                onClick={() => dataRow("Editar", tableMeta.rowData)}
+              >
+
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={() => dataRow("Eliminar", tableMeta.rowData)}
+              >
+              </Button>
+            </div>
+          );
+        },
+      },
+    },
+  ];
+
 
   useEffect(() => {
     dispatch(getAllBarbers() as any)
   }, [dispatch])
-
-  function convertArrayOfObjectsToCSV(array: any[]): string {
-    let result = '';
-
-    const columnDelimiter = ',';
-    const lineDelimiter = '\n';
-    const keys = Object.keys(barbers[0]);
-
-    result += keys.join(columnDelimiter);
-    result += lineDelimiter;
-
-    array.forEach(item => {
-      let ctr = 0;
-      keys.forEach(key => {
-        if (ctr > 0) result += columnDelimiter;
-
-        result += item[key];
-
-        ctr++;
-      });
-      result += lineDelimiter;
-    });
-
-    return result;
-  }
-
-  // Descarga un CSV a partir de un array de objetos
-  function downloadCSV(array: any[]) {
-    console.log("bar", barbers)
-    const link = document.createElement('a');
-    let csv = convertArrayOfObjectsToCSV(array);
-    if (csv == null) return;
-
-    const filename = 'export.csv';
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = `data:text/csv;charset=utf-8,${csv}`;
-    }
-
-    link.setAttribute('href', encodeURI(csv));
-    link.setAttribute('download', filename);
-    link.click();
-  }
-
-  const Export = () => <Button variant="outlined" onClick={() => downloadCSV(barbers)}>Exportar CSV</Button>;
-
-  const actionsMemo = React.useMemo(() => <Export />, []);
-
 
   return (
     <AppBarComponent>
@@ -243,25 +210,16 @@ const Barbers = () => {
                   </Card>
                 </Grid>
                 <Paper className={classes.cardTable}>
-                  <Card variant="outlined">
-                    <Grid p={2}>
-                      <DataTableExtensions {...tableData} px={0}>
-                        <DataTable
-                          columns={columnsTableBarbers}
-                          data={barbers}
-                          pagination
-                          sortIcon={<ArrowDownwardIcon />}
-                          highlightOnHover
-                          defaultSortAsc={true}
-                          title="Listado de Barberos"
-                          noDataComponent="No hay datos para mostrar"
-                          paginationComponentOptions={paginationOption}
-                          expandableRowsHideExpander
-                          actions={actionsMemo}
-                        />
-                      </DataTableExtensions>
-                    </Grid>
-                  </Card>
+                  <Grid >
+                    <ThemeProvider theme={getMuiTheme("#0f4c75")}>
+                      <MUIDataTable
+                        title={"Listado de barberos"}
+                        data={barbers}
+                        columns={columnsTableBarbers}
+                        options={optionsTable}
+                      />
+                    </ThemeProvider>
+                  </Grid>
                 </Paper>
               </Box>
             </Card>

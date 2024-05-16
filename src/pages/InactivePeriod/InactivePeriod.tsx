@@ -51,7 +51,7 @@ const InactivePeriod = () => {
         end_date: moment(endDate).format("YYYY-MM-DD 23:59:59"),
       }
       const { message } = await dispatch(availableDate(dataSearch) as any)
-      console.log("rtaAvailableTurn", message.count_turns)
+      console.log("rtaAvailableTurn", message[0].count_turns)
       return message[0].count_turns
     } catch (err) {
       console.error(err)
@@ -76,7 +76,8 @@ const InactivePeriod = () => {
       idBarber,
       idService,
       idClient: 1,
-      title: "Inactvo"
+      title: "Inactvo",
+      price: 0
     }
     console.log(dataComplete)
     let rtaAddTurn

@@ -16,7 +16,7 @@ export class HelperContants {
       reverseButtons: true,
       showCancelButton: true,
       text: "El usuario se borrara de su sistema.",
-      title: `<h5 style="margin:0">¿Está seguro que desea eliminar a ${nameComplete}?</h5>`
+      title: `<h5 style="margin:0">¿Está seguro que desea eliminar a ${nameComplete}?</h5>`,
     }).then((result) => {
       if (result.isConfirmed) {
         rtaDelete = true

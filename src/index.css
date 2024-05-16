@@ -391,6 +391,19 @@ inputDisabled input[type="time"] {
   margin: 0 !important
 }
 
-.css-1ygcj2i-MuiTableCell-root {
-  padding: 16px 16px 16px 0px !important;
+.tss-178gktx-MUIDataTableHeadCell-contentWrapper>.MuiButtonBase-root {
+  padding: 0px !important;
+}
+
+.tss-qbo1l6-MUIDataTableToolbar-actions>span:nth-child(3) {
+  display: none !important;
+}
+
+.tss-qbo1l6-MUIDataTableToolbar-actions>span:nth-child(5) {
+  display: none !important;
+}
+
+.css-bhp9pd-MuiPaper-root-MuiCard-root {
+  border: 1px solid #ddd;
+  box-shadow: none !important;
 }

@@ -163,6 +163,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} mb={2}>
+                    <small style={{ marginLeft: "15px", marginBottom: "-4px", color: "rgb(158 158 158)" }}>Cliente</small>
                     <Select
                       isSearchable={true}
                       options={allClients.map((client: any) => ({
