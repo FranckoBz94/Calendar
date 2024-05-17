@@ -407,3 +407,33 @@ inputDisabled input[type="time"] {
   border: 1px solid #ddd;
   box-shadow: none !important;
 }
+
+.label_custom {
+  position: absolute;
+  top: -13px;
+  left: 10px;
+  color: #919191;
+  z-index: 999;
+  background: #fff;
+  padding: 3px;
+  font-size: 12px;
+}
+
+.modal_custom {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  border: 2px solid #ddd !important;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 24;
+  padding: 4;
+}
+
+@media (max-width:600px) {
+  .modal_custom {
+    width: 90%;
+  }
+}

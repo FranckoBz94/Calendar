@@ -5,24 +5,15 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { Avatar, Card, Paper, Typography } from "@mui/material";
+import { Avatar, Card, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { getMyUser, updateUser } from "redux/actions/usersAction";
+import { updateUser } from "redux/actions/usersAction";
 import { NotifyHelper } from "contants";
+import { useUser } from '../../components/UserProvider';
 
-interface ValuesProfile {
-  firstName: string
-  lastName: string
-  email: string
-  is_barber: number
-  is_admin: number
-  url_image: string
-}
-
-export const Profile = () => {
+const Profile = () => {
   const [profileImage, setProfileImage] = React.useState<File | null>(null)
-  const [dataUser, setDataUser] = React.useState<ValuesProfile>()
-  const [userId, setUserId] = React.useState(null)
+  const { user, setUser } = useUser();
   const urlBase = process.env.REACT_APP_URL_BASE || ""
 
   const dispatch = useDispatch()
@@ -33,13 +24,8 @@ export const Profile = () => {
     }
   }
 
-  const getDataUser = async (id: number) => {
-    const rtaGetDataUser = await dispatch(getMyUser(id) as any);
-    setDataUser(rtaGetDataUser);
-  }
   const updateProfile = async (e: any, data: any) => {
     e.preventDefault()
-    console.log(data)
     const formData = new FormData()
     formData.append("firstName", data.firstName)
     formData.append("lastName", data.lastName)
@@ -47,9 +33,12 @@ export const Profile = () => {
     formData.append("imageProfile", profileImage || data.imageProfile)
     let rtaUpdateUser
     try {
-      rtaUpdateUser = await dispatch(updateUser(formData, userId) as any)
+      rtaUpdateUser = await dispatch(updateUser(formData, user?.id) as any)
       if (rtaUpdateUser.rta === 1) {
         NotifyHelper.notifySuccess(rtaUpdateUser.message)
+        const updatedUser = { ...user };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
       } else {
         NotifyHelper.notifyError(rtaUpdateUser.message)
       }
@@ -58,77 +47,70 @@ export const Profile = () => {
     }
   }
 
-  const getData = async () => {
-    const user = await JSON.parse(localStorage.getItem('user') || '{}');
-    const id = user.id;
-    getDataUser(id)
-    setUserId(id);
-  }
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (dataUser) {
-      setDataUser({
-        ...dataUser,
-        [e.target.name]: e.target.value
-      });
-    }
+    const { name, value } = e.target;
+    setUser((prevUser) => (prevUser ? { ...prevUser, [name]: value } : null));
   };
-
-  React.useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <AppBarComponent>
       <MotionComponent>
-        <Card>
-          <Box
-            sx={{
-              marginTop: 3,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Typography component="h1" variant="h5">
-              Mis datos
-            </Typography>
-            <Grid container direction="column" sx={{ overflowX: "hidden" }}>
+        <Box sx={{ mx: { sx: 0, md: 15 } }}>
+          <Card>
+            <Box
+              sx={{
+                marginTop: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Typography component="h1" variant="h5">
+                Mis datos
+              </Typography>
               <Grid
                 container
                 spacing={3}
                 sx={{
-                  px: { xs: 0, md: 7 },
-                  py: { md: 3 }
+                  px: { xs: 4, md: 7 },
+                  py: { md: 3 },
+                  minHeight: '100%'
                 }}
               >
-                <Grid item md={3} width="100%">
-                  <Paper style={{ width: "auto", height: "200px", border: "1px solid #ddd" }}>
-                    <label htmlFor="file" style={{ cursor: "pointer", display: "flex", height: "100%" }}>
-                      <Box
-                        width="100%"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        flexDirection="column"
-                      >
-                        <input
-                          type="file"
-                          accept="image/*"
-                          name="image"
-                          id="file"
-                          onChange={loadFile}
-                          style={{ display: "none" }}
-                        />
-                        <Avatar src={profileImage ? URL.createObjectURL(profileImage) : urlBase + dataUser?.url_image} sx={{ width: 170, height: 170 }} />
+                <Grid item md={3} display="flex" flexDirection="column">
+                  <label htmlFor="file" style={{ cursor: "pointer", display: "flex" }}>
+                    <Box
+                      marginTop={3}
+                      width="100%"
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <input
+                        type="file"
+                        accept="image/*"
+                        name="image"
+                        id="file"
+                        onChange={loadFile}
+                        style={{ display: "none" }}
+                      />
+                      <Avatar src={profileImage ? URL.createObjectURL(profileImage) : urlBase + user?.url_image} sx={{ width: 170, height: 170 }} />
+                    </Box>
+                  </label>
 
-                      </Box>
-                    </label>
-                  </Paper>
+                  <Box sx={{ paddingX: 3, paddingY: 3 }}>
+                    <Typography variant="subtitle2" noWrap>
+                      <b >Administrador:</b> {user?.is_admin === 1 ? 'Si' : 'No'}
+                    </Typography>
+                    <Typography variant="body2" noWrap>
+                      <b>Barbero Activo:</b> {user?.is_barber === 1 ? 'Si' : 'No'}
+                    </Typography>
+                  </Box>
+
                 </Grid>
-                <Grid item md={9}>
+                <Grid item md={9} display="flex" flexDirection="column">
                   <Box component="form" encType="multipart/form-data"
-                    noValidate onSubmit={(e) => updateProfile(e, dataUser)}  >
+                    noValidate onSubmit={(e) => updateProfile(e, user)}  >
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm={6}>
                         <TextField
@@ -139,7 +121,7 @@ export const Profile = () => {
                           id="firstName"
                           label="Nombre"
                           autoFocus
-                          value={dataUser?.firstName || ''}
+                          value={user?.firstName || ''}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -150,7 +132,7 @@ export const Profile = () => {
                           id="lastName"
                           label="Apellido"
                           name="lastName"
-                          value={dataUser?.lastName || ''}
+                          value={user?.lastName || ''}
                           onChange={handleChange}
                           autoComplete="family-name"
                         />
@@ -162,7 +144,7 @@ export const Profile = () => {
                           id="email"
                           label="Email"
                           name="email"
-                          value={dataUser?.email || ''}
+                          value={user?.email || ''}
                           onChange={handleChange}
                           autoComplete="email"
                         />
@@ -179,9 +161,9 @@ export const Profile = () => {
                   </Box>
                 </Grid>
               </Grid>
-            </Grid>
-          </Box>
-        </Card>
+            </Box>
+          </Card>
+        </Box>
       </MotionComponent>
     </AppBarComponent >
   );

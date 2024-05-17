@@ -25,8 +25,12 @@ function parseJwt(token: any) {
   return JSON.parse(jsonPayload);
 }
 
+
+
 const PrivateRoute = ({ element, ...rest }: any) => {
   const tokenFromLocalStorage = localStorage.getItem('token');
+
+
   const tokenExistAndStillValid = tokenFromLocalStorage && parseJwt(tokenFromLocalStorage).exp * 1000 > Date.now();
   const location = useLocation();
   const isLoginRoute = location.pathname === '/login';

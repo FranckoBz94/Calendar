@@ -30,6 +30,8 @@ interface Barber {
   lastName: string;
   imagen: string;
   is_active: number;
+  is_admin: number;
+  id_barbero: number;
 }
 
 const Calendar = () => {
@@ -45,6 +47,7 @@ const Calendar = () => {
   const [loadingTurns, setLoadingTurns] = useState(false)
   const [dataSelected, setDataSelected] = useState({})
   const [filteredServices, setFilteredServices] = useState([])
+  const [user, setUser] = React.useState<Barber | null>(null);
 
   const [events, setEvents] = useState([{}])
   const [active, setActive] = useState<string | null>(null);
@@ -218,7 +221,13 @@ const Calendar = () => {
 
   useEffect(() => {
     if (Array.isArray(barbers) && barbers.length > 0) {
-      const activeBarbers = barbers.filter((barber: Barber) => barber.is_active === 1);
+      let activeBarbers
+      if (user?.is_admin === 1) {
+        activeBarbers = barbers.filter((barber: Barber) => barber.is_active === 1);
+      } else {
+        activeBarbers = barbers.filter((barber: Barber) => parseInt(barber.id) === user?.id_barbero && barber?.is_active === 1);
+      }
+      console.log(activeBarbers)
       setBarberActive(activeBarbers);
       selectBarber(activeBarbers);
     }
@@ -270,6 +279,13 @@ const Calendar = () => {
   useEffect(() => {
     setAllServices(services)
   }, [services])
+
+  React.useEffect(() => {
+    const userFromLocalStorage = localStorage.getItem('user');
+    if (userFromLocalStorage) {
+      setUser(JSON.parse(userFromLocalStorage));
+    }
+  }, []);
 
   return (
     <AppBarComponent>
@@ -389,16 +405,16 @@ const Calendar = () => {
                           allDaySlot={false}
                           locales={[esLocale]}
                           events={events}
-                          eventContent={(eventInfo) => {
-                            const eventData = eventInfo.event.extendedProps;
-                            return (
-                              <div style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                <small style={{ margin: 0 }}>{eventInfo.timeText}</small>
-                                <h5 style={{ margin: 0 }}>{eventInfo.event.title}</h5>
-                                <small style={{ margin: 0 }}>Turno: {eventData.description}</small>
-                              </div>
-                            );
-                          }}
+                          // eventContent={(eventInfo) => {
+                          //   const eventData = eventInfo.event.extendedProps;
+                          //   return (
+                          //     <div style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          //       <small style={{ margin: 0 }}>{eventInfo.timeText}</small>
+                          //       <h5 style={{ margin: 0 }}>{eventInfo.event.title}</h5>
+                          //       <small style={{ margin: 0 }}>Turno: {eventData.description}</small>
+                          //     </div>
+                          //   );
+                          // }}
                           eventMouseEnter={handleEventMouseEnter}
                           eventMouseLeave={handleEventMouseLeave}
                           eventClick={handleEventClick}

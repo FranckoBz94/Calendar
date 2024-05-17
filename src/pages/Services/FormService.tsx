@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import {
-  Alert,
   Box,
   Container,
   createTheme,
@@ -123,7 +122,7 @@ const FormService: React.FC<FormServiceProps> = (props) => {
   const formatCurrency = (value: any) => {
     const options = { style: 'currency', currency: 'USD' };
     const numberFormat = new Intl.NumberFormat('en-US', options);
-    const formattedValue = numberFormat.format(value / 100); // Dividir por 100 para obtener el valor en dólares y centavos
+    const formattedValue = numberFormat.format(value / 100);
     return formattedValue;
   };
 
@@ -135,7 +134,7 @@ const FormService: React.FC<FormServiceProps> = (props) => {
 
     // Formatear el valor con dos decimales
     const formattedValue = formatCurrency(numericInput);
-
+    values.price_service = formattedPrice
     setFormattedPrice(formattedValue);
   };
 
@@ -151,7 +150,7 @@ const FormService: React.FC<FormServiceProps> = (props) => {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 3,
+            marginTop: 5,
             display: "flex",
             flexDirection: "column",
             alignItems: "center"
@@ -163,7 +162,7 @@ const FormService: React.FC<FormServiceProps> = (props) => {
               : "Nuevo Servicio"}
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} marginTop={3}>
               <Grid item xs={12}>
                 <TextField
                   id="name_service"
@@ -177,28 +176,33 @@ const FormService: React.FC<FormServiceProps> = (props) => {
                   margin="normal"
                 />
               </Grid>
-              <Grid item xs={6} style={{ height: "100%" }}>
+              <Grid item xs={12} md={6} style={{ height: "100%" }}>
                 <FormControl fullWidth>
+                  <small className="label_custom" >Minutos</small>
                   <Select
                     isSearchable={true}
                     className="custom-select"
                     classNamePrefix="select"
                     options={minuteServices}
                     defaultValue={
-                      dataFormService
+                      optionSelected === "Editar"
                         ? {
                           label: dataFormService?.minutes_service,
                           value: dataFormService?.minutes_service
                         }
-                        : null
+                        : {
+                          label: minuteServices[0]?.label,
+                          value: minuteServices[0]?.value
+                        }
                     }
                     placeholder="Minutos"
                     onChange={handleChangeSelect}
+                    isDisabled={optionSelected === "Editar"}
                     required
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <TextField
                     id="price_service"
@@ -226,14 +230,6 @@ const FormService: React.FC<FormServiceProps> = (props) => {
                   />
                 </FormControl>
               </Grid>
-              {optionSelected === "Editar" && (
-                <Grid item xs={12}>
-                  <Alert variant="filled" severity="warning">
-                    La actualizacion del tiempo de los servicios no se vera
-                    reflejada en turnos anteriores
-                  </Alert>
-                </Grid>
-              )}
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="center">
                   <LoadingButton
@@ -243,6 +239,7 @@ const FormService: React.FC<FormServiceProps> = (props) => {
                     loading={isLoading}
                     variant="contained"
                     sx={{ mt: 5, mb: 5, py: 2, px: 4 }}
+                    style={{ width: "40%" }}
                   >
                     <span>
                       {optionSelected === "Editar" ? "Actualizar" : "Guardar"}

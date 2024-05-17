@@ -16,6 +16,7 @@ import { mainListItems } from './listItem';
 import { Link, useNavigate } from "react-router-dom"
 import Divider from '@mui/material/Divider';
 import Logout from '@mui/icons-material/Logout';
+import { useUser } from '../../components/UserProvider';
 
 const drawerWidth = 240;
 
@@ -74,18 +75,21 @@ interface Props {
   children?: ReactElement
 }
 
-interface User {
-  firstName: string;
-  lastName: string;
-  url_image: string
-}
+// interface User {
+//   firstName: string;
+//   lastName: string;
+//   url_image: string
+//   email: string
+// }
 
 export function AppBarComponent(props: Props) {
   const theme = useTheme();
   const { children } = props
 
   const [open, setOpen] = React.useState(true);
-  const [user, setUser] = React.useState<User | null>(null);
+  // const [user, setUser] = React.useState<User | null>(null);
+  const { user } = useUser();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
   const navigate = useNavigate()
@@ -98,17 +102,8 @@ export function AppBarComponent(props: Props) {
   };
 
   const handleLogout = () => {
-    // Eliminar datos del localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-
-    // Opcional: invalidar el token en el servidor
-    // fetch('/api/logout', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': `Bearer ${tokenFromLocalStorage}`
-    //   }
-    // });
     navigate('/login');
   };
 
@@ -119,12 +114,12 @@ export function AppBarComponent(props: Props) {
     setAnchorEl(null);
   };
 
-  React.useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  // React.useEffect(() => {
+  //   const storedUser = localStorage.getItem('user');
+  //   if (storedUser) {
+  //     setUser(JSON.parse(storedUser));
+  //   }
+  // }, []);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -185,12 +180,22 @@ export function AppBarComponent(props: Props) {
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
+
+              <Box sx={{ my: 1.5, px: 2 }}>
+                <Typography variant="subtitle2" noWrap>
+                  <b> {user?.firstName} {user?.lastName}</b>
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+                  {user?.email}
+                </Typography>
+              </Box>
+              <Divider />
               <MenuItem onClick={handleClose} component={Link} to="/profile">
-                <Avatar /> Perfil
+                <Avatar sx={{ width: 24, height: 24 }} /> Perfil
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleLogout}>
-                <ListItemIcon>
+                <ListItemIcon >
                   <Logout fontSize="small" />
                 </ListItemIcon>
                 Cerrar sesión

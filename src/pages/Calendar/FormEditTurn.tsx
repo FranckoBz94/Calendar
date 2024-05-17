@@ -108,7 +108,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
   }
 
   const serviceSelected = allServices.find((service: any) => service.id === dataFormEvent?.idService)
-
+  console.log("sele", serviceSelected)
   const handleChangeSelectService = (e: any) => {
     const dataTurn = JSON.parse(e.value)
     values.idService = dataTurn.id

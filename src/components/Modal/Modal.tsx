@@ -9,18 +9,19 @@ interface ModalProps {
   children: any
 }
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: "60%",
-  bgcolor: 'background.paper',
-  border: '2px solid #ddd !important',
-  borderRadius: '5px',
-  boxShadow: 24,
-  p: 4,
-};
+// const style = {
+//   position: 'absolute' as 'absolute',
+//   top: '50%',
+//   left: '50%',
+//   transform: 'translate(-50%, -50%)',
+//   width: "60%",
+//   bgcolor: 'background.paper',
+//   border: '2px solid #ddd !important',
+//   borderRadius: '5px',
+//   boxShadow: 24,
+//   p: 4,
+// };
+
 
 
 const MotionModal: React.FC<ModalProps> = ({
@@ -48,7 +49,7 @@ const MotionModal: React.FC<ModalProps> = ({
           aria-describedby="modal-modal-description"
           style={{ border: 'none' }}
         >
-          <Box sx={style}>
+          <Box className="modal_custom" >
             {children}
           </Box>
         </Modal>
