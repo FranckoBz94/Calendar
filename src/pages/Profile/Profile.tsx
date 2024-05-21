@@ -55,7 +55,7 @@ const Profile = () => {
   return (
     <AppBarComponent>
       <MotionComponent>
-        <Box sx={{ mx: { sx: 0, md: 15 } }}>
+        <Box >
           <Card>
             <Box
               sx={{
@@ -63,6 +63,7 @@ const Profile = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                width: "100%"
               }}
             >
               <Typography component="h1" variant="h5">
@@ -70,49 +71,50 @@ const Profile = () => {
               </Typography>
               <Grid
                 container
-                spacing={3}
+                spacing={6}
                 sx={{
-                  px: { xs: 4, md: 7 },
-                  py: { md: 3 },
-                  minHeight: '100%'
+                  px: { xl: 1, md: 3 },
+                  mt: 1,
+                  minHeight: '100%',
+                  width: "100%",
+                  flexWrap: 'wrap'
                 }}
               >
-                <Grid item md={3} display="flex" flexDirection="column">
-                  <label htmlFor="file" style={{ cursor: "pointer", display: "flex" }}>
-                    <Box
-                      marginTop={3}
-                      width="100%"
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      <input
-                        type="file"
-                        accept="image/*"
-                        name="image"
-                        id="file"
-                        onChange={loadFile}
-                        style={{ display: "none" }}
-                      />
-                      <Avatar src={profileImage ? URL.createObjectURL(profileImage) : urlBase + user?.url_image} sx={{ width: 170, height: 170 }} />
-                    </Box>
-                  </label>
+                <Grid item md={3} sm={12} width="100%" display="flex" flexDirection="column" alignItems="center"  >
+                  <div >
+                    <label htmlFor="file" style={{ cursor: "pointer", display: "flex" }}>
+                      <Box
+                        width="100%"
+                        height="100%"
+                      >
+                        <input
+                          type="file"
+                          accept="image/*"
+                          name="image"
+                          id="file"
+                          onChange={loadFile}
+                          style={{ display: "none" }}
+                        />
+                        <Avatar src={profileImage ? URL.createObjectURL(profileImage) : urlBase + user?.url_image} sx={{ maxWidth: 170, maxHeight: 170, width: "100%", height: "auto" }} />
+                      </Box>
+                    </label>
 
-                  <Box sx={{ paddingX: 3, paddingY: 3 }}>
-                    <Typography variant="subtitle2" noWrap>
-                      <b >Administrador:</b> {user?.is_admin === 1 ? 'Si' : 'No'}
-                    </Typography>
-                    <Typography variant="body2" noWrap>
-                      <b>Barbero Activo:</b> {user?.is_barber === 1 ? 'Si' : 'No'}
-                    </Typography>
-                  </Box>
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" noWrap>
+                        <b >Administrador:</b> {user?.is_admin === 1 ? 'Si' : 'No'}
+                      </Typography>
+                      <Typography variant="body2" noWrap>
+                        <b>Barbero Activo:</b> {user?.is_barber === 1 ? 'Si' : 'No'}
+                      </Typography>
+                    </Box>
+                  </div>
 
                 </Grid>
-                <Grid item md={9} display="flex" flexDirection="column">
+                <Grid item md={9} sm={12} display="flex" flexDirection="column">
                   <Box component="form" encType="multipart/form-data"
                     noValidate onSubmit={(e) => updateProfile(e, user)}  >
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} md={6}>
                         <TextField
                           autoComplete="given-name"
                           name="firstName"
@@ -125,7 +127,7 @@ const Profile = () => {
                           onChange={handleChange}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} md={6}>
                         <TextField
                           required
                           fullWidth

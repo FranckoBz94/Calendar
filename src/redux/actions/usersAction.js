@@ -79,7 +79,7 @@ export const updateUser = (formData, id) => async (dispatch) => {
   try {
     const response = await axios.put(ruta + "users/" + id, formData, {
       headers: {
-        "Content-Type": "multipart/form-data" // Importante para la carga de archivos
+        "Content-Type": "multipart/form-data"
       }
     })
     dispatch(setUpdateUser())

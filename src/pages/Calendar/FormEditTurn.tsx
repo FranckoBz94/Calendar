@@ -35,17 +35,18 @@ const FormEditTurn = (props: FormCalendarProps) => {
     idService,
     idTurn
   } = dataFormEvent
+
   const [selectedOptionService, setSelectedOptionService] = useState({
-    id: allServices[0]?.id,
-    minutes_service: allServices[0]?.minutes_service
+    id: null,
+    minutes_service: null
   })
+  const [selectedOptionClient, setSelectedOptionClient] = useState(null)
   const dispatch = useDispatch()
 
   const endTime = DateContants.calculateEndTime(
     dataFormEvent.startTurn,
     selectedOptionService.minutes_service
   )
-
   const initialValues = {
     title,
     idClient,
@@ -55,19 +56,26 @@ const FormEditTurn = (props: FormCalendarProps) => {
     idService
   }
 
+  const serviceSelected = allServices.find((service: any) => service.id === dataFormEvent?.idService)
+  const selectedClient: any = allClients.find((client: any) => client.id === dataFormEvent?.idClient)
+
   const updateEvent = async (data: any) => {
-    const idService = selectedOptionService.id || undefined
+    const idServiceSelected = selectedOptionService.id !== null ? selectedOptionService.id : serviceSelected.id
+    const endService = selectedOptionService.minutes_service !== null ? selectedOptionService.minutes_service : serviceSelected.minutes_service
+    const idClientSelected = selectedOptionClient !== null ? selectedOptionClient : selectedClient.id
     const endTime = DateContants.calculateEndTime(
       startTurn,
-      selectedOptionService.minutes_service
+      endService
     )
     const dataComplete = {
       ...data,
       end: moment(endTime).toDate(),
       idBarber: barberSelected.id,
-      idService
+      idClient: idClientSelected,
+      idService: idServiceSelected
     }
     let rtaAddTurn
+
     try {
       rtaAddTurn = await dispatch(updateTurn(dataComplete, idTurn) as any)
       if (rtaAddTurn.rta === 1) {
@@ -107,17 +115,22 @@ const FormEditTurn = (props: FormCalendarProps) => {
     }
   }
 
-  const serviceSelected = allServices.find((service: any) => service.id === dataFormEvent?.idService)
   console.log("sele", serviceSelected)
+
   const handleChangeSelectService = (e: any) => {
-    const dataTurn = JSON.parse(e.value)
-    values.idService = dataTurn.id
+    const dataService = JSON.parse(e.value)
+    values.idService = dataService.id
     setSelectedOptionService(JSON.parse(e.value))
   };
 
-  const selectedClient: any = allClients.find(
-    (client: any) => client.id === values.idClient
-  )
+  const handleChangeSelectClient = (e: any) => {
+    const dataClient = JSON.parse(e.value)
+    values.idClient = dataClient
+    console.log("dataClient", dataClient)
+    setSelectedOptionClient(dataClient)
+  };
+
+
 
   const Option = (props: any) => {
     return (
@@ -179,7 +192,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
                       : null
                   }
                   placeholder="Cliente"
-                  onChange={handleChangeSelectService}
+                  onChange={handleChangeSelectClient}
                   required
                 />
               </Grid>
@@ -218,6 +231,8 @@ const FormEditTurn = (props: FormCalendarProps) => {
                 />
               </Grid>
               <Grid item xs={12} mb={2}>
+                <p>{serviceSelected.name_service}</p>
+                <p>{serviceSelected.id}</p>
                 <Select
                   className="basic-multi-select"
                   classNamePrefix="select"

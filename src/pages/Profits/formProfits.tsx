@@ -56,8 +56,8 @@ const formProfits = () => {
     try {
       const dataSearch = {
         idBarber: selectedOptionBarber?.value,
-        start_date: values.start_date,
-        end_date: values.end_date,
+        start_date: moment(values.start_date).format("YYYY-MM-DD 06:00:00"),
+        end_date: moment(values.end_date).format("YYYY-MM-DD 23:00:00"),
       }
       const { dataProfit } = await dispatch(searchTurnsProfits(dataSearch) as any)
 
