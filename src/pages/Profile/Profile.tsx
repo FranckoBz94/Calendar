@@ -1,7 +1,5 @@
-import { AppBarComponent } from "pages/AppBar/AppBar"
 import MotionComponent from "components/MotionComponent"
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -10,9 +8,12 @@ import { useDispatch } from "react-redux";
 import { updateUser } from "redux/actions/usersAction";
 import { NotifyHelper } from "contants";
 import { useUser } from '../../components/UserProvider';
+import { LoadingButton } from "@mui/lab";
+import MainComponent from "pages/AppBar/MainComponent";
 
 const Profile = () => {
   const [profileImage, setProfileImage] = React.useState<File | null>(null)
+  const [isLoading, setIsLoading] = React.useState(false)
   const { user, setUser } = useUser();
   const urlBase = process.env.REACT_APP_URL_BASE || ""
 
@@ -26,6 +27,7 @@ const Profile = () => {
 
   const updateProfile = async (e: any, data: any) => {
     e.preventDefault()
+    setIsLoading(true)
     const formData = new FormData()
     formData.append("firstName", data.firstName)
     formData.append("lastName", data.lastName)
@@ -45,6 +47,7 @@ const Profile = () => {
     } catch (err) {
       NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
     }
+    setIsLoading(false)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +56,7 @@ const Profile = () => {
   };
 
   return (
-    <AppBarComponent>
+    <MainComponent>
       <MotionComponent>
         <Box >
           <Card>
@@ -75,6 +78,7 @@ const Profile = () => {
                 sx={{
                   px: { xl: 1, md: 3 },
                   mt: 1,
+                  mb: 5,
                   minHeight: '100%',
                   width: "100%",
                   flexWrap: 'wrap'
@@ -84,8 +88,8 @@ const Profile = () => {
                   <div >
                     <label htmlFor="file" style={{ cursor: "pointer", display: "flex" }}>
                       <Box
-                        width="100%"
-                        height="100%"
+                        width={150}
+                        height={150}
                       >
                         <input
                           type="file"
@@ -95,7 +99,7 @@ const Profile = () => {
                           onChange={loadFile}
                           style={{ display: "none" }}
                         />
-                        <Avatar src={profileImage ? URL.createObjectURL(profileImage) : urlBase + user?.url_image} sx={{ maxWidth: 170, maxHeight: 170, width: "100%", height: "auto" }} />
+                        <Avatar src={profileImage ? URL.createObjectURL(profileImage) : urlBase + user?.url_image} sx={{ maxWidth: 170, maxHeight: 170, width: "100%", height: "100%" }} />
                       </Box>
                     </label>
 
@@ -152,14 +156,16 @@ const Profile = () => {
                         />
                       </Grid>
                     </Grid>
-                    <Button
+                    <LoadingButton
                       type="submit"
                       fullWidth
+                      loading={isLoading}
+                      loadingPosition="start"
                       variant="contained"
                       sx={{ mt: 3, mb: 2 }}
                     >
-                      Actualizar datos
-                    </Button>
+                      {isLoading ? "Cargando" : "Actualizar datos"}
+                    </LoadingButton>
                   </Box>
                 </Grid>
               </Grid>
@@ -167,7 +173,7 @@ const Profile = () => {
           </Card>
         </Box>
       </MotionComponent>
-    </AppBarComponent >
+    </MainComponent >
   );
 }
 

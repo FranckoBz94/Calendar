@@ -26,7 +26,7 @@ export const Tab = styled.button`
   border: ${(props) => (props.active ? "1px solid #ccc" : "")};
   border-bottom: ${(props) => (props.active ? "none" : "")};
   background-color: ${(props) => (props.active ? "#6a1b9a" : "#ce93d8")};
-  height: ${(props) => (props.active ? "3em" : "2.6em; top:.4em")};
+  height: ${(props) => (props.active ? "auto" : "2.6em; top:.4em;height:100%")};
   transition: background-color 0.5s ease-in-out;
   color:#fff;
   border-radius: ${(props) => (props.active ? "5px" : "opx")};

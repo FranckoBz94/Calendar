@@ -1,10 +1,10 @@
 import React from "react"
-import { AppBarComponent } from "pages/AppBar/AppBar"
 import MotionComponent from "components/MotionComponent"
+import MainComponent from "pages/AppBar/MainComponent"
 
 const Home = () => {
   return (
-    <AppBarComponent>
+    <MainComponent>
       <MotionComponent>
         <>
           <div>
@@ -12,7 +12,7 @@ const Home = () => {
           </div>
         </>
       </MotionComponent>
-    </AppBarComponent>
+    </MainComponent>
   )
 }
 

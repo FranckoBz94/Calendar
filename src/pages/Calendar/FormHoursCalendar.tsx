@@ -108,53 +108,57 @@ const FormHoursCalendar = (props: FormHoursProps) => {
           </Box>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography component="h2" variant="h6">
-                  Hora de Apertura
-                </Typography>
-                {availableStartHours.map((hour: string) => (
-                  <label
-                    key={hour}
-                    className={
-                      values.openingTime === hour
-                        ? classes.inputChecked
-                        : classes.customRadioLabel
-                    }
-                  >
-                    <input
-                      type="radio"
-                      value={hour}
-                      hidden
-                      checked={values.openingTime === hour}
-                      onChange={handleOpeningTimeChange}
-                    />
-                    {hour}
-                  </label>
-                ))}
+              <Grid item xs={6}>
+                <Box>
+                  <Typography component="h2" variant="h6">
+                    Hora de Apertura
+                  </Typography>
+                  {availableStartHours.map((hour: string) => (
+                    <label
+                      key={hour}
+                      className={
+                        values.openingTime === hour
+                          ? classes.inputChecked
+                          : classes.customRadioLabel
+                      }
+                    >
+                      <input
+                        type="radio"
+                        value={hour}
+                        hidden
+                        checked={values.openingTime === hour}
+                        onChange={handleOpeningTimeChange}
+                      />
+                      {hour}
+                    </label>
+                  ))}
+                </Box>
               </Grid>
-              <Grid item xs={12}>
-                <Typography component="h2" variant="h6">
-                  Hora de Cierre
-                </Typography>
-                {closeHours.map((hour: string) => (
-                  <label
-                    key={hour}
-                    className={
-                      values.closingTime === hour
-                        ? classes.inputChecked
-                        : classes.customRadioLabel
-                    }
-                  >
-                    <input
-                      type="radio"
-                      value={hour}
-                      hidden
-                      checked={values.closingTime === hour}
-                      onChange={handleClosingTimeChange}
-                    />
-                    {hour}
-                  </label>
-                ))}
+              <Grid item xs={6}>
+                <Box>
+                  <Typography component="h2" variant="h6">
+                    Hora de Cierre
+                  </Typography>
+                  {closeHours.map((hour: string) => (
+                    <label
+                      key={hour}
+                      className={
+                        values.closingTime === hour
+                          ? classes.inputChecked
+                          : classes.customRadioLabel
+                      }
+                    >
+                      <input
+                        type="radio"
+                        value={hour}
+                        hidden
+                        checked={values.closingTime === hour}
+                        onChange={handleClosingTimeChange}
+                      />
+                      {hour}
+                    </label>
+                  ))}
+                </Box>
               </Grid>
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="center">

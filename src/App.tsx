@@ -1,6 +1,6 @@
 import { Provider } from "react-redux"
 import store from "redux/store"
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom"
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import Clients from "pages/Clients"
 import Users from "pages/Users"
 import Services from "pages/Services"
@@ -28,22 +28,24 @@ function parseJwt(token: any) {
 
 
 const PrivateRoute = ({ element, ...rest }: any) => {
-  const tokenFromLocalStorage = localStorage.getItem('token');
-
-
-  const tokenExistAndStillValid = tokenFromLocalStorage && parseJwt(tokenFromLocalStorage).exp * 1000 > Date.now();
+  const navigate = useNavigate();
   const location = useLocation();
+  const tokenFromLocalStorage = localStorage.getItem('token');
+  const tokenExistAndStillValid = tokenFromLocalStorage && parseJwt(tokenFromLocalStorage).exp * 1000 > Date.now();
   const isLoginRoute = location.pathname === '/login';
   const [shouldRedirect, setShouldRedirect] = useState(false);
 
   useEffect(() => {
     if (!tokenExistAndStillValid && !isLoginRoute) {
       setShouldRedirect(true);
-      alert("Sesión expirada, inicie sesion nuevamente.")
+      navigate('/login');
+      alert("Sesión expirada, inicie sesión nuevamente.");
+    } else if (tokenExistAndStillValid && isLoginRoute) {
+      navigate('/');
     }
-  }, [tokenExistAndStillValid, isLoginRoute]);
+  }, [tokenExistAndStillValid, isLoginRoute, navigate]);
 
-  return shouldRedirect ? <Navigate to="/login" /> : element;
+  return !shouldRedirect && element;
 }
 
 const App = () => {
@@ -56,60 +58,60 @@ const App = () => {
   return (
     <Provider store={store}>
       <ThemeProvider theme={darkTheme}>
-        <BrowserRouter>
-          <ToastContainer />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <PrivateRoute element={<MyCalendar />} />
-              }
-            />
-            <Route
-              path="/clients"
-              element={
-                <PrivateRoute element={<Clients />} />
-              }
-            />
-            <Route
-              path="/services"
-              element={
-                <PrivateRoute element={<Services />} />
-              }
-            />
-            <Route
-              path="/usuarios"
-              element={
-                <PrivateRoute element={<Users />} />
-              }
-            />
-            <Route
-              path="/barbers"
-              element={
-                <PrivateRoute element={<Barbers />} />
-              }
-            />
-            <Route
-              path="/profits"
-              element={
-                <PrivateRoute element={<Profits />} />
-              }
-            />
-            <Route
-              path="/inactive"
-              element={
-                <PrivateRoute element={<InactivePeriod />} />
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <PrivateRoute element={<Profile />} />
-              }
-            />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </BrowserRouter>
+        <ToastContainer />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute element={<MyCalendar />} />
+            }
+          />
+          <Route
+            path="/clients"
+            element={
+              <PrivateRoute element={<Clients />} />
+            }
+          />
+          <Route
+            path="/services"
+            element={
+              <PrivateRoute element={<Services />} />
+            }
+          />
+          <Route
+            path="/usuarios"
+            element={
+              <PrivateRoute element={<Users />} />
+            }
+          />
+          <Route
+            path="/barbers"
+            element={
+              <PrivateRoute element={<Barbers />} />
+            }
+          />
+          <Route
+            path="/profits"
+            element={
+              <PrivateRoute element={<Profits />} />
+            }
+          />
+          <Route
+            path="/inactive"
+            element={
+              <PrivateRoute element={<InactivePeriod />} />
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute element={<Profile />} />
+            }
+          />
+          <Route path="/login" element={
+            <PrivateRoute element={<Login />} />
+          } />
+        </Routes>
       </ThemeProvider>
     </Provider>
   )

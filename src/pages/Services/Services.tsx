@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import { AppBarComponent } from "pages/AppBar/AppBar"
 import { Box, Button, Card, Grid, Paper } from "@mui/material"
 import { useStyles } from "./styles"
 import FormService from "./FormService"
@@ -16,6 +15,7 @@ import { HelperContants } from "utils/HelperContants"
 import { getAllServices, removeService } from "redux/actions/servicesAction"
 import { ThemeProvider } from '@mui/material/styles'
 import MUIDataTable from "mui-datatables"
+import MainComponent from "pages/AppBar/MainComponent"
 
 const Services = () => {
   const classes: any = useStyles()
@@ -145,7 +145,7 @@ const Services = () => {
   }, [dispatch])
 
   return (
-    <AppBarComponent>
+    <MainComponent>
       <MotionComponent>
         <>
           <Card variant="outlined" className={classes.colorCard}>
@@ -201,7 +201,7 @@ const Services = () => {
           </Box>
         </>
       </MotionComponent>
-    </AppBarComponent>
+    </MainComponent>
   )
 }
 

@@ -1,6 +1,8 @@
-import { ThemeOptions } from "@mui/material";
+import { Alert, ThemeOptions } from "@mui/material";
 import { MUIDataTableOptions } from "mui-datatables";
 import { toast } from "react-toastify"
+import { styled } from '@mui/material/styles';
+import io from 'socket.io-client';
 
 export const options = {
   actionsCellStyle: {
@@ -13,6 +15,8 @@ export const options = {
     color: "white"
   }
 }
+export const socket = io(`${process.env.REACT_APP_URL_BASE}`);
+
 
 export const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -171,3 +175,13 @@ export const newArrayServices = async (
     (itemService: any) => itemService.minutes_service <= diferenciaEnMinutos
   )
 }
+
+export const CustomAlert = styled(Alert)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: '0',
+  '& .MuiAlert-icon': {
+    margin: 2,
+    fontSize: 15
+  },
+}));

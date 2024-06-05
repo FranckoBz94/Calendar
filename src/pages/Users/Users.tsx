@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { AppBarComponent } from "pages/AppBar/AppBar"
+// import { AppBarComponent } from "pages/AppBar/AppBar"
 import MotionComponent from "components/MotionComponent"
 import Paper from "@mui/material/Paper"
 import { NotifyHelper, optionsTable, getMuiTheme } from "contants"
@@ -21,6 +21,9 @@ import moment from "moment"
 import MUIDataTable from "mui-datatables"
 import { ThemeProvider } from '@mui/material/styles'
 import { Avatar } from "@mui/material"
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CloseIcon from '@mui/icons-material/Close';
+import MainComponent from "pages/AppBar/MainComponent"
 
 const Users = () => {
   const classes: any = useStyles()
@@ -119,14 +122,14 @@ const Users = () => {
       name: "is_barber",
       label: "Barbero",
       options: {
-        customBodyRender: (row: any) => (row === 1 ? "Si" : "No")
+        customBodyRender: (row: any) => (row === 1 ? <CheckBoxIcon color="success" /> : <CloseIcon color="error" />)
       },
     },
     {
       name: "is_admin",
       label: "Administrador",
       options: {
-        customBodyRender: (row: any) => (row === 1 ? "Si" : "No")
+        customBodyRender: (row: any) => (row === 1 ? <CheckBoxIcon color="success" /> : <CloseIcon color="error" />)
       },
     },
     {
@@ -169,7 +172,7 @@ const Users = () => {
   }, [dispatch])
 
   return (
-    <AppBarComponent>
+    <MainComponent>
       <MotionComponent>
         <>
           <MotionModal
@@ -223,7 +226,7 @@ const Users = () => {
           </Box>
         </>
       </MotionComponent>
-    </AppBarComponent>
+    </MainComponent>
   )
 }
 

@@ -14,36 +14,39 @@ import { useDispatch } from 'react-redux';
 import { loginUser } from 'redux/actions/usersAction';
 import { NotifyHelper } from 'contants';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from 'components/UserProvider';
 
 const defaultTheme = createTheme();
 
 const Login = () => {
-    const [loading, setLoading] = React.useState(false)
-    const dispatch = useDispatch()
+    const [loading, setLoading] = React.useState(false);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    const { setUser } = useUser()
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        setLoading(true)
+        setLoading(true);
         const data = new FormData(event.currentTarget);
         const dataLogin = {
             email: data.get('email'),
             password: data.get('password'),
+        };
+        try {
+            const isLogged = await dispatch(loginUser(dataLogin) as any);
+            if (isLogged.rta === 1) {
+                localStorage.setItem("token", isLogged.token);
+                localStorage.setItem("user", JSON.stringify(isLogged.message));
+                setUser(isLogged.message)
+                NotifyHelper.notifySuccess("Bienvenido " + isLogged.message.firstName + " " + isLogged.message.lastName);
+                navigate('/');
+            } else {
+                NotifyHelper.notifyError(isLogged.message);
+            }
+        } catch (error) {
+            NotifyHelper.notifyError("Ocurrió un error al iniciar sesión");
+        } finally {
+            setLoading(false); // Se establece como false independientemente del resultado
         }
-        const isLogged = await dispatch(loginUser(dataLogin) as any)
-        if (isLogged.rta === 1) {
-            localStorage.setItem("token", isLogged.token)
-            localStorage.setItem("user", JSON.stringify(isLogged.message))
-            NotifyHelper.notifySuccess("Bienvenido " + isLogged.message.firstName + " " + isLogged.message.lastName)
-
-            setLoading(false)
-            navigate('/');
-
-        } else {
-            NotifyHelper.notifyError(isLogged.message)
-            setLoading(false)
-        }
-
     };
 
     return (
@@ -62,7 +65,7 @@ const Login = () => {
                         height: "100%"
                     }}
                 >
-                    <Box style={{ height: "100%" }}>
+                    <Box style={{ height: "100%", width: "100%" }}>
                         <img src={`${process.env.REACT_APP_URL_BASE}uploads/img_login.jpg`} alt="" style={{
                             height: "100%", opacity: "0.8", width: "100%", objectFit: "cover"
                         }} />
@@ -109,6 +112,7 @@ const Login = () => {
                                 type="submit"
                                 fullWidth
                                 variant="contained"
+                                disabled={loading}
                                 sx={{ mt: 3, mb: 2 }}
                             >
                                 {loading ? 'Cargando' : 'Ingresar'}
@@ -128,4 +132,4 @@ const Login = () => {
     );
 }
 
-export default Login
+export default Login;

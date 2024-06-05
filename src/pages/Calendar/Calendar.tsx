@@ -2,8 +2,7 @@ import React, { useRef, useState, useEffect } from "react"
 import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
-import { Alert, Avatar, Box, Button, Card, InputLabel, Stack, Tooltip } from "@mui/material"
-import { AppBarComponent } from "pages/AppBar/AppBar"
+import { Alert, Avatar, Box, Button, Card, InputLabel, Stack, Tooltip, Typography } from "@mui/material"
 import esLocale from "@fullcalendar/core/locales/es"
 import { Tabs, Tab, Content } from "../../components/Tabs/tabs"
 import { useDispatch, useSelector } from "react-redux"
@@ -16,13 +15,14 @@ import { getAllClients } from "redux/actions/clientsAction"
 import { getAllServices } from "redux/actions/servicesAction"
 import { getAllTurns, nextTurnAvailable } from "redux/actions/turnsAction"
 import FormEditTurn from "./FormEditTurn"
-import { NotifyHelper, newArrayServices, transformarTurno } from "contants"
+import { NotifyHelper, newArrayServices, socket, transformarTurno } from "contants"
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"
 import moment from "moment"
 import FormHoursCalendar from "./FormHoursCalendar"
 import { getAllHours } from "redux/actions/hoursAction"
-import { EventApi } from "@fullcalendar/core"
 import SkeletonCalendar from "./SkeletonCalendar"
+import MainComponent from "pages/AppBar/MainComponent"
+// import useWebSocket from "hooks/useWebSocket"
 
 interface Barber {
   id: string;
@@ -42,13 +42,15 @@ const Calendar = () => {
   const [openingTime, setOpeningTime] = useState("")
   const [idHoursCalendar, setIdHoursCalendar] = useState(0)
   const [closingTime, setClosingTime] = useState("")
-  const [barbersActive, setBarberActive] = useState<Barber[]>([]);
+  const [barbersActive, setBarbersActive] = useState<Barber[]>([]);
   const [barberSelected, setBarberSelected] = useState<Barber | null>(null);
   const [loadingTurns, setLoadingTurns] = useState(false)
   const [dataSelected, setDataSelected] = useState({})
   const [filteredServices, setFilteredServices] = useState([])
   const [user, setUser] = React.useState<Barber | null>(null);
-
+  const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number } | null>(null);
+  const [tooltipContent, setTooltipContent] = useState<React.ReactNode | null>(null);
+  const [loadBarbers, setLoadBarbers] = useState(false)
   const [events, setEvents] = useState([{}])
   const [active, setActive] = useState<string | null>(null);
 
@@ -85,6 +87,20 @@ const Calendar = () => {
     localStorage.setItem("newClosingTime", hours?.max_hour_calendar)
   }, [hours])
 
+  useEffect(() => {
+    socket.on("turn", (barberId) => {
+      console.log("barberSelected", barberSelected?.id);
+      console.log("barberId", barberId);
+      if (barberSelected?.id === barberId) {
+        dispatch(getAllTurns(barberId) as any);
+      }
+    });
+
+    return () => {
+      socket.off("turn");
+    };
+  }, [barberSelected, dispatch]);
+
   const updateCalendarData = (
     newOpeningTime: string,
     newClosingTime: string
@@ -105,21 +121,23 @@ const Calendar = () => {
     }
   }
 
-  const [tooltipContent, setTooltipContent] = useState<React.ReactNode | null>(null);
 
-  const handleEventMouseEnter = (mouseEnterInfo: any) => {
-    const event = mouseEnterInfo.event as EventApi;
-    if (event) {
-      const eventData = event.extendedProps;
-      const content = (
-        <div>
-          <small style={{ margin: 0 }}>ddd</small>
-          <h5 style={{ margin: 0 }}>{event.title}</h5>
-          <small style={{ margin: 0 }}>Turno: {eventData.description}</small>
+  const handleEventMouseEnter = (info: any) => {
+    const event = info.event;
+    const eventEl = info.el;
+    const rect = eventEl.getBoundingClientRect();
+    const tooltipText = (
+      <Box sx={{ margin: 0, padding: 0, boxShadow: 'none', border: 'none', borderRadius: 5 }}>
+        <div style={{ padding: 8 }}>
+          <Typography variant="h6">{event.title}</Typography>
+          <Typography variant="body2">Turno: {event.extendedProps.description}</Typography>
+          <Typography variant="body2">Inicio: {event.start.toLocaleString()}</Typography>
+          <Typography variant="body2">Fin: {event.end.toLocaleString()}</Typography>
         </div>
-      );
-      setTooltipContent(content);
-    }
+      </Box>
+    );
+    setTooltipContent(tooltipText);
+    setTooltipPosition({ x: rect.left + window.scrollX + 100, y: rect.top });
   };
 
   const handleEventMouseLeave = () => {
@@ -129,6 +147,7 @@ const Calendar = () => {
   const calculateNewArrayServices = async (dataTurn: any) => {
     let rtaAvailableTurn
     try {
+      console.log("dataTurn", dataTurn)
       rtaAvailableTurn = await dispatch(nextTurnAvailable(dataTurn) as any)
       if (rtaAvailableTurn.rta === 1) {
         let startDate
@@ -220,15 +239,16 @@ const Calendar = () => {
   }, [])
 
   useEffect(() => {
+    setLoadBarbers(false)
     if (Array.isArray(barbers) && barbers.length > 0) {
-      let activeBarbers
+      let activeBarbers: any
       if (user?.is_admin === 1) {
         activeBarbers = barbers.filter((barber: Barber) => barber.is_active === 1);
       } else {
         activeBarbers = barbers.filter((barber: Barber) => parseInt(barber.id) === user?.id_barbero && barber?.is_active === 1);
       }
-      console.log(activeBarbers)
-      setBarberActive(activeBarbers);
+      setLoadBarbers(true)
+      setBarbersActive(activeBarbers);
       selectBarber(activeBarbers);
     }
   }, [barbers]);
@@ -244,7 +264,6 @@ const Calendar = () => {
     } catch (e) {
       console.error(e);
     }
-    console.log("termino")
   };
 
   useEffect(() => {
@@ -252,14 +271,12 @@ const Calendar = () => {
       setLoadingTurns(false);
       await fetchTurns();
       setLoadingTurns(true);
-      console.log("termino ultimo");
     };
 
     fetchData();
   }, [turns]);
 
   useEffect(() => {
-    console.log("llama")
     fetchTurns();
   }, []);
 
@@ -288,13 +305,13 @@ const Calendar = () => {
   }, []);
 
   return (
-    <AppBarComponent>
+    <MainComponent>
       <>
         <Box mt={2}>
           <Card variant="outlined">
             <Box p={4}>
               <Tabs>
-                {barbersActive && barbersActive
+                {barbersActive && loadBarbers && barbersActive
                   .filter((barber: any) => barber.is_active === 1)
                   .map((barber: any, index: number) => (
                     <Tab
@@ -330,7 +347,19 @@ const Calendar = () => {
                       variant="outlined"
                     >
                       <Box sx={{ width: 1 }}>
-                        {barbersActive && barbersActive.length === 0 ? (
+                        {!loadBarbers ? (
+                          <Box mt={1}>
+                            <Stack sx={{ width: "100%" }} spacing={2}>
+                              <Alert
+                                variant="outlined"
+                                severity="warning"
+                                style={{ justifyContent: "center" }}
+                              >
+                                Cargando Barberos
+                              </Alert>
+                            </Stack>
+                          </Box>
+                        ) : (loadBarbers && barbersActive.length === 0) ? (
                           <Box mt={1}>
                             <Stack sx={{ width: "100%" }} spacing={2}>
                               <Alert
@@ -362,6 +391,7 @@ const Calendar = () => {
                             </h4>
                           </div>
                         )}
+
                         <Box display="flex" alignItems={"center"} sx={{ width: 1 }} my={1}>
                           <Button
                             variant="contained"
@@ -405,16 +435,6 @@ const Calendar = () => {
                           allDaySlot={false}
                           locales={[esLocale]}
                           events={events}
-                          // eventContent={(eventInfo) => {
-                          //   const eventData = eventInfo.event.extendedProps;
-                          //   return (
-                          //     <div style={{ maxWidth: "200px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                          //       <small style={{ margin: 0 }}>{eventInfo.timeText}</small>
-                          //       <h5 style={{ margin: 0 }}>{eventInfo.event.title}</h5>
-                          //       <small style={{ margin: 0 }}>Turno: {eventData.description}</small>
-                          //     </div>
-                          //   );
-                          // }}
                           eventMouseEnter={handleEventMouseEnter}
                           eventMouseLeave={handleEventMouseLeave}
                           eventClick={handleEventClick}
@@ -425,9 +445,28 @@ const Calendar = () => {
                       )
                       )}
                     </div>
-                    {tooltipContent && (
-                      <Tooltip title={tooltipContent} placement="top" arrow>
-                        <div style={{ display: "none" }}></div>
+                    {tooltipContent && tooltipPosition && (
+                      <Tooltip
+                        title={tooltipContent}
+                        placement="top"
+                        open={true}
+                        arrow
+                        style={{ padding: 0 }}
+                        PopperProps={{
+                          anchorEl: {
+                            getBoundingClientRect: (): DOMRect => ({
+                              top: tooltipPosition.y,
+                              left: tooltipPosition.x,
+                              right: tooltipPosition.x,
+                              bottom: tooltipPosition.y,
+                              width: 0,
+                              height: 0,
+                              toJSON: () => ({})
+                            } as DOMRect),
+                          },
+                        }}
+                      >
+                        <div style={{ position: 'absolute', top: tooltipPosition.y, left: tooltipPosition.x, pointerEvents: 'none', padding: 0 }} />
                       </Tooltip>
                     )}
                   </Box>
@@ -482,7 +521,7 @@ const Calendar = () => {
           </Box>
         </MotionModal>
       </>
-    </AppBarComponent>
+    </MainComponent>
   )
 }
 

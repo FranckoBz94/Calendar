@@ -12,9 +12,9 @@ import { useFormik } from "formik"
 import { LoadingButton } from "@mui/lab"
 import Select, { components } from "react-select"
 import { DateContants } from "utils/DateContants"
-import { addTurn, getAllTurns } from "redux/actions/turnsAction"
+import { addTurn, getAllTurns, hoursAvailableOnSave } from "redux/actions/turnsAction"
 import { useDispatch } from "react-redux"
-import { NotifyHelper } from "contants"
+import { NotifyHelper, socket } from "contants"
 import Tab from "@mui/material/Tab"
 import TabContext from "@mui/lab/TabContext"
 import TabList from "@mui/lab/TabList"
@@ -27,7 +27,6 @@ interface FormCalendarProps {
   setOpenModal: (send: boolean) => void
   allClients: []
   allServices: any
-  // addEvent: (event: {}) => void
   barberSelected: any
 }
 
@@ -77,18 +76,31 @@ const FormAddTurn = (props: FormCalendarProps) => {
       end: moment(endTime).toDate(),
       idBarber: barberSelected.id,
       price: selectedOptionService.price,
-      idService
+      idService,
+      end_date: moment(moment(endTime).toDate()).format(
+        "YYYY-MM-DD HH:mm:ss"
+      ),
+      start_date: moment(moment(data.start).toDate()).format(
+        "YYYY-MM-DD HH:mm:ss"
+      )
     }
     let rtaAddTurn
+    let stillAvailable
     try {
-      rtaAddTurn = await dispatch(addTurn(dataComplete) as any)
-      if (rtaAddTurn.rta === 1) {
-        dispatch(getAllTurns(barberSelected.id) as any)
-        NotifyHelper.notifySuccess(rtaAddTurn.message)
-
-        setOpenModal(false)
+      console.log("dataComplete", dataComplete)
+      stillAvailable = await dispatch(hoursAvailableOnSave(dataComplete) as any)
+      if (stillAvailable.message.length === 0) {
+        rtaAddTurn = await dispatch(addTurn(dataComplete) as any)
+        if (rtaAddTurn.rta === 1) {
+          dispatch(getAllTurns(barberSelected.id) as any)
+          NotifyHelper.notifySuccess(rtaAddTurn.message)
+          socket.emit("turn", barberSelected.id);
+          setOpenModal(false)
+        } else {
+          NotifyHelper.notifyError(rtaAddTurn.message)
+        }
       } else {
-        NotifyHelper.notifyError(rtaAddTurn.message)
+        NotifyHelper.notifyWarning("Ya hay un turno registrado en este horario.")
       }
     } catch (err) {
       NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
@@ -104,6 +116,8 @@ const FormAddTurn = (props: FormCalendarProps) => {
       });
     }
   }, [allServices]);
+
+
 
   const formik = useFormik({
     initialValues,

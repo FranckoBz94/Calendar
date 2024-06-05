@@ -10,27 +10,41 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { type ReactElement } from "react"
-import { Avatar, List, ListItemIcon, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Avatar, List, ListItemIcon, Menu, MenuItem, Tooltip, useMediaQuery } from '@mui/material';
 import { mainListItems } from './listItem';
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import Divider from '@mui/material/Divider';
 import Logout from '@mui/icons-material/Logout';
 import { useUser } from '../../components/UserProvider';
+import { CustomAlert } from 'contants';
 
 const drawerWidth = 240;
+
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
+}
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
   marginTop: 65,
-  padding: theme.spacing(3),
+  padding: theme.spacing(1),
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: `-${drawerWidth}px`,
+  [theme.breakpoints.up('md')]: {
+    marginLeft: `-${drawerWidth}px`,
+    padding: theme.spacing(3),
+    ...(open && {
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: 0,
+    }),
+  },
   ...(open && {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
@@ -39,10 +53,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
     marginLeft: 0,
   }),
 }));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -71,28 +81,21 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 interface Props {
-  window?: () => Window
-  children?: ReactElement
+  window?: () => Window;
+  children?: React.ReactElement;
 }
-
-// interface User {
-//   firstName: string;
-//   lastName: string;
-//   url_image: string
-//   email: string
-// }
 
 export function AppBarComponent(props: Props) {
   const theme = useTheme();
-  const { children } = props
-
-  const [open, setOpen] = React.useState(true);
-  // const [user, setUser] = React.useState<User | null>(null);
-  const { user } = useUser();
+  const smallScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const { children } = props;
+  const [open, setOpen] = React.useState(!smallScreen);
+  const { user, setUser } = useUser();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -101,31 +104,31 @@ export function AppBarComponent(props: Props) {
     setOpen(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
+    setUser(null)
   };
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  // React.useEffect(() => {
-  //   const storedUser = localStorage.getItem('user');
-  //   if (storedUser) {
-  //     setUser(JSON.parse(storedUser));
-  //   }
-  // }, []);
+  React.useEffect(() => {
+    setOpen(!smallScreen);
+  }, [smallScreen]);
+
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar className="appBar" position="fixed" open={open}>
-        <Toolbar >
+        <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -180,7 +183,6 @@ export function AppBarComponent(props: Props) {
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-
               <Box sx={{ my: 1.5, px: 2 }}>
                 <Typography variant="subtitle2" noWrap>
                   <b> {user?.firstName} {user?.lastName}</b>
@@ -195,7 +197,7 @@ export function AppBarComponent(props: Props) {
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleLogout}>
-                <ListItemIcon >
+                <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>
                 Cerrar sesión
@@ -214,11 +216,17 @@ export function AppBarComponent(props: Props) {
             borderRight: "none"
           },
         }}
-        variant="persistent"
+        variant={smallScreen ? "temporary" : "persistent"}
         anchor="left"
         open={open}
+        onClose={handleDrawerClose}
       >
         <DrawerHeader>
+          <Box display="flex" alignItems="start" width="100%" paddingLeft={2}>
+            {user?.is_admin === 1 && (<CustomAlert variant="outlined" color="success" sx={{ fontSize: 10, color: 'green', paddingRight: "2px" }}>
+              Administrador
+            </CustomAlert>)}
+          </Box>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
@@ -230,10 +238,10 @@ export function AppBarComponent(props: Props) {
         </Box>
       </Drawer>
       <Main open={open} className="background_page">
-        <Box >
+        <Box>
           {children}
         </Box>
-      </Main >
-    </Box >
+      </Main>
+    </Box>
   );
 }

@@ -82,6 +82,15 @@ export const nextTurnAvailable = (data) => async () => {
   }
 }
 
+export const hoursAvailableOnSave = (data) => async () => {
+  try {
+    const response = await axios.post(ruta + "turns/availableHoursOnSave", data)
+    return response.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 export const availableDate = (data) => async () => {
   try {
     const response = await axios.post(ruta + "turns/availableDate", data)

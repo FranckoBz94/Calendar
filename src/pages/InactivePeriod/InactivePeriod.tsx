@@ -1,6 +1,4 @@
-import { AppBarComponent } from "pages/AppBar/AppBar"
 import MotionComponent from "components/MotionComponent"
-
 import { useStyles } from "./styles"
 import "react-toastify/dist/ReactToastify.css"
 import { Box, Card, Grid, TextField, Tooltip, Typography } from "@mui/material"
@@ -20,6 +18,7 @@ import { addTurn, availableDate } from "redux/actions/turnsAction"
 import { NotifyHelper } from "contants"
 import moment from "moment"
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
+import MainComponent from "pages/AppBar/MainComponent"
 
 const InactivePeriod = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
@@ -144,7 +143,7 @@ const InactivePeriod = () => {
   const longText = `No se podrán guardar dias de vacaciones en periodos con turnos registrados.`;
 
   return (
-    <AppBarComponent>
+    <MainComponent>
       <MotionComponent>
         <Box>
           <Card variant="outlined" className={classes.colorCard}>
@@ -315,7 +314,7 @@ const InactivePeriod = () => {
           </Box>
         </Box>
       </MotionComponent>
-    </AppBarComponent >
+    </MainComponent >
   )
 }
 

@@ -5,26 +5,46 @@ import reportWebVitals from "./reportWebVitals"
 import "./index.css"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
-import { UserProvider } from "components/UserProvider"
+import { UserProvider, useUser } from "components/UserProvider"
+import { AppBarComponent } from "pages/AppBar/AppBar"
+import MainComponent from "pages/AppBar/MainComponent"
+import { BrowserRouter } from "react-router-dom"
 
 const darkTheme = createTheme({
   palette: {
     mode: "light"
   }
 })
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
+
+const RootComponent = () => {
+  const { user } = useUser();
+  console.log("u", user)
+  return (
+    <BrowserRouter>
+      {user ? (
+        <AppBarComponent>
+          <MainComponent>
+            <App />
+          </MainComponent>
+        </AppBarComponent>
+      ) : (
+        <App />
+      )}
+    </BrowserRouter>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <UserProvider>
-        <App />
-      </UserProvider>
-    </ThemeProvider>
+    <UserProvider>
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <RootComponent />
+      </ThemeProvider>
+    </UserProvider>
   </React.StrictMode>
-)
+);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()
+reportWebVitals();

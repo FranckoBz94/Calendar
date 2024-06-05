@@ -1,4 +1,3 @@
-import { AppBarComponent } from "pages/AppBar/AppBar"
 import MotionComponent from "components/MotionComponent"
 import Loader from "components/Loader"
 import { useStyles } from "./styles"
@@ -20,6 +19,7 @@ import moment from "moment"
 import * as Yup from "yup"
 import MUIDataTable from "mui-datatables";
 import { ThemeProvider } from '@mui/material/styles'
+import MainComponent from "pages/AppBar/MainComponent"
 
 const formProfits = () => {
   const [selectedOptionBarber, setSelectedOptionBarber] = useState({
@@ -74,16 +74,14 @@ const formProfits = () => {
       console.error(err)
     }
     setError('');
-    setTimeout(() => {
-      setIsSearch(true)
-      setIsLoading(false);
-    }, 3000);
+    setIsSearch(true)
+    setIsLoading(false);
   }
 
   const handleChangeSelectBarber = (e: any) => {
     setSelectedOptionBarber(e)
     setError('');
-  };
+  }
 
   const Option = (props: any) => {
     return (
@@ -162,7 +160,7 @@ const formProfits = () => {
 
 
   return (
-    <AppBarComponent>
+    <MainComponent>
       <>
         {isLoading && <Loader />}
         <MotionComponent>
@@ -303,7 +301,7 @@ const formProfits = () => {
           </Box>
         </MotionComponent>
       </>
-    </AppBarComponent >
+    </MainComponent >
   )
 }
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import { AppBarComponent } from "pages/AppBar/AppBar"
 import { Box, Button, Card, Grid, Paper } from "@mui/material"
 import { useStyles } from "./styles"
 import FormClient from "./FormClient"
@@ -16,6 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import { HelperContants } from "utils/HelperContants"
 import { ThemeProvider } from '@mui/material/styles'
 import MUIDataTable from "mui-datatables"
+import MainComponent from "pages/AppBar/MainComponent"
 
 const Clients = () => {
   const classes: any = useStyles()
@@ -135,7 +135,7 @@ const Clients = () => {
   }, [dispatch])
 
   return (
-    <AppBarComponent>
+    <MainComponent>
       <>
         <MotionComponent>
           <>
@@ -193,7 +193,7 @@ const Clients = () => {
           </>
         </MotionComponent>
       </>
-    </AppBarComponent>
+    </MainComponent>
   )
 }
 

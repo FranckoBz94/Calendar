@@ -1,35 +1,26 @@
-import * as React from "react"
-import ListItemButton from "@mui/material/ListItemButton"
-import ListItemIcon from "@mui/material/ListItemIcon"
-import ListItemText from "@mui/material/ListItemText"
-import GroupIcon from "@mui/icons-material/Group"
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted"
-import GroupAddIcon from "@mui/icons-material/GroupAdd"
-import EventNoteIcon from "@mui/icons-material/EventNote"
-import WaterfallChartIcon from "@mui/icons-material/WaterfallChart"
-import EditRoadIcon from "@mui/icons-material/EditRoad"
-import ContentCutIcon from "@mui/icons-material/ContentCut"
-import { Link, useLocation } from "react-router-dom"
-import { motion } from "framer-motion"
-import { Box } from "@mui/material"
+import * as React from "react";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import GroupIcon from "@mui/icons-material/Group";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import WaterfallChartIcon from "@mui/icons-material/WaterfallChart";
+import EditRoadIcon from "@mui/icons-material/EditRoad";
+import ContentCutIcon from "@mui/icons-material/ContentCut";
+import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Box } from "@mui/material";
 
-interface User {
-  is_admin: number;
-  firstName: string;
-  lastName: string;
-}
 
 export const mainListItems = () => {
-  const [user, setUser] = React.useState<User | null>(null);
-
-  React.useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem('user');
-    if (userFromLocalStorage) {
-      setUser(JSON.parse(userFromLocalStorage));
-    }
-  }, []);
-
   const location = useLocation();
+
+  const user = React.useMemo(() => {
+    const userFromLocalStorage = localStorage.getItem('user');
+    return userFromLocalStorage ? JSON.parse(userFromLocalStorage) : null;
+  }, []);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -89,9 +80,7 @@ export const mainListItems = () => {
           </ListItemIcon>
           <ListItemText primary="Vacaciones" />
         </ListItemButton>
-
       </Box>
     </React.Fragment>
-  )
+  );
 }
-

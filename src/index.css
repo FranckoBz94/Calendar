@@ -17,6 +17,10 @@ body {
   border-radius: 35px !important;
 }
 
+.radius-35 {
+  border-radius: 35px !important;
+}
+
 .btnSubmitOption2:hover {
   background: var(--secondary-color) !important;
   font-weight: 600;
@@ -190,9 +194,9 @@ inputDisabled input[type="time"] {
 
 @media (max-width: 899.95px) {
   .background_page {
-    margin-left: 20px;
+    /* margin-left: 20px; */
     width: calc(100% - 260px);
-    padding: 16px;
+    padding: 5px;
   }
 }
 
@@ -430,6 +434,11 @@ inputDisabled input[type="time"] {
   border-radius: 5px;
   box-shadow: 24;
   padding: 4;
+}
+
+.css-1k51tf5-MuiTooltip-tooltip {
+  padding: 0 !important;
+  border-radius: 5px;
 }
 
 @media (max-width:600px) {

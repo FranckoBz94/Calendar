@@ -5,7 +5,7 @@ import { LoadingButton } from "@mui/lab"
 import Select, { components } from "react-select"
 import { DateContants } from "utils/DateContants"
 import { HelperContants } from "utils/HelperContants"
-import { NotifyHelper } from "contants"
+import { NotifyHelper, socket } from "contants"
 import { useDispatch } from "react-redux"
 import { getAllTurns, removeTurn, updateTurn } from "redux/actions/turnsAction"
 import moment from "moment"
@@ -41,6 +41,8 @@ const FormEditTurn = (props: FormCalendarProps) => {
     minutes_service: null
   })
   const [selectedOptionClient, setSelectedOptionClient] = useState(null)
+  const [isLoading, setIsLoading] = React.useState(false)
+
   const dispatch = useDispatch()
 
   const endTime = DateContants.calculateEndTime(
@@ -60,6 +62,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
   const selectedClient: any = allClients.find((client: any) => client.id === dataFormEvent?.idClient)
 
   const updateEvent = async (data: any) => {
+    setIsLoading(true);
     const idServiceSelected = selectedOptionService.id !== null ? selectedOptionService.id : serviceSelected.id
     const endService = selectedOptionService.minutes_service !== null ? selectedOptionService.minutes_service : serviceSelected.minutes_service
     const idClientSelected = selectedOptionClient !== null ? selectedOptionClient : selectedClient.id
@@ -88,6 +91,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
     } catch (err) {
       NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
     }
+    setIsLoading(false);
   }
 
   const formik = useFormik({
@@ -102,12 +106,12 @@ const FormEditTurn = (props: FormCalendarProps) => {
     const { idTurn, rtaDelete } = await HelperContants.SwalDeleteTurn(
       dataFormEvent
     )
-
     if (rtaDelete) {
       const rtaRemoveTurn = await dispatch(removeTurn(idTurn) as any)
       if (rtaRemoveTurn.rta === 1) {
         dispatch(getAllTurns(idBarber) as any)
         NotifyHelper.notifySuccess(rtaRemoveTurn.message)
+        socket.emit("turn", idBarber);
       } else {
         NotifyHelper.notifyError(rtaRemoveTurn.message)
       }
@@ -115,7 +119,6 @@ const FormEditTurn = (props: FormCalendarProps) => {
     }
   }
 
-  console.log("sele", serviceSelected)
 
   const handleChangeSelectService = (e: any) => {
     const dataService = JSON.parse(e.value)
@@ -126,7 +129,6 @@ const FormEditTurn = (props: FormCalendarProps) => {
   const handleChangeSelectClient = (e: any) => {
     const dataClient = JSON.parse(e.value)
     values.idClient = dataClient
-    console.log("dataClient", dataClient)
     setSelectedOptionClient(dataClient)
   };
 
@@ -231,8 +233,6 @@ const FormEditTurn = (props: FormCalendarProps) => {
                 />
               </Grid>
               <Grid item xs={12} mb={2}>
-                <p>{serviceSelected.name_service}</p>
-                <p>{serviceSelected.id}</p>
                 <Select
                   className="basic-multi-select"
                   classNamePrefix="select"
@@ -258,7 +258,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
                     size="small"
                     type="submit"
                     className="btnSubmitOption2"
-                    // loading={isLoading}
+                    loading={isLoading}
                     variant="contained"
                     sx={{ mt: 5, mb: 5, py: 2, px: 4, mx: 3 }}
                   >
@@ -267,6 +267,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
                   <LoadingButton
                     size="small"
                     variant="contained"
+                    className="radius-35"
                     color="error"
                     sx={{ mt: 5, mb: 5, py: 2, px: 4, mx: 3 }}
                     onClick={deleteTurn}
