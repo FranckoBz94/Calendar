@@ -20,10 +20,12 @@ import { getAllBarbers, removeBarber } from "redux/actions/barbersAction"
 import { ThemeProvider } from '@mui/material/styles'
 import MUIDataTable from "mui-datatables"
 import moment from "moment"
-import { Avatar } from "@mui/material"
+import { Alert, AlertTitle, Avatar } from "@mui/material"
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CloseIcon from '@mui/icons-material/Close';
 import MainComponent from "pages/AppBar/MainComponent"
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import { getAllUsers } from "redux/actions/usersAction"
 
 const Barbers = () => {
   const classes: any = useStyles()
@@ -34,7 +36,7 @@ const Barbers = () => {
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
   const { barbers } = useSelector((state: RootState) => storeComplete.barbers)
-  console.log(barbers)
+  const { users } = useSelector((state: RootState) => storeComplete.users)
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})
@@ -56,11 +58,10 @@ const Barbers = () => {
       telefono: e[5],
       fecha_creacion: e[6],
       is_active: e[7],
-      is_admin: e[8],
+      id_user: e[8],
     };
     if (option === "Editar") {
       handleOpenModal("Editar")
-      console.log("e", values)
       setDataSelected(values)
     } else {
       const { id, rtaDelete } = await HelperContants.SwalDeleteUser(values)
@@ -130,11 +131,16 @@ const Barbers = () => {
       },
     },
     {
-      name: "is_admin",
-      label: "Administrador",
+      name: "id_user",
+      label: "Tiene Usuario",
       options: {
-        customBodyRender: (row: any) => (row === 1 ? <CheckBoxIcon color="success" /> : <CloseIcon color="error" />)
-      },
+        display: false,
+        viewColumns: false,
+      }
+    },
+    {
+      name: "data_user",
+      label: "Tiene Usuario",
     },
     {
       name: "actions",
@@ -168,9 +174,23 @@ const Barbers = () => {
     },
   ];
 
+  const modifiedData = barbers?.map((row: any) => ({
+    ...row,
+    nameBarber: row.firstName + row.lastName,
+    id_user: row.id_user,
+    data_user: row.id_user === 0 ? (
+      <Alert severity="error">No tiene usuario</Alert>
+    ) : (
+      <Alert icon={<MailOutlineIcon fontSize="inherit" />} severity="info">
+        <AlertTitle>{row.nameBarber} {row.lastNameBarber}</AlertTitle>
+        {row.emailUser}
+      </Alert>
+    ),
+  }));
 
   useEffect(() => {
     dispatch(getAllBarbers() as any)
+    dispatch(getAllUsers() as any)
   }, [dispatch])
 
   return (
@@ -186,6 +206,7 @@ const Barbers = () => {
                 dataForm={dataSelected}
                 optionSelected={optionSelected}
                 setOpenModal={setOpenModal}
+                users={users}
               />
             </Box>
           </MotionModal>
@@ -216,7 +237,7 @@ const Barbers = () => {
                     <ThemeProvider theme={getMuiTheme("#0f4c75")}>
                       <MUIDataTable
                         title={"Listado de barberos"}
-                        data={barbers}
+                        data={modifiedData}
                         columns={columnsTableBarbers}
                         options={optionsTable}
                       />

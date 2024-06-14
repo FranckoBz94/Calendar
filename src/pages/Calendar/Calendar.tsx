@@ -22,7 +22,6 @@ import FormHoursCalendar from "./FormHoursCalendar"
 import { getAllHours } from "redux/actions/hoursAction"
 import SkeletonCalendar from "./SkeletonCalendar"
 import MainComponent from "pages/AppBar/MainComponent"
-// import useWebSocket from "hooks/useWebSocket"
 
 interface Barber {
   id: string;
@@ -250,6 +249,7 @@ const Calendar = () => {
       setLoadBarbers(true)
       setBarbersActive(activeBarbers);
       selectBarber(activeBarbers);
+      console.log("user", user)
     }
   }, [barbers]);
 

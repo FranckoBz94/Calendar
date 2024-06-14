@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux"
 import { addUser, updateUser } from "redux/actions/usersAction"
 import { NotifyHelper } from "contants"
 import LoadingButton from "@mui/lab/LoadingButton"
-import { addBarber } from "redux/actions/barbersAction"
+// import { addBarber } from "redux/actions/barbersAction"
 
 const theme = createTheme()
 
@@ -47,26 +47,26 @@ const FormUser = (props: FormUserProps) => {
       dataForm.url_image ? dataForm.url_image : "uploads/profile.png"
   }
 
-  const addBarberBeforeUser = async (data: any) => {
-    try {
-      const formData = new FormData();
-      formData.append("firstName", data.firstName);
-      formData.append("lastName", data.lastName);
-      formData.append("email", data.email);
-      formData.append("telefono", data.telefono);
-      formData.append("is_barber", data.is_barber);
-      formData.append("is_admin", data.is_admin);
-      formData.append("imageProfile", profileImage || data.imageProfile);
-      const rta = await dispatch(addBarber(formData) as any);
-      if (rta.rta === 1) {
-        return rta.barberId
-      }
-    } catch (err) {
-      console.error(err)
-      return -1
-    }
-    return -1
-  }
+  // const addBarberBeforeUser = async (data: any) => {
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("firstName", data.firstName);
+  //     formData.append("lastName", data.lastName);
+  //     formData.append("email", data.email);
+  //     formData.append("telefono", data.telefono);
+  //     formData.append("is_barber", data.is_barber);
+  //     formData.append("is_admin", data.is_admin);
+  //     formData.append("imageProfile", profileImage || data.imageProfile);
+  //     const rta = await dispatch(addBarber(formData) as any);
+  //     if (rta.rta === 1) {
+  //       return rta.barberId
+  //     }
+  //   } catch (err) {
+  //     console.error(err)
+  //     return -1
+  //   }
+  //   return -1
+  // }
 
   const registerUser = async (data: any) => {
     setIsLoading(true)
@@ -97,32 +97,28 @@ const FormUser = (props: FormUserProps) => {
         setIsLoading(false)
       }
     } else {
-      const barberId = await addBarberBeforeUser(data)
-      if (barberId !== -1) {
 
-        let rtaAddUser
-        formData.append("password", data.password)
-        formData.append("id_barbero", barberId)
+      let rtaAddUser
+      formData.append("password", data.password)
+      formData.append("id_barbero", "0")
 
-        console.log(JSON.stringify(formData))
-        try {
-          rtaAddUser = await dispatch(addUser(formData) as any)
-          if (rtaAddUser.rta === 1) {
-            NotifyHelper.notifySuccess(rtaAddUser.message)
-            setOpenModal(false)
-            setIsLoading(false)
-          } else {
-            NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
-            setIsLoading(false)
-          }
-        } catch (err) {
-          NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
-          setIsLoading(false)
+      console.log(JSON.stringify(formData))
+      try {
+        rtaAddUser = await dispatch(addUser(formData) as any)
+        if (rtaAddUser.rta === 1) {
+          NotifyHelper.notifySuccess(rtaAddUser.message)
+          setOpenModal(false)
+        } if (rtaAddUser.rta === -2) {
+          NotifyHelper.notifyWarning(rtaAddUser.message)
+        } else {
+          NotifyHelper.notifyError(rtaAddUser.message)
         }
-      } else {
-        NotifyHelper.notifyError(`Ocurrio un error al crear el barbero. Intente nuevamente`)
+        setIsLoading(false)
+      } catch (err) {
+        NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
         setIsLoading(false)
       }
+
     }
   }
 

@@ -7,7 +7,6 @@ import { ThemeProvider, createTheme } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
 import { UserProvider, useUser } from "components/UserProvider"
 import { AppBarComponent } from "pages/AppBar/AppBar"
-import MainComponent from "pages/AppBar/MainComponent"
 import { BrowserRouter } from "react-router-dom"
 
 const darkTheme = createTheme({
@@ -23,9 +22,7 @@ const RootComponent = () => {
     <BrowserRouter>
       {user ? (
         <AppBarComponent>
-          <MainComponent>
-            <App />
-          </MainComponent>
+          <App />
         </AppBarComponent>
       ) : (
         <App />

@@ -14,6 +14,7 @@ import Profile from "pages/Profile"
 import Login from "pages/Login"
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useEffect, useState } from "react"
+import { useUser } from "components/UserProvider"
 
 function parseJwt(token: any) {
   const base64Url = token.split('.')[1];
@@ -34,12 +35,16 @@ const PrivateRoute = ({ element, ...rest }: any) => {
   const tokenExistAndStillValid = tokenFromLocalStorage && parseJwt(tokenFromLocalStorage).exp * 1000 > Date.now();
   const isLoginRoute = location.pathname === '/login';
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const { setUser } = useUser();
 
   useEffect(() => {
     if (!tokenExistAndStillValid && !isLoginRoute) {
-      setShouldRedirect(true);
-      navigate('/login');
       alert("Sesión expirada, inicie sesión nuevamente.");
+      setShouldRedirect(true);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      navigate('/login');
+      setUser(null)
     } else if (tokenExistAndStillValid && isLoginRoute) {
       navigate('/');
     }

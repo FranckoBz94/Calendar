@@ -10,11 +10,16 @@ import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { motion } from "framer-motion"
-import { Card, Checkbox, FormControlLabel, Paper } from "@mui/material"
+import { Alert, Card, CardContent, Checkbox, FormControlLabel, Paper, Switch } from "@mui/material"
 import { useDispatch } from "react-redux"
-import { NotifyHelper } from "contants"
+import { createFormData, NotifyHelper, Option, SingleValue, switchStyles } from "contants"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { addBarber, updateBarber } from "redux/actions/barbersAction"
+import Select from "react-select"
+import { updateStateUser } from "redux/actions/usersAction"
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import ButtonDelete from "components/ButtonDelete"
+import { HelperContants } from "utils/HelperContants"
 
 const theme = createTheme()
 
@@ -22,19 +27,23 @@ interface FormBarberProps {
   dataForm: any
   optionSelected: string
   setOpenModal: (send: boolean) => void
+  users: any[]
 }
 
 const urlBase = process.env.REACT_APP_URL_BASE
 
 const FormBarber = (props: FormBarberProps) => {
-  const [isAdminChecked, setIsAdminChecked] = React.useState(false)
   const [isActiveChecked, setIsActiveChecked] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
   const [profileImage, setProfileImage] = React.useState<File | null>(null)
-
+  const { dataForm, optionSelected, setOpenModal, users } = props
+  const [selectedOptionUser, setSelectedOptionUser] = React.useState(dataForm.id_user)
   const dispatch = useDispatch()
 
-  const { dataForm, optionSelected, setOpenModal } = props
+  // console.log("dataForm", dataForm)
+  const usersAvailable = users?.filter((user: any) => user.is_barber === 0)
+
+
   const initialValues = {
     firstName: dataForm.firstName || "",
     lastName: dataForm.lastName || "",
@@ -43,20 +52,25 @@ const FormBarber = (props: FormBarberProps) => {
     imageProfile:
       dataForm.imagen ? dataForm.imagen : "uploads/imageBarbers/profile.png",
     is_active: !(false || dataForm.is_active === 0),
-    is_admin: !(false || dataForm.is_admin === 0)
+    id_user: selectedOptionUser,
   }
 
   const registerBarber = async (data: any) => {
     setIsLoading(true);
+    console.log("id",)
+    const isBarber: any = selectedOptionUser !== 0 ? 1 : 0
     try {
-      const formData = new FormData();
-      formData.append("firstName", data.firstName);
-      formData.append("lastName", data.lastName);
-      formData.append("email", data.email);
-      formData.append("telefono", data.telefono);
-      formData.append("is_active", data.is_active);
-      formData.append("is_admin", data.is_admin);
-      formData.append("imageProfile", profileImage || data.imageProfile);
+      // const formData = new FormData();
+      // formData.append("firstName", data.firstName);
+      // formData.append("lastName", data.lastName);
+      // formData.append("email", data.email);
+      // formData.append("telefono", data.telefono);
+      // formData.append("is_active", data.is_active);
+      // formData.append("imageProfile", profileImage || data.imageProfile);
+      // formData.append("id_user", selectedOptionUser)
+      // formData.append("is_barber", isBarber)
+      const formData = createFormData(data, profileImage, selectedOptionUser, isBarber);
+
       let rta;
       if (optionSelected === "Editar") {
         rta = await dispatch(updateBarber(formData, dataForm.id) as any);
@@ -65,6 +79,11 @@ const FormBarber = (props: FormBarberProps) => {
       }
 
       if (rta.rta === 1) {
+        const dataUpdateState = {
+          isBarber
+        }
+        const stateIsBarber = await dispatch(updateStateUser(selectedOptionUser, dataUpdateState) as any)
+        console.log("stateIsBarber", stateIsBarber)
         NotifyHelper.notifySuccess(rta.message);
         setOpenModal(false);
       } else {
@@ -91,11 +110,6 @@ const FormBarber = (props: FormBarberProps) => {
       onSubmit: registerBarber
     })
 
-  const isAdminClick = () => {
-    values.is_admin = !values.is_admin
-    setIsAdminChecked(!isAdminChecked)
-  }
-
   const isActiveClick = () => {
     values.is_active = !values.is_active
     setIsActiveChecked(!isActiveChecked)
@@ -113,6 +127,39 @@ const FormBarber = (props: FormBarberProps) => {
   const loadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setProfileImage(event.target.files[0])
+    }
+  }
+
+  const handleChangeSelectUser = (e: any) => {
+    const dataUser = JSON.parse(e.value)
+    console.log(dataUser.id)
+    values.id_user = dataUser.id
+    setSelectedOptionUser(dataUser.id)
+  }
+
+  const existUser: any = users?.find((user: any) => user.id === dataForm?.id_user)
+
+  const deleteUserFromBarber = async () => {
+    try {
+      console.log("selectedOptionUser", selectedOptionUser)
+      const { rtaDelete } = await HelperContants.SwalDeleteUserAsosiate(existUser)
+      const isBarber: any = selectedOptionUser !== 0 ? 1 : 0
+
+      console.log("dataForm", dataForm)
+
+      if (rtaDelete) {
+        dataForm.is_active = !(false || dataForm.is_active === 0)
+        const formData = createFormData(dataForm, profileImage, 0, isBarber);
+        const rta = await dispatch(updateBarber(formData, dataForm.id) as any);
+        const stateIsBarber = await dispatch(updateStateUser(selectedOptionUser, 0) as any)
+        if (rta.rta === 1) {
+          console.log("stateIsBarber", stateIsBarber)
+          NotifyHelper.notifySuccess(rta.message);
+        }
+        setOpenModal(false);
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -140,7 +187,7 @@ const FormBarber = (props: FormBarberProps) => {
           >
             <motion.div>
               <Grid container spacing={2}>
-                <Grid item md={4} xs={12}>
+                <Grid item md={4}>
                   <Paper style={{ width: "auto", height: "200px", border: "1px solid #ddd" }}>
                     <label htmlFor="file" style={{ cursor: "pointer", display: "flex", height: "100%" }}>
                       <Box
@@ -177,10 +224,9 @@ const FormBarber = (props: FormBarberProps) => {
                     </label>
                   </Paper>
                 </Grid>
-
                 <Grid item md={8} xs={12}>
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} md={6}>
                       <TextField
                         name="firstName"
                         required
@@ -199,7 +245,7 @@ const FormBarber = (props: FormBarberProps) => {
                         }
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} md={6}>
                       <TextField
                         required
                         fullWidth
@@ -216,7 +262,7 @@ const FormBarber = (props: FormBarberProps) => {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={6}>
                       <TextField
                         required
                         fullWidth
@@ -233,7 +279,7 @@ const FormBarber = (props: FormBarberProps) => {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={6}>
                       <TextField
                         required
                         fullWidth
@@ -250,13 +296,19 @@ const FormBarber = (props: FormBarberProps) => {
                         }
                       />
                     </Grid>
-                    <Grid item xs={6} m={0}>
+                    <Grid item xs={12} m={0}>
                       <Card
                         variant="outlined"
                         style={{
-                          backgroundColor: values.is_active ? "#bbe1fa" : "",
-                          cursor: "pointer"
+                          backgroundColor: values.is_active ? "rgb(41 139 53)" : "rgb(255 128 128)",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "7px",
+                          color: values.is_active ? "#fff" : "",
                         }}
+                        className=""
                         onClick={isActiveClick}
                       >
                         <FormControlLabel
@@ -267,39 +319,79 @@ const FormBarber = (props: FormBarberProps) => {
                             <Checkbox
                               checked={values.is_active}
                               onChange={handleCheckboxChange}
+                              style={{ marginLeft: "auto", color: "#fff" }}
                             />
                           }
-                          label="Usuario activo"
+                          label={values.is_active ? "Usuario activo" : "Usuario inactivo"}
                           labelPlacement="start"
+                          style={{ flexGrow: 1 }}
                         />
                       </Card>
                     </Grid>
-                    <Grid item xs={6} m={0}>
-                      <Card
-                        style={{
-                          backgroundColor: values.is_admin ? "#bbe1fa" : "",
-                          cursor: "pointer"
-                        }}
-                        variant="outlined"
-                        onClick={isAdminClick}
-                      >
-                        <FormControlLabel
-                          value={values.is_admin}
-                          onClick={isAdminClick}
-                          name="is_admin"
-                          id="is_admin"
-                          control={
-                            <Checkbox
-                              checked={values.is_admin}
-                              onChange={handleCheckboxChange}
-                            />
-                          }
-                          label="Es administrador"
-                          labelPlacement="start"
-                        />
-                      </Card>
-                    </Grid>
+
                   </Grid>
+                </Grid>
+                <Grid item xs={12} mb={2}>
+                  <Card style={{ position: 'relative', overflow: 'visible' }}>
+                    {existUser ? (
+                      <CardContent>
+                        <small style={{ marginBottom: "-4px", color: "rgb(158 158 158)" }}>Usuario asociado</small>
+                        <Alert
+                          sx={{ padding: 1, alignItems: "center" }}
+                          icon={<AccountCircleIcon fontSize="inherit" />}
+                          severity="info"
+                          action={
+                            <ButtonDelete onClick={deleteUserFromBarber} />
+                          }
+                        >
+                          <span>{existUser?.firstName} {existUser?.lastName}</span>
+                        </Alert>
+                      </CardContent>
+                    ) : (
+                      <CardContent>
+                        <Box display="flex" justifyContent="space-between">
+                          <small style={{ marginLeft: "15px", marginBottom: "-4px", color: "rgb(158 158 158)" }}>Usuario asociado</small>
+                          <FormControlLabel
+                            control={
+                              <Switch checked={Boolean(existUser)} onChange={handleChange} name="gilad"
+                                sx={{
+                                  ...switchStyles,
+                                  '& .MuiSwitch-track': {
+                                    backgroundColor: existUser ? 'green !important' : 'red !important',
+                                  },
+                                }} />
+                            }
+                            disabled
+                            sx={{
+                              color: existUser ? 'green' : 'red',
+                              '& .MuiFormControlLabel-label': {
+                                color: existUser ? 'green !important' : 'red !important',
+                              },
+                            }}
+                            labelPlacement="start"
+                            label={existUser ? "Tiene usuario asignado" : "No tiene usuario asignado"}
+                          />
+                        </Box>
+
+                        <Select
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                          options={usersAvailable?.map((user: any) => ({
+                            label: user.firstName + " " + user.lastName,
+                            value: JSON.stringify({
+                              id: user.id,
+                            })
+                          }))}
+                          defaultValue={existUser
+                            ? { label: `${existUser.firstName}  ${existUser.lastName}`, value: existUser.id }
+                            : null}
+                          components={{ Option: Option, SingleValue: SingleValue }}
+                          placeholder="Selecciona un usuario"
+                          onChange={handleChangeSelectUser}
+                        />
+                      </CardContent>
+                    )}
+                  </Card>
                 </Grid>
               </Grid>
             </motion.div>
@@ -319,6 +411,7 @@ const FormBarber = (props: FormBarberProps) => {
             </Box>
           </Box>
         </Box>
+
       </Container>
     </ThemeProvider>
   )

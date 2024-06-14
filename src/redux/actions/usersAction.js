@@ -90,6 +90,18 @@ export const updateUser = (formData, id) => async (dispatch) => {
   }
 }
 
+export const updateStateUser = ( id, data) => async (dispatch) => {
+  console.log("formData isBarber",data)
+  try {
+    const response = await axios.put(ruta + "users/updateStateBarber/" + id, data)
+    dispatch(setUpdateUser())
+    dispatch(getAllUsers())
+    return response.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 export const removeUser = (id) => async (dispatch) => {
   try {
     const response = await axios.delete(`${ruta}users/${id}`)

@@ -3,6 +3,7 @@ import { MUIDataTableOptions } from "mui-datatables";
 import { toast } from "react-toastify"
 import { styled } from '@mui/material/styles';
 import io from 'socket.io-client';
+import { components } from "react-select"
 
 export const options = {
   actionsCellStyle: {
@@ -60,6 +61,20 @@ export const optionsTable: Partial<MUIDataTableOptions> = {
     },
   },
 };
+
+export const Option = (props: any) => {
+  return (
+    <components.Option {...props}>
+      <div dangerouslySetInnerHTML={{ __html: props.label }} />
+    </components.Option>
+  );
+}
+
+export const SingleValue = (props: any) => (
+  <components.SingleValue {...props}>
+    <div dangerouslySetInnerHTML={{ __html: props.data.label }} />
+  </components.SingleValue>
+);
 
 export const getMuiTheme = (color: string): ThemeOptions => ({
   components: {
@@ -185,3 +200,40 @@ export const CustomAlert = styled(Alert)(({ theme }) => ({
     fontSize: 15
   },
 }));
+
+export const switchStyles = {
+  '& .MuiSwitch-switchBase.Mui-checked': {
+    color: 'green',
+    '&:hover': {
+      backgroundColor: 'rgba(0, 255, 0, 0.08) !important',
+    },
+  },
+  '& .MuiSwitch-switchBase': {
+    color: 'red',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 0, 0, 0.08) !important',
+    },
+  },
+  '& .MuiSwitch-track': {
+    backgroundColor: 'green !important',
+  }
+};
+
+export const createFormData = (
+  data: any,
+  profileImage: File | null,
+  selectedOptionUser: number,
+  isBarber: number
+): FormData => {
+  console.log("data", data)
+  const formData = new FormData();
+  formData.append("firstName", data.firstName);
+  formData.append("lastName", data.lastName);
+  formData.append("email", data.email);
+  formData.append("telefono", data.telefono);
+  formData.append("is_active", data.is_active);
+  formData.append("imageProfile", profileImage || data.imageProfile);
+  formData.append("id_user", selectedOptionUser.toString());
+  formData.append("is_barber", isBarber.toString());
+  return formData;
+};

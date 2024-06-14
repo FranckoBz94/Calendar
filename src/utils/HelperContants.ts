@@ -54,4 +54,33 @@ export class HelperContants {
     })
     return { idTurn, rtaDelete }
   }
+
+  static async SwalDeleteUserAsosiate(user: any) {
+    // eslint-disable-next-line camelcase
+    const { firstName, lastName } = user
+    console.log("user", firstName)
+    let rtaDelete: boolean = false
+    await Swal.fire({
+      cancelButtonColor: "#3085d6",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Eliminar",
+      icon: "error",
+      reverseButtons: true,
+      showCancelButton: true,
+      customClass: {
+        container: "my-swal-container"
+      },
+      text: "El usuario se borrara de su sistema.",
+      title: `<h5 style="margin:0">¿Está seguro que desea desvincular a ${firstName} ${lastName}?</h5>`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        rtaDelete = true
+      } else {
+        rtaDelete = false
+      }
+    })
+    return { rtaDelete }
+  }
+
 }

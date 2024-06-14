@@ -152,7 +152,7 @@ const formProfits = () => {
     }
   ];
 
-  const modifiedData = dataProfit.map((row: any) => ({
+  const modifiedData = dataProfit?.map((row: any) => ({
     ...row,
     nameBarber: `${row.nameBarber} ${row.lastNameBarber}`,
     firstName: `${row.firstName} ${row.lastName}`
