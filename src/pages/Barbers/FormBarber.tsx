@@ -322,7 +322,7 @@ const FormBarber = (props: FormBarberProps) => {
                               style={{ marginLeft: "auto", color: "#fff" }}
                             />
                           }
-                          label={values.is_active ? "Usuario activo" : "Usuario inactivo"}
+                          label={values.is_active ? "Barbero activo" : "Barbero inactivo"}
                           labelPlacement="start"
                           style={{ flexGrow: 1 }}
                         />

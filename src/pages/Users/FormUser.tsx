@@ -15,7 +15,6 @@ import { useDispatch } from "react-redux"
 import { addUser, updateUser } from "redux/actions/usersAction"
 import { NotifyHelper } from "contants"
 import LoadingButton from "@mui/lab/LoadingButton"
-// import { addBarber } from "redux/actions/barbersAction"
 
 const theme = createTheme()
 
@@ -29,44 +28,22 @@ const urlBase = process.env.REACT_APP_URL_BASE
 
 const FormUser = (props: FormUserProps) => {
   const [isAdminChecked, setIsAdminChecked] = React.useState(false)
-  const [isActiveChecked, setIsActiveChecked] = React.useState(false)
   const [profileImage, setProfileImage] = React.useState<File | null>(null)
 
   const [isLoading, setIsLoading] = React.useState(false)
   const dispatch = useDispatch()
 
   const { dataForm, optionSelected, setOpenModal } = props
+  console.log("dataForm", dataForm)
   const initialValues = {
     firstName: dataForm.firstName || "",
     lastName: dataForm.lastName || "",
     telefono: dataForm.telefono || "",
     email: dataForm.email || "",
-    is_barber: !(false || dataForm.is_barber === 0),
     is_admin: !(false || dataForm.is_admin === 0),
     imageProfile:
       dataForm.url_image ? dataForm.url_image : "uploads/profile.png"
   }
-
-  // const addBarberBeforeUser = async (data: any) => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("firstName", data.firstName);
-  //     formData.append("lastName", data.lastName);
-  //     formData.append("email", data.email);
-  //     formData.append("telefono", data.telefono);
-  //     formData.append("is_barber", data.is_barber);
-  //     formData.append("is_admin", data.is_admin);
-  //     formData.append("imageProfile", profileImage || data.imageProfile);
-  //     const rta = await dispatch(addBarber(formData) as any);
-  //     if (rta.rta === 1) {
-  //       return rta.barberId
-  //     }
-  //   } catch (err) {
-  //     console.error(err)
-  //     return -1
-  //   }
-  //   return -1
-  // }
 
   const registerUser = async (data: any) => {
     setIsLoading(true)
@@ -74,14 +51,10 @@ const FormUser = (props: FormUserProps) => {
     formData.append("firstName", data.firstName)
     formData.append("lastName", data.lastName)
     formData.append("email", data.email)
-    formData.append("is_barber", data.is_barber)
     formData.append("is_admin", data.is_admin)
     formData.append("imageProfile", profileImage || data.imageProfile)
-    console.log(optionSelected)
-
     let rtaUpdateUser
     if (optionSelected === "Editar") {
-      console.log(optionSelected)
       try {
         rtaUpdateUser = await dispatch(updateUser(formData, dataForm.id) as any)
         if (rtaUpdateUser.rta === 1) {
@@ -97,12 +70,9 @@ const FormUser = (props: FormUserProps) => {
         setIsLoading(false)
       }
     } else {
-
       let rtaAddUser
       formData.append("password", data.password)
       formData.append("id_barbero", "0")
-
-      console.log(JSON.stringify(formData))
       try {
         rtaAddUser = await dispatch(addUser(formData) as any)
         if (rtaAddUser.rta === 1) {
@@ -110,7 +80,7 @@ const FormUser = (props: FormUserProps) => {
           setOpenModal(false)
         } if (rtaAddUser.rta === -2) {
           NotifyHelper.notifyWarning(rtaAddUser.message)
-        } else {
+        } else if (rtaAddUser.rta === -1) {
           NotifyHelper.notifyError(rtaAddUser.message)
         }
         setIsLoading(false)
@@ -139,11 +109,6 @@ const FormUser = (props: FormUserProps) => {
     setIsAdminChecked(!isAdminChecked)
   }
 
-  const isBarberClick = () => {
-    values.is_barber = !values.is_barber
-    setIsActiveChecked(!isActiveChecked)
-  }
-
   const handleCheckboxChange = (event: any) => {
     const { name, checked } = event.target
     handleChange({ target: { name, value: checked } })
@@ -158,8 +123,6 @@ const FormUser = (props: FormUserProps) => {
       setProfileImage(event.target.files[0])
     }
   }
-
-  React.useEffect(() => { }, [])
 
   return (
     <ThemeProvider theme={theme}>
@@ -299,35 +262,14 @@ const FormUser = (props: FormUserProps) => {
                         }
                       />
                     </Grid>
-                    <Grid item xs={6} m={0}>
-                      <Card
-                        variant="outlined"
-                        style={{
-                          backgroundColor: values.is_barber ? "#bbe1fa" : "",
-                          cursor: "pointer"
-                        }}
-                        onClick={isBarberClick}
-                      >
-                        <FormControlLabel
-                          name="is_barber"
-                          onClick={isBarberClick}
-                          id="is_barber"
-                          control={
-                            <Checkbox
-                              checked={values.is_barber}
-                              onChange={handleCheckboxChange}
-                            />
-                          }
-                          label="Barbero"
-                          labelPlacement="start"
-                        />
-                      </Card>
-                    </Grid>
-                    <Grid item xs={6} m={0}>
+                    <Grid item xs={12} m={0}>
                       <Card
                         style={{
                           backgroundColor: values.is_admin ? "#bbe1fa" : "",
-                          cursor: "pointer"
+                          cursor: "pointer",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          paddingRight: "17px",
                         }}
                         variant="outlined"
                         onClick={isAdminClick}
@@ -341,10 +283,12 @@ const FormUser = (props: FormUserProps) => {
                             <Checkbox
                               checked={values.is_admin}
                               onChange={handleCheckboxChange}
+                              style={{ marginLeft: "auto" }}
                             />
                           }
                           label="Es administrador"
                           labelPlacement="start"
+                          style={{ flexGrow: 1 }}
                         />
                       </Card>
                     </Grid>
@@ -369,7 +313,7 @@ const FormUser = (props: FormUserProps) => {
           </Box>
         </Box>
       </Container>
-    </ThemeProvider>
+    </ThemeProvider >
   )
 }
 

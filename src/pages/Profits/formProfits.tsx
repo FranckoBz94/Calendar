@@ -2,31 +2,37 @@ import MotionComponent from "components/MotionComponent"
 import Loader from "components/Loader"
 import { useStyles } from "./styles"
 import "react-toastify/dist/ReactToastify.css"
-import { Box, Card, Grid, TextField, Typography } from "@mui/material"
+import { Box, Card, FormHelperText, Grid, Typography } from "@mui/material"
 import { useFormik } from "formik"
 import { LoadingButton } from "@mui/lab"
 import "react-datepicker/dist/react-datepicker.css"
 import { useEffect, useState } from "react"
 import store from "redux/store"
 import { useDispatch, useSelector } from "react-redux"
-import Select, { components } from "react-select"
+import Select from "react-select"
 import { getAllBarbers } from "redux/actions/barbersAction"
 import { getAllHours } from "redux/actions/hoursAction"
 import { searchTurnsProfits } from "redux/actions/turnsAction"
 import "react-data-table-component-extensions/dist/index.css"
-import { formatter, getMuiTheme, optionsTable } from "contants"
+import { formatter, getMuiTheme, Label, Option, optionsTable, SingleValue } from "contants"
 import moment from "moment"
-import * as Yup from "yup"
 import MUIDataTable from "mui-datatables";
 import { ThemeProvider } from '@mui/material/styles'
 import MainComponent from "pages/AppBar/MainComponent"
+import { DemoItem } from "@mui/x-date-pickers/internals/demo"
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from "dayjs"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 
 const formProfits = () => {
   const [selectedOptionBarber, setSelectedOptionBarber] = useState({
     value: null,
     label: ""
   })
-  const [error, setError] = useState('');
+  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs().startOf('year'));
+  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [dataProfit, setDataProfit] = useState([])
   const [amountSearch, setAmountSearch] = useState("0")
@@ -39,79 +45,67 @@ const formProfits = () => {
   const dispatch = useDispatch()
 
   const initialValues = {
-    idBarber: null,
-    start_date: moment(new Date()).format("YYYY-MM-DD"),
-    end_date: moment(new Date()).format("YYYY-MM-DD")
+    idBarber: null
   }
+
+  const formatDateTime = (date: Dayjs | null): string | null => {
+    return date ? date.format('YYYY-MM-DD') : null;
+  };
+
+  const formatDateTimeView = (date: Dayjs | null): string | null => {
+    return date ? date.format('DD/MM/YYYY') : null;
+  };
 
   const searchProfits = async (values: any) => {
     setIsLoading(true);
-    if (!selectedOptionBarber.value) {
-      setError('Debes seleccionar un barbero.');
-      setIsLoading(false); // Detiene la carga si hay un error
-      return;
+    const newErrors: { [key: string]: string } = {};
+    if (selectedOptionBarber.value === null) newErrors.barber = 'Debes seleccionar un barbero.'
+    if (!startDate) newErrors.dateFrom = 'La fecha de inicio es requerida.';
+    if (!endDate) newErrors.dateTo = 'La fecha de fin es requerida.';
+    if (startDate && endDate && endDate.isBefore(startDate, 'day')) {
+      newErrors.dateTo = 'La fecha de fin no puede ser anterior a la fecha de inicio.';
     }
-    setNameBarber(selectedOptionBarber?.label)
-    values.idBarber = selectedOptionBarber?.value
-    try {
-      const dataSearch = {
-        idBarber: selectedOptionBarber?.value,
-        start_date: moment(values.start_date).format("YYYY-MM-DD 06:00:00"),
-        end_date: moment(values.end_date).format("YYYY-MM-DD 23:00:00"),
+    setIsLoading(false);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length === 0) {
+      setNameBarber(selectedOptionBarber?.label)
+      setIsSearch(true)
+      values.idBarber = selectedOptionBarber?.value
+      try {
+        const formattedStartDate = formatDateTime(startDate);
+        const formattedEndDate = formatDateTime(endDate);
+        const dataSearch = {
+          idBarber: selectedOptionBarber?.value,
+          formattedStartDate,
+          formattedEndDate,
+        }
+        const { dataProfit } = await dispatch(searchTurnsProfits(dataSearch) as any)
+
+        const pricesWithoutCurrency = dataProfit.map((turn: any) => {
+          return Number(turn.price_service.replace(/[^\d.-]/g, ''));
+        });
+
+        const totalPrices = pricesWithoutCurrency.reduce((accumulator: number, currentPrice: number) => {
+          return accumulator + currentPrice;
+        }, 0);
+        setAmountSearch(formatter.format(parseInt(totalPrices)))
+        setDataProfit(dataProfit)
+      } catch (err) {
+        console.error(err)
       }
-      const { dataProfit } = await dispatch(searchTurnsProfits(dataSearch) as any)
-
-      const pricesWithoutCurrency = dataProfit.map((turn: any) => {
-        return Number(turn.price_service.replace(/[^\d.-]/g, ''));
-      });
-
-      const totalPrices = pricesWithoutCurrency.reduce((accumulator: number, currentPrice: number) => {
-        return accumulator + currentPrice;
-      }, 0);
-      setAmountSearch(formatter.format(parseInt(totalPrices)))
-      setDataProfit(dataProfit)
-    } catch (err) {
-      console.error(err)
     }
-    setError('');
-    setIsSearch(true)
     setIsLoading(false);
   }
 
   const handleChangeSelectBarber = (e: any) => {
     setSelectedOptionBarber(e)
-    setError('');
   }
 
-  const Option = (props: any) => {
-    return (
-      <components.Option {...props}>
-        <div dangerouslySetInnerHTML={{ __html: props.label }} />
-      </components.Option>
-    );
-  }
-
-  const SingleValue = (props: any) => (
-    <components.SingleValue {...props}>
-      <div dangerouslySetInnerHTML={{ __html: props.data.label }} />
-    </components.SingleValue>
-  );
-
-
-
-  const { handleSubmit, values, errors, setFieldValue } =
+  const { handleSubmit } =
     useFormik({
       initialValues,
-      validationSchema: Yup.object({
-        start_date: Yup.string().required("Debes ingresar un nombre"),
-        end_date: Yup.string().required("Debes ingresar un apellido"),
-      }),
       onSubmit: searchProfits
     })
-
-  const handleInputChange = (field: any, value: any) => {
-    setFieldValue(field, value)
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -158,7 +152,6 @@ const formProfits = () => {
     firstName: `${row.firstName} ${row.lastName}`
   }));
 
-
   return (
     <MainComponent>
       <>
@@ -172,130 +165,136 @@ const formProfits = () => {
             </Card>
             <Box my={3}>
               <Card>
-                <Box
-                  component="form"
-                  noValidate
-                  onSubmit={handleSubmit}
-                  sx={{ mt: 3, px: 5 }}
-                >
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={12} mb={5}>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} my={2}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Typography textAlign="center" variant="h5">Registro de ganancias</Typography>
-                          </Box>
-                        </Grid>
-                        <Grid item md={4} xs={12}>
-                          <Box position="relative">
-                            <Select
-                              isSearchable={true}
-                              className={`basic-multi-select ${error ? "error" : ""}`}
-                              classNamePrefix="select"
-                              options={barbers?.map((barber: any) => ({
-                                label: barber.firstName + " " + barber.lastName,
-                                value: barber.id
-                              }))}
-                              placeholder="Barbero"
-                              menuPlacement="auto"
-                              menuPortalTarget={document.body}
-                              styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
-                              onChange={handleChangeSelectBarber}
-                              components={{ Option: Option, SingleValue: SingleValue }}
-                            />
-                            {error && <small style={{ color: 'red' }}>{error}</small>}
-                          </Box>
-                        </Grid>
-                        <Grid item md={4} xs={12} className="d-flex justify-content-center">
-                          <TextField
-                            name="start_date"
-                            value={values.start_date || ""}
-                            type="date"
-                            label="Desde"
-                            variant="outlined"
-                            onChange={(e) =>
-                              handleInputChange("start_date", e.target.value)
-                            }
-                            fullWidth
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            error={Boolean(errors.start_date)}
-                          />
-                        </Grid>
-                        <Grid item md={4} xs={12} className="d-flex justify-content-center">
-                          <TextField
-                            name="end_date"
-                            type="date"
-                            label="Hasta"
-                            variant="outlined"
-                            value={values.end_date || ""}
-                            fullWidth
-                            onChange={(e) =>
-                              handleInputChange("end_date", e.target.value)
-                            }
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            error={Boolean(errors.end_date)}
-                          />
-
-                        </Grid>
-                        <Grid item xs={12} my={3}>
-                          <Box display="flex" justifyContent="center">
-                            <LoadingButton
-                              size="small"
-                              type="submit"
-                              className="btnSubmitOption2 w-50"
-                              variant="contained"
-                              sx={{ py: 2, px: 4 }}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Box
+                    component="form"
+                    noValidate
+                    onSubmit={handleSubmit}
+                    sx={{ mt: 3, px: 5 }}
+                  >
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={12} mb={5}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={12} my={2}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                              }}
                             >
-                              <span>Buscar</span>
-                            </LoadingButton>
-                          </Box>
+                              <Typography textAlign="center" variant="h5">Registro de ganancias</Typography>
+                            </Box>
+                          </Grid>
+                          <Grid item md={4} xs={12}>
+                            <Box position="relative">
+                              <DemoItem label={<Label componentName="Barbero" />}>
+                                <Select
+                                  isSearchable={true}
+                                  // className="basic-multi-select"
+                                  className={`basic-multi-select ${errors?.barber ? "error" : ""}`}
+                                  classNamePrefix="select"
+                                  options={barbers?.map((barber: any) => ({
+                                    label: barber.firstName + " " + barber.lastName,
+                                    value: barber.id
+                                  }))}
+                                  placeholder="Barbero"
+                                  menuPlacement="auto"
+                                  menuPortalTarget={document.body}
+                                  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                  onChange={handleChangeSelectBarber}
+                                  components={{ Option: Option, SingleValue: SingleValue }}
+                                />
+                                {errors.barber && <FormHelperText error>{errors.barber}</FormHelperText>}
+                              </DemoItem>
+                            </Box>
+                          </Grid>
+                          <Grid item md={4} xs={12} >
+                            <DemoItem label={<Label componentName="Desde" />}>
+                              <DatePicker
+                                disableFuture
+                                value={startDate}
+                                onChange={(newValue: Dayjs | null) => setStartDate(newValue)}
+                                format="DD/MM/YYYY"
+                                className={classes.w_100}
+                              />
+                              {errors.startDate && <FormHelperText error>{errors.startDate}</FormHelperText>}
+                            </DemoItem>
+                          </Grid>
+                          <Grid item md={4} xs={12} >
+                            <DemoItem label={<Label componentName="Hasta" />}>
+                              <DatePicker
+                                disableFuture
+                                value={endDate}
+                                minDate={startDate ?? undefined}
+                                onChange={(newValue: Dayjs | null) => setEndDate(newValue)}
+                                format="DD/MM/YYYY"
+                              />
+                              {errors.endDate && <FormHelperText error>{errors.endDate}</FormHelperText>}
+                            </DemoItem>
+                          </Grid>
+                          <Grid item xs={12} my={3}>
+                            <Box display="flex" justifyContent="center">
+                              <LoadingButton
+                                size="small"
+                                type="submit"
+                                className="btnSubmitOption2 w-50"
+                                variant="contained"
+                                sx={{ py: 2, px: 4 }}
+                              >
+                                <span>Buscar</span>
+                              </LoadingButton>
+                            </Box>
+                          </Grid>
                         </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                  <Card>
-                    <Grid >
-                      <Box>
-                        {isSearch && (
-                          <ThemeProvider theme={getMuiTheme("#0f4c75")}>
-                            <MUIDataTable
-                              title={nameBarber ? `Ganancias de ${nameBarber}` : ""}
-                              data={modifiedData}
-                              columns={columns}
-                              options={optionsTable}
-                            />
-                          </ThemeProvider>
-                        )}
+                    <Card>
+                      <Grid >
+                        <Box>
+                          {isSearch && (
+                            <ThemeProvider theme={getMuiTheme("#0f4c75")}>
+                              <MUIDataTable
+                                title={nameBarber ? <Typography variant="h6" component="div" >
+                                  Ganancias de <span style={{ fontFamily: 'Arial', fontWeight: 'bold', margin: 0 }}>{nameBarber}</span>
+                                </Typography> : ""}
+                                data={modifiedData}
+                                columns={columns}
+                                options={optionsTable}
+                              />
+                            </ThemeProvider>
+                          )}
+                        </Box>
+                      </Grid>
+                    </Card>
+                    {isSearch && (
+                      <Box my={3}>
+                        <Card variant="outlined">
+                          <Grid p={2}>
+                            <Box sx={{ display: { xs: 'block', md: 'flex' }, justifyContent: "space-between" }}>
+                              <Box display="flex" justifyContent="flex-start" alignItems="center">
+                                <Typography variant="body1" style={{ marginRight: 10 }}>
+                                  Total de turnos:
+                                </Typography>
+                                <Typography fontWeight="bold" style={{ marginRight: 10 }} >
+                                  {modifiedData.length}
+                                </Typography>
+                              </Box>
+                              <Box display="flex" alignItems="center">
+                                <Typography variant="body1" style={{ marginRight: 10 }}>
+                                  Total desde {formatDateTimeView(startDate)} al {formatDateTimeView(endDate)}:
+                                </Typography>
+                                <Typography variant="h5" component="span" >
+                                  {`${amountSearch}`}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </Grid>
+                        </Card>
                       </Box>
-                    </Grid>
-                  </Card>
-                  {isSearch && (
-                    <Box my={3}>
-                      <Card variant="outlined">
-                        <Grid p={2}>
-                          <Box display="flex" justifyContent="flex-end" alignItems="center">
-                            <Typography variant="body1" style={{ marginRight: 10 }}>
-                              Total desde {moment(values.start_date).format("DD/MM/YYYY")} al {moment(values.end_date).format("DD/MM/YYYY")}:
-                            </Typography>
-                            <Typography variant="h5" component="span" >
-                              {`${amountSearch}`}
-                            </Typography>
-                          </Box>
-                        </Grid>
-                      </Card>
-                    </Box>
-                  )}
-                </Box>
+                    )}
+                  </Box>
+                </LocalizationProvider>
               </Card>
             </Box>
           </Box>

@@ -8,6 +8,12 @@ import CssBaseline from "@mui/material/CssBaseline"
 import { UserProvider, useUser } from "components/UserProvider"
 import { AppBarComponent } from "pages/AppBar/AppBar"
 import { BrowserRouter } from "react-router-dom"
+import 'dayjs/locale/es'; // Importa el locale en español
+import dayjs from "dayjs"
+import Landing from "pages/Landing"
+
+dayjs.locale('es');
+
 
 const darkTheme = createTheme({
   palette: {
@@ -17,7 +23,6 @@ const darkTheme = createTheme({
 
 const RootComponent = () => {
   const { user } = useUser();
-  console.log("u", user)
   return (
     <BrowserRouter>
       {user ? (
@@ -32,15 +37,22 @@ const RootComponent = () => {
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
-
+const landing = true
 root.render(
   <React.StrictMode>
-    <UserProvider>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <RootComponent />
-      </ThemeProvider>
-    </UserProvider>
+    {landing ? (
+      <div>
+        <Landing />
+      </div>
+    ) : (
+
+      <UserProvider>
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
+          <RootComponent />
+        </ThemeProvider>
+      </UserProvider>
+    )}
   </React.StrictMode>
 );
 

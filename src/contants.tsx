@@ -1,4 +1,4 @@
-import { Alert, ThemeOptions } from "@mui/material";
+import { Alert, Stack, ThemeOptions, Tooltip } from "@mui/material";
 import { MUIDataTableOptions } from "mui-datatables";
 import { toast } from "react-toastify"
 import { styled } from '@mui/material/styles';
@@ -78,17 +78,18 @@ export const SingleValue = (props: any) => (
 
 export const getMuiTheme = (color: string): ThemeOptions => ({
   components: {
+    // Usar 'as any' para evitar la verificación de tipos
     MUIDataTableHeadCell: {
       styleOverrides: {
-        fixedHeader: { backgroundColor: color + "!important", color: "#fff" },
+        fixedHeader: { backgroundColor: `${color} !important`, color: "#fff" },
         sortActive: { color: "#ddd" },
         sortAction: { color: "#ddd !important", alignItems: "center" },
         sortLabelRoot: { color: "#ddd !important" },
         hintIconWithSortIcon: { color: "#ddd !important" },
       },
-    },
-  }
-})
+    } as any,
+  } as any,
+});
 
 export class NotifyHelper {
   static notifySuccess: (text: string) => void = (text: string) => {
@@ -237,3 +238,48 @@ export const createFormData = (
   formData.append("is_barber", isBarber.toString());
   return formData;
 };
+
+const ProSpan = styled('span')({
+  display: 'inline-block',
+  height: '1em',
+  width: '1em',
+  verticalAlign: 'middle',
+  marginLeft: '0.3em',
+  marginBottom: '0.08em',
+  backgroundSize: 'contain',
+  backgroundRepeat: 'no-repeat',
+  backgroundImage: 'url(https://mui.com/static/x/pro.svg)',
+});
+
+export function Label({
+  componentName,
+  isProOnly,
+}: {
+  componentName: string;
+  isProOnly?: boolean;
+}) {
+  const content = (
+    <span>
+      <strong>{componentName}</strong>
+    </span>
+  );
+
+  if (isProOnly) {
+    return (
+      <Stack direction="row" spacing={0.5} component="span">
+        <Tooltip title="Included on Pro package">
+          <a
+            href="https://mui.com/x/introduction/licensing/#pro-plan"
+            aria-label="Included on Pro package"
+          >
+            <ProSpan />
+          </a>
+        </Tooltip>
+        {content}
+      </Stack>
+    );
+  }
+
+  return content;
+}
+

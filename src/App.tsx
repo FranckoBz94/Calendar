@@ -1,6 +1,6 @@
 import { Provider } from "react-redux"
 import store from "redux/store"
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import Clients from "pages/Clients"
 import Users from "pages/Users"
 import Services from "pages/Services"
@@ -13,45 +13,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Profile from "pages/Profile"
 import Login from "pages/Login"
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { useEffect, useState } from "react"
-import { useUser } from "components/UserProvider"
-
-function parseJwt(token: any) {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-
-  return JSON.parse(jsonPayload);
-}
-
-
-
-const PrivateRoute = ({ element, ...rest }: any) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const tokenFromLocalStorage = localStorage.getItem('token');
-  const tokenExistAndStillValid = tokenFromLocalStorage && parseJwt(tokenFromLocalStorage).exp * 1000 > Date.now();
-  const isLoginRoute = location.pathname === '/login';
-  const [shouldRedirect, setShouldRedirect] = useState(false);
-  const { setUser } = useUser();
-
-  useEffect(() => {
-    if (!tokenExistAndStillValid && !isLoginRoute) {
-      alert("Sesión expirada, inicie sesión nuevamente.");
-      setShouldRedirect(true);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      navigate('/login');
-      setUser(null)
-    } else if (tokenExistAndStillValid && isLoginRoute) {
-      navigate('/');
-    }
-  }, [tokenExistAndStillValid, isLoginRoute, navigate]);
-
-  return !shouldRedirect && element;
-}
+import Dashboard from "pages/Dashboard"
+import PrivateRoute from "components/PrivateRoute"
 
 const App = () => {
   const darkTheme = createTheme({
@@ -111,6 +74,12 @@ const App = () => {
             path="/profile"
             element={
               <PrivateRoute element={<Profile />} />
+            }
+          />
+          <Route
+            path="/data"
+            element={
+              <PrivateRoute element={<Dashboard />} />
             }
           />
           <Route path="/login" element={

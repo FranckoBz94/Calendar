@@ -12,7 +12,7 @@ import ContentCutIcon from "@mui/icons-material/ContentCut";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Box } from "@mui/material";
-
+import EqualizerIcon from '@mui/icons-material/Equalizer';
 
 export const mainListItems = () => {
   const location = useLocation();
@@ -79,6 +79,12 @@ export const mainListItems = () => {
             <EditRoadIcon />
           </ListItemIcon>
           <ListItemText primary="Vacaciones" />
+        </ListItemButton>
+        <ListItemButton component={Link} to="/data" selected={isActive("/data")}>
+          <ListItemIcon>
+            <EqualizerIcon />
+          </ListItemIcon>
+          <ListItemText primary="Estadísticas" />
         </ListItemButton>
       </Box>
     </React.Fragment>

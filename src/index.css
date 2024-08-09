@@ -441,8 +441,18 @@ inputDisabled input[type="time"] {
   border-radius: 5px;
 }
 
+/* 
+.css-ixpz1i-MuiPieArcLabel-root {
+  fill: #fff !important;
+  font-size: 10px !important;
+} */
+
 @media (max-width:600px) {
   .modal_custom {
     width: 90%;
   }
+}
+
+.MuiDateRangeCalendar-root>div:nth-child(1) {
+  display: none;
 }

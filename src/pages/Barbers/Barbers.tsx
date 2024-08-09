@@ -26,6 +26,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import MainComponent from "pages/AppBar/MainComponent"
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { getAllUsers } from "redux/actions/usersAction"
+import { useUser } from "components/UserProvider"
 
 const Barbers = () => {
   const classes: any = useStyles()
@@ -37,6 +38,8 @@ const Barbers = () => {
   const storeComplete: any = useSelector((state: RootState) => state)
   const { barbers } = useSelector((state: RootState) => storeComplete.barbers)
   const { users } = useSelector((state: RootState) => storeComplete.users)
+  const { user: userLogged } = useUser();
+
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})
@@ -154,19 +157,19 @@ const Barbers = () => {
                 color="primary"
                 startIcon={<EditIcon />}
                 style={{ marginRight: "4px" }}
-
                 onClick={() => dataRow("Editar", tableMeta.rowData)}
               >
-
               </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<DeleteIcon />}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                onClick={() => dataRow("Eliminar", tableMeta.rowData)}
-              >
-              </Button>
+              {tableMeta.rowData[8] !== userLogged?.id && (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  onClick={() => dataRow("Eliminar", tableMeta.rowData)}
+                >
+                </Button>
+              )}
             </div>
           );
         },

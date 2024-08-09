@@ -56,16 +56,12 @@ export const getMyUser = (id) => {
 }
 
 export const addUser = (formData) => async (dispatch) => {
-  console.log(formData)
-
   try {
-    // Realiza una solicitud POST para agregar el usuario con la imagen
     const response = await axios.post(ruta + "users/", formData, {
       headers: {
         "Content-Type": "multipart/form-data" // Importante para la carga de archivos
       }
     })
-
     dispatch(setAddUser())
     dispatch(getAllUsers())
     return response.data
@@ -75,7 +71,6 @@ export const addUser = (formData) => async (dispatch) => {
 }
 
 export const updateUser = (formData, id) => async (dispatch) => {
-  console.log("formdaa", formData)
   try {
     const response = await axios.put(ruta + "users/" + id, formData, {
       headers: {
@@ -91,7 +86,6 @@ export const updateUser = (formData, id) => async (dispatch) => {
 }
 
 export const updateStateUser = ( id, data) => async (dispatch) => {
-  console.log("formData isBarber",data)
   try {
     const response = await axios.put(ruta + "users/updateStateBarber/" + id, data)
     dispatch(setUpdateUser())
@@ -123,3 +117,36 @@ export const loginUser = (dataUser) => async () => {
     // console.log(err)
   }
 }
+
+export const dataGraphics = (idBarber, formattedStartDate ,formattedEndDate) => async () =>{
+    try {
+      const response = await axios.post(ruta + "users/dataGraphics", { id: idBarber, formattedStartDate, formattedEndDate })
+      return response.data
+    } catch (err) {
+      return { rta: -1, message: "Ocurrio un errorrr." + err }
+    }
+}
+
+export const countTurnsGraphics = (idBarber, formattedStartDate ,formattedEndDate) => async () =>{
+    try {
+      const response = await axios.post(ruta + "users/countTurnsGraphics",{ id: idBarber,formattedStartDate, formattedEndDate })
+      return response.data
+    } catch (err) {
+      return { rta: -1, message: "Ocurrio un errorrr." + err }
+    }
+  
+}
+
+export const getTurnsDayWeek = (idBarber,formattedStartDate ,formattedEndDate) => async () =>{
+  try {
+    const response = await axios.post(ruta + "users/getTurnsDayWeek", { id: idBarber,formattedStartDate ,formattedEndDate })
+    return response.data
+  } catch (err) {
+    return { rta: -1, message: "Ocurrio un errorrr." + err }
+  }
+}
+
+
+
+
+

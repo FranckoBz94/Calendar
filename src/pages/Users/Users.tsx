@@ -24,6 +24,7 @@ import { Avatar } from "@mui/material"
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CloseIcon from '@mui/icons-material/Close';
 import MainComponent from "pages/AppBar/MainComponent"
+import { useUser } from "components/UserProvider"
 
 const Users = () => {
   const classes: any = useStyles()
@@ -34,6 +35,7 @@ const Users = () => {
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
   const { users } = useSelector((state: RootState) => storeComplete.users)
+  const { user: userLogged } = useUser();
 
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
@@ -144,21 +146,21 @@ const Users = () => {
                 color="primary"
                 startIcon={<EditIcon />}
                 style={{ marginRight: "4px" }}
-
                 onClick={() => dataRow("Editar", tableMeta.rowData)}
               >
-
+                {tableMeta.rowData.id}
               </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<DeleteIcon />}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              {tableMeta.rowData[0] !== userLogged?.id && (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
 
-                onClick={() => dataRow("Eliminar", tableMeta.rowData)}
-              >
-
-              </Button>
+                  onClick={() => dataRow("Eliminar", tableMeta.rowData)}
+                >
+                </Button>
+              )}
             </div>
           );
         },

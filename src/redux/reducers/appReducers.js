@@ -9,6 +9,7 @@ import {
 
 const initialState = {
   users: [],
+  dataGraphics:[],
   clients: [],
   services: [],
   barbers: [],

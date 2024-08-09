@@ -25,6 +25,7 @@ const InactivePeriod = () => {
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [error, setError] = useState('');
   const [selectedOptionBarber, setSelectedOptionBarber] = useState(Number)
+  const [isLoading, setIsLoading] = useState(false)
 
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
@@ -46,7 +47,7 @@ const InactivePeriod = () => {
     try {
       const dataSearch = {
         idBarber: selectedOptionBarber,
-        start_date: moment(startDate).format("YYYY-MM-DD 00:00:00"),
+        start_date: moment(startDate).format("YYYY-MM-DD 08:00:00"),
         end_date: moment(endDate).format("YYYY-MM-DD 23:59:59"),
       }
       const { message } = await dispatch(availableDate(dataSearch) as any)
@@ -58,16 +59,17 @@ const InactivePeriod = () => {
   }
 
   const registerEvent = async (data: any) => {
+    setIsLoading(true)
     const idBarber = selectedOptionBarber || undefined
     if (!selectedOptionBarber) {
       setError('Debes seleccionar un barbero.');
+      setIsLoading(false)
       return;
     }
     const fechaOriginal = new Date();
     const start = startDate ? moment(startDate).format("YYYY-MM-DD") + " " + hours?.min_hour_calendar : undefined;
     const end = endDate ? moment(endDate).format("YYYY-MM-DD") + " " + hours?.max_hour_calendar : undefined;
     const idService = 1
-    console.log(data)
     const dataComplete = {
       dateBooking: moment(fechaOriginal).format("YYYY-MM-DD"),
       start,
@@ -78,22 +80,25 @@ const InactivePeriod = () => {
       title: "Inactvo",
       price: 0
     }
-    console.log(dataComplete)
-    let rtaAddTurn
-    const countTurns = await isAvailableDate()
-    if (countTurns === 0) {
-      try {
-        rtaAddTurn = await dispatch(addTurn(dataComplete) as any)
+    try {
+      const countTurns = await isAvailableDate();
+
+      if (countTurns === 0) {
+        const rtaAddTurn = await dispatch(addTurn(dataComplete) as any);
+
         if (rtaAddTurn.rta === 1) {
-          NotifyHelper.notifySuccess("Fecha inactiva guardada con éxito")
+          NotifyHelper.notifySuccess("Fecha inactiva guardada con éxito");
         } else {
-          NotifyHelper.notifyError(rtaAddTurn.message)
+          NotifyHelper.notifyError(rtaAddTurn.message);
         }
-      } catch (err) {
-        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+      } else {
+        NotifyHelper.notifyError(`Actualmente hay turnos registrados en ese rango de fecha.`);
       }
-    } else {
-      NotifyHelper.notifyError(`Actualmente hay turnos registrados en ese rango de fecha.`)
+    } catch (err) {
+      NotifyHelper.notifyError(`Ocurrió un error, intente nuevamente.`);
+      console.error("Error en registerEvent:", err);
+    } finally {
+      setIsLoading(false);
     }
     setError('');
   }
@@ -261,11 +266,12 @@ const InactivePeriod = () => {
                             size="small"
                             type="submit"
                             className="btnSubmitOption2 w-50"
-                            // loading={isLoading}
+                            loading={isLoading}
+                            disabled={isLoading}
                             variant="contained"
                             sx={{ py: 2, px: 4 }}
                           >
-                            <span>Guardar</span>
+                            {isLoading ? 'Procesando solicitud...' : 'Guardar'}
                           </LoadingButton>
                         </Box>
                       </Grid>

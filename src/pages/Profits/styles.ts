@@ -34,6 +34,9 @@ export const useStyles: any = makeStyles((theme: Theme) =>
       paddingRight: "20px !important",
       paddingTop: "10px !important",
       paddingBottom: "10px !important"
+    },
+    w_100: {
+      width: "100% !important"
     }
   })
 )
