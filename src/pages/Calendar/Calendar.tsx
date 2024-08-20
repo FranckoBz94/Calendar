@@ -15,7 +15,7 @@ import { getAllClients } from "redux/actions/clientsAction"
 import { getAllServices } from "redux/actions/servicesAction"
 import { getAllTurns, nextTurnAvailable } from "redux/actions/turnsAction"
 import FormEditTurn from "./FormEditTurn"
-import { NotifyHelper, newArrayServices, socket, transformarTurno } from "contants"
+import { Barber, NotifyHelper, newArrayServices, socket, transformarTurno } from "contants"
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"
 import moment from "moment"
 import FormHoursCalendar from "./FormHoursCalendar"
@@ -23,15 +23,6 @@ import { getAllHours } from "redux/actions/hoursAction"
 import SkeletonCalendar from "./SkeletonCalendar"
 import MainComponent from "pages/AppBar/MainComponent"
 
-interface Barber {
-  id: string;
-  firstName: string;
-  lastName: string;
-  imagen: string;
-  is_active: number;
-  is_admin: number;
-  id_barbero: number;
-}
 
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar | null>(null)

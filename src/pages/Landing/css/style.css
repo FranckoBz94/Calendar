@@ -1,11 +1,9 @@
+/**************** extend css start ****************/
+/**************** extend css start ****************/
+/**************** common css start ****************/
 @import url("https://fonts.googleapis.com/css?family=Roboto:300i,400,500,700|Rufina:400,700");
 
-:root {
-  --primary-color: rgba(0, 0, 0, 0.897);
-  --primary-hover: rgba(99, 99, 99, 0.897);
-}
-
-
+/* line 3, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_common.scss */
 body {
   font-family: "Rufina", serif;
   padding: 0;
@@ -575,7 +573,7 @@ ul {
 
 /* line 19, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_button.scss */
 .submit_btn:hover {
-  background: var(--primary-color);
+  background: #f81c1c;
 }
 
 /* line 25, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_button.scss */
@@ -596,8 +594,8 @@ ul {
 
 /* line 37, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_button.scss */
 .btn_1:hover {
-  background-color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  background-color: #f81c1c;
+  border: 2px solid #f81c1c;
   color: #fff;
 }
 
@@ -696,7 +694,7 @@ ul {
 
 /* line 103, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_button.scss */
 .btn_3:hover {
-  background-color: var(--primary-color);
+  background-color: #f81c1c;
   box-shadow: 0px 15px 20px 0px rgba(248, 28, 28, 0.1);
   color: #fff;
 }
@@ -781,13 +779,13 @@ ul {
   -webkit-transition: 0.5s;
   transition: 0.5s;
   padding: 14.5px 43px;
-  background-color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  background-color: #f81c1c;
+  border: 2px solid #f81c1c;
 }
 
 /* line 161, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_button.scss */
 .btn_4:hover {
-  color: var(--primary-color) !important;
+  color: #f81c1c !important;
   background-color: transparent;
 }
 
@@ -816,7 +814,7 @@ ul {
 
 /* line 16, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
 .blog_area a h2:hover {
-  color: var(--primary-color) !important;
+  color: #f81c1c !important;
 }
 
 /* line 24, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
@@ -865,7 +863,7 @@ ul {
 
 /* line 61, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
 .single-blog a:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 66, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
@@ -1337,7 +1335,7 @@ ul {
 
 /* line 544, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
 .blog_details a:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 549, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
@@ -1406,7 +1404,7 @@ ul {
   left: 10px;
   display: block;
   color: #fff;
-  background-color: var(--primary-color);
+  background-color: #f81c1c;
   padding: 8px 15px;
   border-radius: 5px;
 }
@@ -1582,7 +1580,7 @@ ul {
 
 /* line 777, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
 .blog_right_sidebar .post_category_widget .cat-list li:hover a {
-  color: var(--primary-color) !important;
+  color: #f81c1c !important;
 }
 
 /* line 787, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
@@ -1602,7 +1600,7 @@ ul {
 
 /* line 803, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
 .blog_right_sidebar .popular_post_widget .post_item .media-body a:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 809, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
@@ -1637,7 +1635,7 @@ ul {
 
 /* line 837, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
 .blog_right_sidebar .tag_cloud_widget ul li a:hover {
-  background: var(--primary-color) !important;
+  background: #f81c1c !important;
   color: #fff !important;
 }
 
@@ -1885,7 +1883,7 @@ ul {
 
 /* line 1200, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
 .single-post-area .blog-author a:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 1205, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog.scss */
@@ -2232,7 +2230,7 @@ ul {
 
 /* line 18, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_single_blog.scss */
 .single_blog_post .single_blog .single_appartment_content p a {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 22, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_single_blog.scss */
@@ -2291,7 +2289,7 @@ ul {
 
 /* line 24, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_menu.scss */
 .single_page_menu .main-menu-item ul li .nav-link:hover {
-  color: var(--primary-color) !important;
+  color: #f81c1c !important;
 }
 
 /* line 33, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_menu.scss */
@@ -2359,9 +2357,9 @@ ul {
   width: 100%;
   height: 100%;
   content: "";
-  background-color: #000000;
+  background-color: #f81c1c;
   z-index: -1;
-  opacity: .8;
+  opacity: .7;
 }
 
 /* line 99, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_menu.scss */
@@ -2378,7 +2376,7 @@ ul {
   transform: scale(1, 0);
   display: block;
   border: 0px solid transparent;
-  background-color: var(--primary-hover);
+  background-color: #fa4c4c;
   margin-top: 0px;
 }
 
@@ -2387,7 +2385,7 @@ ul {
   font-size: 14px;
   padding: 8px 20px !important;
   color: #fff !important;
-  /* background-color: var(--primary-hover); */
+  background-color: #fa4c4c;
   text-transform: capitalize;
 }
 
@@ -2446,23 +2444,12 @@ ul {
   .dropdown:hover .dropdown-menu {
     transform: scale(1);
     display: block;
-    color: var(--primary-color);
+    color: #f81c1c;
   }
 
   /* line 180, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_menu.scss */
   .dropdown .dropdown-item:hover {
-    background: #ca4e4e !important;
-  }
-
-  .dropdown-item:focus,
-  .dropdown-item:hover {
-    background: #ca4e4e !important;
-
-  }
-
-  .dropdown-item:active {
-    background: #ca4e4e !important;
-
+    color: #f81c1c !important;
   }
 
   /* line 185, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_menu.scss */
@@ -2528,14 +2515,12 @@ ul {
   .dropdown:hover .dropdown-menu {
     transform: scale(1);
     display: block;
-    color: var(--primary-color);
+    color: #f81c1c;
   }
 
   /* line 244, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_menu.scss */
   .dropdown .dropdown-item:hover {
-    color: var(--primary-color) !important;
-    background: #b45050 !important;
-
+    color: #f81c1c !important;
   }
 
   /* line 249, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_menu.scss */
@@ -2601,7 +2586,12 @@ ul {
   .dropdown:hover .dropdown-menu {
     transform: scale(1);
     display: block;
-    color: var(--primary-color);
+    color: #f81c1c;
+  }
+
+  /* line 307, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_menu.scss */
+  .dropdown .dropdown-item:hover {
+    color: #f81c1c !important;
   }
 
   /* line 312, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_menu.scss */
@@ -2646,9 +2636,9 @@ ul {
 .banner_part {
   height: 890px;
   position: relative;
-  background-image: url(../img/bg_demo.png);
+  background-image: url(../img/bg_home.png);
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: 100% 99%;
   background-position: left top;
   z-index: 2;
 }
@@ -2695,19 +2685,6 @@ ul {
   .banner_part {
     background-size: cover;
   }
-}
-
-/* line 29, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
-.banner_part:after {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  content: "";
-  top: 0;
-  z-index: -1;
-  /* background: url(../img/banner_bg.png) top right no-repeat; */
-  right: 0;
-  background-size: 46%;
 }
 
 @media (max-width: 575px) {
@@ -2933,7 +2910,7 @@ ul {
 
 /* line 174, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
 .banner_part .banner_text h1 span {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 178, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
@@ -2958,7 +2935,6 @@ ul {
 /**************** about css start ****************/
 /* line 2, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_about.scss */
 .about_part {
-  background-color: #080a0e;
   position: relative;
   z-index: 1;
   padding: 80px 0px;
@@ -3150,7 +3126,7 @@ ul {
 .about_part .about_text h5 {
   font-family: "Roboto", sans-serif;
   font-size: 13px;
-  /* color: var(--primary-color); */
+  color: #f81c1c;
   margin-bottom: 18px;
   text-transform: uppercase;
   font-weight: 500;
@@ -3175,7 +3151,7 @@ ul {
   position: absolute;
   content: "";
   top: -8px;
-  width: 80px;
+  width: 45px;
   height: 36px;
   background-color: #f0f0f0;
   left: 0px;
@@ -3310,7 +3286,7 @@ ul {
   content: "";
   bottom: 133px;
   z-index: -1;
-  background: url(../img/about_overlay.png) bottom right no-repeat;
+  /* background: url(../img/about_overlay.png) bottom right no-repeat; */
   background-size: 15% 60%;
   right: 0px;
 }
@@ -3855,7 +3831,7 @@ ul {
   top: 28px;
   width: 100%;
   height: 1px;
-  border-top: 1px dotted var(--primary-color);
+  border-top: 1px dotted #f81c1c;
   z-index: -1;
 }
 
@@ -3907,7 +3883,7 @@ ul {
 /* line 114, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_priceing_part.scss */
 .priceing_part .single_pricing_item .single_pricing_text h6 {
   float: right;
-  color: var(--primary-color);
+  color: #f81c1c;
   padding-left: 20px;
   padding-right: 0px;
 }
@@ -3962,7 +3938,7 @@ ul {
 /* line 29, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_regervation_part.scss */
 .regervation_part .regerv_btn_iner {
   display: inline-block;
-  background-color: var(--primary-color);
+  background-color: #f81c1c;
   color: #fff;
   font-family: "Roboto", sans-serif;
   padding: 14.5px 31.5px;
@@ -4212,9 +4188,9 @@ ul {
 
 /* line 97, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_artist_part.scss */
 .artist_part .single_blog_item .social_icon a:hover {
-  background-color: var(--primary-color);
+  background-color: #f81c1c;
   color: #fff !important;
-  border: 1px solid var(--primary-color);
+  border: 1px solid #f81c1c;
 }
 
 /* line 105, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_artist_part.scss */
@@ -4583,7 +4559,7 @@ ul {
 
 /* line 13, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog_part.scss */
 .blog_part .single_service_part .single_service_text p a:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 17, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog_part.scss */
@@ -4622,7 +4598,7 @@ ul {
 
 /* line 40, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog_part.scss */
 .blog_part .single_service_part .single_service_text h4 a:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 45, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_blog_part.scss */
@@ -4694,7 +4670,7 @@ ul {
 
 /* line 22, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_copyright_part.scss */
 .copyright_part a {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 @media (max-width: 575px) {
@@ -4870,7 +4846,7 @@ ul {
 
 /* line 23, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_contact.scss */
 .contact-info .media-body h3 a:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 29, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_contact.scss */
@@ -4994,7 +4970,7 @@ sup,
 sub,
 u,
 del {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 93, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
@@ -5166,28 +5142,28 @@ h6 {
 /* line 217, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .genric-btn.primary {
   color: #fff;
-  background: var(--primary-color);
+  background: #f81c1c;
   border: 1px solid transparent;
 }
 
 /* line 221, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .genric-btn.primary:hover {
-  color: var(--primary-color);
-  border: 1px solid var(--primary-color);
+  color: #f81c1c;
+  border: 1px solid #f81c1c;
   background: #fff;
 }
 
 /* line 227, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .genric-btn.primary-border {
-  color: var(--primary-color);
-  border: 1px solid var(--primary-color);
+  color: #f81c1c;
+  border: 1px solid #f81c1c;
   background: #fff;
 }
 
 /* line 231, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .genric-btn.primary-border:hover {
   color: #fff;
-  background: var(--primary-color);
+  background: #f81c1c;
   border: 1px solid transparent;
 }
 
@@ -5345,7 +5321,7 @@ h6 {
 .generic-blockquote {
   padding: 30px 50px 30px 30px;
   background: #f9f9ff;
-  border-left: 2px solid var(--primary-color);
+  border-left: 2px solid #f81c1c;
 }
 
 /* line 353, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
@@ -5500,7 +5476,7 @@ h6 {
   position: absolute;
   width: 14px;
   height: 14px;
-  border: 3px solid var(--primary-color);
+  border: 3px solid #f81c1c;
   background: #fff;
   top: 4px;
   left: 0;
@@ -5515,7 +5491,7 @@ h6 {
 /* line 475, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .ordered-list li {
   list-style-type: decimal-leading-zero;
-  color: var(--primary-color);
+  color: #f81c1c;
   font-weight: 500;
   line-height: 1.82em !important;
 }
@@ -5530,7 +5506,7 @@ h6 {
 .ordered-list-alpha li {
   margin-left: 30px;
   list-style-type: lower-alpha;
-  color: var(--primary-color);
+  color: #f81c1c;
   font-weight: 500;
   line-height: 1.82em !important;
 }
@@ -5545,7 +5521,7 @@ h6 {
 .ordered-list-roman li {
   margin-left: 30px;
   list-style-type: lower-roman;
-  color: var(--primary-color);
+  color: #f81c1c;
   font-weight: 500;
   line-height: 1.82em !important;
 }
@@ -5628,7 +5604,7 @@ h6 {
 /* line 568, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .single-input-primary:focus {
   outline: none;
-  border: 1px solid var(--primary-color);
+  border: 1px solid #f81c1c;
 }
 
 /* line 574, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
@@ -5696,7 +5672,7 @@ h6 {
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background: var(--primary-color);
+  background: #f81c1c;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
   -o-transition: all 0.2s;
@@ -5787,7 +5763,7 @@ h6 {
 
 /* line 696, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .primary-switch input:checked+label:before {
-  background: var(--primary-color);
+  background: #f81c1c;
 }
 
 /* line 704, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
@@ -6174,13 +6150,13 @@ h6 {
 
 /* line 1022, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .default-select .nice-select .list .option.selected {
-  color: var(--primary-color);
+  color: #f81c1c;
   background: transparent;
 }
 
 /* line 1026, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .default-select .nice-select .list .option:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
   background: transparent;
 }
 
@@ -6237,13 +6213,13 @@ h6 {
 
 /* line 1067, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .form-select .nice-select .list .option.selected {
-  color: var(--primary-color);
+  color: #f81c1c;
   background: transparent;
 }
 
 /* line 1071, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_elements.scss */
 .form-select .nice-select .list .option:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
   background: transparent;
 }
 
@@ -6322,7 +6298,7 @@ h6 {
 
 /* line 24, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_footer.scss */
 .footer-area .footer_2 .contact_info span {
-  color: var(--primary-color);
+  color: #f81c1c;
   font-size: 18px;
   position: absolute;
   left: 0;
@@ -6405,7 +6381,7 @@ h6 {
 
 /* line 81, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_footer.scss */
 .footer-area .single-footer-widget ul li a:hover {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 85, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_footer.scss */
@@ -6443,7 +6419,7 @@ h6 {
 
 /* line 112, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_footer.scss */
 .footer-area .single-footer-widget .click-btn {
-  background-color: var(--primary-color);
+  background-color: #f81c1c;
   color: #fff;
   border-radius: 0;
   border-top-left-radius: 0px;
@@ -6522,7 +6498,7 @@ h6 {
 /* line 166, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_footer.scss */
 .footer-area .btn {
   margin-top: 23px;
-  background-color: var(--primary-color);
+  background-color: #f81c1c;
   color: #fff;
   width: 50px;
   border-radius: 0px;
@@ -6590,7 +6566,7 @@ h6 {
 
 /* line 210, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_footer.scss */
 .footer-area .copyright_part_text a {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 @media (max-width: 575px) {
@@ -6628,7 +6604,7 @@ h6 {
 
 /* line 236, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_footer.scss */
 .footer-area .info {
-  color: var(--primary-color);
+  color: #f81c1c;
 }
 
 /* line 1, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_breadcrumb.scss */
@@ -6725,3 +6701,164 @@ h6 {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+.barber_card {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.img_card_barber {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.name_barber_card {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #000000;
+  text-align: center;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 2;
+  margin: 0;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.hourSelected{
+  background: green !important;
+  color: #fff;
+}
+
+
+
+/* CALENDAR LANDING */
+.calendar_landing.react-calendar {
+  width: 100% !important;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.calendar_landing .calender-body {
+  background-color: #e7f3f8 !important;
+}
+
+.calendar_landing .react-calendar__tile--active {
+  background-color: #fbbc13 !important;
+  border-radius: 10px;
+}
+
+.calendar_landing .react-calendar__month-view__days__day {
+  border-radius: 10px;
+}
+
+.calendar_landing .react-calendar_month-viewdays_day {
+  margin: 12px !important;
+}
+
+.calendar_landing .react-calendar__tile--active:enabled:hover {
+  background-color: #fbbc13 !important;
+}
+
+.calendar_landing .react-calendar button:enabled:hover {
+  border-radius: 10px;
+}
+
+.calendar_landing .react-calendar__month-view__days__day--weekend {
+  color: #1f1b13;
+}
+
+.calendar_landing .react-calendar__tile--now {
+  background-color: #383632;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.react-calendar__tile--now:hover {
+  background-color: #919191 !important;
+
+}
+
+.calendar_landing .react-calendar__month-view__days__day--neighboringMonth {
+  visibility: hidden;
+}
+
+.react-calendar__month-view__weekdays__weekday>abbr {
+  text-decoration: none !important;
+}
+
+/* END CALENDAR LANDING */
+
+.css-1k51tf5-MuiTooltip-tooltip {
+  padding: 0 !important;
+  border-radius: 5px;
+}
+
+@media (max-width:1260px) {
+
+  .modal_custom,
+  .modal_custom_landing {
+    width: 80% !important;
+  }
+
+  .barber_card {
+    height: 100%;
+  }
+}
+
+@media (max-width:960px) {
+
+  .modal_custom,
+  .modal_custom_landing {
+    width: 100% !important;
+  }
+
+  .img_card_barber {
+    height: 75%;
+  }
+
+  .barber_card {
+    max-height: 230px;
+  }
+}
+
+.MuiDateRangeCalendar-root>div:nth-child(1) {
+  display: none;
+}
+
+.modal_custom_landing {
+  width: 50%;
+  scale:1;
+  transition: scale 0.3s ease; 
+  overflow-y: auto; /* Permite el scroll vertical cuando el contenido excede la altura */
+  max-height: 100%;
+  backface-visibility: hidden;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #ddd !important;
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 4px;
+  box-sizing: border-box; /* Asegura que el padding y el border se incluyan en el tamaño total del elemento */
+
+  @starting-style {
+    scale:0;
+  }
+}
+
+
+.modal_custom_landing.hidden {
+  scale: 0;
+  transition: scale 0.3s ease;
+}

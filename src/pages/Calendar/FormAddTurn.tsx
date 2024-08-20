@@ -70,7 +70,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
       dataFormEvent.start,
       selectedOptionService.minutes_service
     )
-
+    console.log("dataFormEvent.start", dataFormEvent.start)
     const dataComplete = {
       ...data,
       end: moment(endTime).toDate(),

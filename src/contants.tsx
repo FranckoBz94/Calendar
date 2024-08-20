@@ -1,9 +1,10 @@
-import { Alert, Stack, ThemeOptions, Tooltip } from "@mui/material";
+import { Alert, Box, Stack, StepConnector, stepConnectorClasses, ThemeOptions, Tooltip, Typography } from "@mui/material";
 import { MUIDataTableOptions } from "mui-datatables";
 import { toast } from "react-toastify"
 import { styled } from '@mui/material/styles';
 import io from 'socket.io-client';
 import { components } from "react-select"
+import React from "react";
 
 export const options = {
   actionsCellStyle: {
@@ -283,3 +284,89 @@ export function Label({
   return content;
 }
 
+export interface Barber {
+  id: string;
+  firstName: string;
+  lastName: string;
+  imagen: string;
+  is_active: number;
+  is_admin: number;
+  id_barbero: number;
+}
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  dir?: string;
+  index: number;
+  value: number;
+}
+
+export function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+
+// Landing
+export const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
+  [`&.${stepConnectorClasses.alternativeLabel}`]: {
+    top: 22,
+  },
+  [`&.${stepConnectorClasses.active}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+        'linear-gradient(136deg, rgb(12 4 125) 0%, rgb(0 0 0) 50%, rgb(0 0 0) 100%)',
+    },
+  },
+  [`&.${stepConnectorClasses.completed}`]: {
+    [`& .${stepConnectorClasses.line}`]: {
+      backgroundImage:
+        'linear-gradient(136deg, rgb(12 4 125) 0%, rgb(0 0 0) 50%, rgb(0 0 0) 100%)',
+    },
+  },
+  [`& .${stepConnectorClasses.line}`]: {
+    height: 3,
+    border: 0,
+    backgroundColor:
+      theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
+    borderRadius: 1,
+  },
+}));
+
+export const ColorlibStepIconRoot = styled('div')<{
+  ownerState: { completed?: boolean; active?: boolean };
+}>(({ theme, ownerState }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ccc',
+  zIndex: 1,
+  color: '#fff',
+  width: 50,
+  height: 50,
+  display: 'flex',
+  borderRadius: '50%',
+  justifyContent: 'center',
+  alignItems: 'center',
+  ...(ownerState.active && {
+    backgroundImage:
+      'linear-gradient(136deg, rgb(115 159 243) 0%, rgb(74 92 157) 50%, rgb(54 82 113) 100%);',
+    boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+  }),
+  ...(ownerState.completed && {
+    backgroundImage:
+      'linear-gradient(136deg, rgb(12 4 125) 0%, rgb(0 0 0) 50%, rgb(0 0 0) 100%)',
+  }),
+}));

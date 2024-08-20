@@ -15,7 +15,7 @@ const style = {
 
 
 
-const MotionModal: React.FC<ModalProps> = ({
+const MotionModalLanding: React.FC<ModalProps> = ({
   isOpen,
   handleClose,
   children
@@ -38,9 +38,10 @@ const MotionModal: React.FC<ModalProps> = ({
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
+          className="modal_landing"
           style={style}
         >
-          <Box className="modal_custom" >
+          <Box className="modal_custom_landing">
             {children}
           </Box>
         </Modal>
@@ -49,4 +50,4 @@ const MotionModal: React.FC<ModalProps> = ({
   )
 }
 
-export default MotionModal
+export default MotionModalLanding

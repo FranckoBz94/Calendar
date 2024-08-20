@@ -77,3 +77,14 @@ export const removeClient = (id) => async (dispatch) => {
     console.error(error)
   }
 }
+
+export const fetchClientData = (dni) => async (dispatch) => {
+  try {
+    console.log(dni)
+    const response = await axios.post(ruta + "clients/fetchClientData", dni)
+    return response.data
+  } catch (err) {
+    return { rta: -1, message: "Ocurrio un errorrr." }
+    // console.log(err)
+  }
+}

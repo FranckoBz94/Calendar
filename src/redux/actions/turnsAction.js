@@ -100,7 +100,6 @@ export const availableDate = (data) => async () => {
   }
 }
 
-
 export const searchTurnsProfits = (data) => async () => {
   try {
     const response = await axios.post(ruta + "turns/searchTurnsProfits", data)
@@ -110,3 +109,11 @@ export const searchTurnsProfits = (data) => async () => {
   }
 }
 
+export const turnsDayAvailable = (data) => async () => {
+  try {
+    const response = await axios.post(ruta + "turns/turnsDayAvailable", data)
+    return response.data
+  } catch (err) {
+    console.log(err)
+  }
+}

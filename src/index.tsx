@@ -5,12 +5,15 @@ import reportWebVitals from "./reportWebVitals"
 import "./index.css"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
-import { UserProvider, useUser } from "components/UserProvider"
+import { useUser, UserProvider } from "components/UserProvider"
 import { AppBarComponent } from "pages/AppBar/AppBar"
-import { BrowserRouter } from "react-router-dom"
-import 'dayjs/locale/es'; // Importa el locale en español
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom"
+import 'dayjs/locale/es';
 import dayjs from "dayjs"
+import { Provider } from "react-redux"
+import store from "redux/store"
 import Landing from "pages/Landing"
+// import { UserProvider } from "components/UserProvider"
 
 dayjs.locale('es');
 
@@ -23,36 +26,40 @@ const darkTheme = createTheme({
 
 const RootComponent = () => {
   const { user } = useUser();
+  const location = useLocation();
+
+  const isLandingPage = location.pathname === "/landing";
+
   return (
-    <BrowserRouter>
-      {user ? (
+    <>
+      {!isLandingPage && user ? (
         <AppBarComponent>
           <App />
         </AppBarComponent>
       ) : (
         <App />
       )}
-    </BrowserRouter>
+    </>
   );
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
-const landing = true
+// const landing = false
 root.render(
   <React.StrictMode>
-    {landing ? (
-      <div>
-        <Landing />
-      </div>
-    ) : (
-
+    <Provider store={store}>
       <UserProvider>
         <ThemeProvider theme={darkTheme}>
           <CssBaseline />
-          <RootComponent />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/landing" element={<Landing />} />
+              <Route path="*" element={<RootComponent />} />
+            </Routes>
+          </BrowserRouter>
         </ThemeProvider>
       </UserProvider>
-    )}
+    </Provider>
   </React.StrictMode>
 );
 

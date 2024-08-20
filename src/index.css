@@ -436,23 +436,7 @@ inputDisabled input[type="time"] {
   padding: 4;
 }
 
-.css-1k51tf5-MuiTooltip-tooltip {
-  padding: 0 !important;
-  border-radius: 5px;
-}
 
-/* 
-.css-ixpz1i-MuiPieArcLabel-root {
-  fill: #fff !important;
-  font-size: 10px !important;
-} */
 
-@media (max-width:600px) {
-  .modal_custom {
-    width: 90%;
-  }
-}
 
-.MuiDateRangeCalendar-root>div:nth-child(1) {
-  display: none;
-}
+/* react-calendar__tile react-calendar__tile--now react-calendar__month-view__days__day react-calendar__tile react-calendar__tile--now react-calendar__tile--active react-calendar__tile--range react-calendar__tile--rangeStart react-calendar__tile--rangeEnd react-calendar__tile--rangeBothEnds react-calendar__month-view__days__day */

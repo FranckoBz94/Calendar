@@ -28,9 +28,21 @@ export class DateContants {
   }
 
   static calculateEndTime = (startDate: any, optionTimeEnd: any) => {
-    if (optionTimeEnd !== null) {
-      const end = new Date(startDate.getTime() + (optionTimeEnd * 60000));
-      return end
+    // Si startDate no es un objeto Date, intenta convertirlo
+    if (!(startDate instanceof Date)) {
+        startDate = new Date(startDate);
     }
-  }
+    
+    // Verifica que la conversión fue exitosa
+    if (!isNaN(startDate.getTime())) {
+        console.log("startDate", startDate.getTime());
+
+        if (optionTimeEnd !== null) {
+            const end = new Date(startDate.getTime() + (optionTimeEnd * 60000));
+            return end;
+        }
+    } else {
+        console.error("Invalid date format: ", startDate);
+    }
+}
 }
