@@ -311,13 +311,13 @@ const Calendar = () => {
                       active={active === barber.id}
                       id={barber.id}
                     >
-                      <Box display="flex" alignItems="center" justifyContent="center">
+                      <Box display="flex" alignItems="center" justifyContent="center" sx={{ padding: "10px" }}>
                         <Avatar
                           alt="Imagen"
                           src={`${process.env.REACT_APP_URL_BASE}${barber.imagen}`}
                           sx={{ width: 30, height: 30, marginRight: "10px", objectFit: "cover" }}
                         />
-                        <p>
+                        <p style={{ margin: 0 }}>
                           {barber.firstName} {barber.lastName}
                         </p>
                       </Box>

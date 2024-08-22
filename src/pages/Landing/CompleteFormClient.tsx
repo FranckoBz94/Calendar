@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { Button, Box, TextField, Grid, Alert, Stack, Card, Tabs, Tab } from '@mui/material';
+import { Button, Box, TextField, Grid, Alert, Stack, Card, Tab, Divider, Grow } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { fetchClientData } from 'redux/actions/clientsAction';
 import { useTheme } from '@mui/material/styles';
-import SwipeableViews from 'react-swipeable-views';
-import { TabPanel } from 'contants';
+import FormClient from './FormClient';
+import { TabContext, TabList } from '@mui/lab';
+import TabPanel from '@mui/lab/TabPanel';
 
 interface propsForm {
-  setClientId: (id: string | null) => void,
-  registerEvent: () => void
+  setClientId?: (id: string | null) => void,
+  registerEvent: () => void,
+  isSubmitting?: boolean
+  isClient?: boolean
 }
 
 const saveClientAndTurn = async (values: any) => {
@@ -29,6 +32,9 @@ const CompleteFormClient = (props: propsForm) => {
   const { setClientId, registerEvent } = props
   const dispatch = useDispatch()
   const [existClient, setExistClient] = useState(false)
+  const [showWarning, setShowWarning] = useState(false);
+  const [dni, setDni] = useState('');
+
   const [initialValues, setInitialValues] = useState({
     dni: '',
     firstName: '',
@@ -36,59 +42,96 @@ const CompleteFormClient = (props: propsForm) => {
     email: '',
     phone: '',
   });
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState("1");
 
   const handleChange = (event: React.SyntheticEvent, newValue: any) => {
+    event.preventDefault()
     setValue(newValue);
+    console.log(newValue)
+    if (newValue === 1) {
+      console.log("1 en")
+      setInitialValues({
+        dni: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+      });
+      setExistClient(false);
+      setShowWarning(false);
+    }
   };
-
-  const handleChangeIndex = (index: any) => {
-    setValue(index);
-  };
-
 
   const searchClient = async () => {
-    const dni = initialValues.dni;
-    if (dni) {
+    if (dni !== '') {
+      console.log("si", dni)
+    } else {
+      console.log("no", dni)
+    }
+    if (dni !== '') {
       const clientData = await dispatch(fetchClientData({ dni }) as any);
       if (clientData && clientData.length > 0) {
         const data = clientData[0];
-        setInitialValues((prevValues) => ({
-          ...prevValues,
+        setInitialValues({
+          dni: data.dni,
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
           phone: data.telefono,
-        }));
-        setClientId(data.id);
-        setExistClient(false)
+        });
+        if (setClientId) {
+          setClientId(data.id);  // Verifica si setClientId está definido antes de llamarlo
+        }
+        setExistClient(true);
+        setShowWarning(false);
       } else {
         // Cliente no encontrado, resetea los campos del cliente
-        setExistClient(true)
-        setInitialValues((prevValues) => ({
-          ...prevValues,
+        setExistClient(false);
+        setInitialValues({
+          dni: '',
           firstName: '',
           lastName: '',
           email: '',
           phone: '',
-        }));
+        });
+        setShowWarning(true);
       }
+    } else {
+      console.log("cambie")
+      setShowWarning(true);
     }
-  };
+  }
 
   const handleSubmit = async (values: any) => {
     console.log("no")
     setExistClient(false)
     await saveClientAndTurn(values);
-    // Aquí se podría agregar un redirect o reset del formulario
   };
 
-  function a11yProps(index: number) {
-    return {
-      id: `full-width-tab-${index}`,
-      'aria-controls': `full-width-tabpanel-${index}`,
-    };
-  }
+  useEffect(() => {
+    if (value === "1") {
+      // Limpia los valores cuando cambias a la pestaña "Nuevo Cliente"
+      setInitialValues({
+        dni: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+      });
+      setExistClient(false);
+      setShowWarning(false);
+    } else if (value === "0") {
+      // Oculta la advertencia si no se ha realizado una búsqueda
+      setShowWarning(false);
+    }
+  }, [value]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Previene el comportamiento predeterminado del Enter
+      searchClient();
+    }
+  };
 
   const theme = useTheme();
 
@@ -104,110 +147,71 @@ const CompleteFormClient = (props: propsForm) => {
         {({ isSubmitting }) => (
           <Form>
             <Card sx={{ width: '100%' }}>
-              <Box sx={{ bgcolor: '#272727' }} mb={2}>
-                <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  variant="fullWidth"
-                  scrollButtons="auto"
-                  aria-label="scrollable auto tabs example"
-                  sx={{ width: '100%', display: 'flex' }}
-                >
-                  <Tab label="Soy Cliente" style={{ flex: 1, color: "#fff" }} {...a11yProps(0)} />
-                  <Tab label="Nuevo Cliente" style={{ flex: 1, color: "#fff" }} {...a11yProps(1)} />
-                </Tabs>
-              </Box>
-              <Grid container >
-                <Grid item md={12}>
-                  <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={value}
-                    onChangeIndex={handleChangeIndex}
-                  >
-                    <TabPanel value={value} index={0} dir={theme.direction}>
-                      <Box >
+              <TabContext value={value}>
+
+                <Box sx={{ bgcolor: '#6a6969' }} mb={2}>
+                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <TabList variant="fullWidth"
+                      onChange={handleChange} aria-label="lab API tabs example">
+                      <Tab sx={{
+                        flex: 1,
+                        color: "#fff",
+                        bgcolor: value === "1" ? '#272727' : 'inherit',
+                      }} label="Soy Cliente" value="1" />
+                      <Tab sx={{
+                        flex: 1,
+                        color: "#fff",
+                        bgcolor: value === "2" ? '#272727' : 'inherit',
+                      }} label="Nuevo Cliente" value="2" />
+                    </TabList>
+                  </Box>
+                </Box>
+                <Grid container >
+                  <Grid item md={12} sx={{ width: "100%" }}>
+                    <Grow
+                      in={value === "1"}
+                      {...(value === "1" ? { timeout: 500 } : {})}>
+                      <TabPanel value="1" dir={theme.direction}>
                         <Box m={1}>
-                          <Field
-                            as={TextField}
-                            name="dni"
-                            label="DNI"
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e: any) => setInitialValues({ ...initialValues, dni: e.target.value })}
-                          />
-                          <Button variant='contained' sx={{ px: 5, mt: 2 }} fullWidth onClick={() => searchClient()}>Buscar</Button>
+                          <Grid container spacing={1}>
+                            <Grid item xs={12} md={8} >
+                              <TextField
+                                value={dni}
+                                label="DNI"
+                                variant="outlined"
+                                fullWidth
+                                onChange={(e: any) => setDni(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                              />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                              <Button variant='contained' sx={{ height: "100%" }} fullWidth onClick={searchClient}>Buscar</Button>
+                            </Grid>
+                          </Grid>
+                          {showWarning && !existClient && <Stack sx={{ width: '100%', border: "1px solid #edcda2", borderRadius: "4px" }} spacing={2} mt={1}>
+                            <Alert severity="warning">Cliente no encontrado, si no esta registrado reserve desde la seccion &#39;&#39;NUEVO CLIENTE&#39;&#39;.</Alert>
+                          </Stack>}
+                          {existClient &&
+                            <Divider sx={{ mt: 3 }} />
+                          }
+                          {existClient && (
+                            <Stack sx={{ mt: 3 }}> <FormClient registerEvent={registerEvent} isSubmitting={isSubmitting} isClient={true} /></Stack>
+                          )}
                         </Box>
-                        <ErrorMessage name="dni" >{msg => <span style={{ color: "red", fontSize: "12px" }}>{msg}</span>}</ErrorMessage>
-                        {existClient && <Stack sx={{ width: '100%', border: "1px solid #edcda2", borderRadius: "4px" }} spacing={2} mt={1}>
-                          <Alert severity="warning">Cliente no encontrado, complete los datos para reservar.</Alert>
-                        </Stack>}
-                      </Box>
-                    </TabPanel>
-                    <TabPanel value={value} index={1} dir={theme.direction}>
-                      <Grid container spacing={1}>
-                        <Grid item xs={12} md={6}>
-                          <Box mb={2}>
-                            <Field
-                              as={TextField}
-                              name="firstName"
-                              label="Nombre"
-                              variant="outlined"
-                              fullWidth
-                            />
-                            <ErrorMessage name="firstName" component="div">{msg => <span style={{ color: "red", fontSize: "12px" }}>{msg}</span>}</ErrorMessage>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <Box mb={2}>
-                            <Field
-                              as={TextField}
-                              name="lastName"
-                              label="Apellido"
-                              variant="outlined"
-                              fullWidth
-                            />
-                            <ErrorMessage name="lastName" component="div">{msg => <span style={{ color: "red", fontSize: "12px" }}>{msg}</span>}</ErrorMessage>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                      <Box mb={2}>
-                        <Field
-                          as={TextField}
-                          name="email"
-                          label="Email"
-                          variant="outlined"
-                          fullWidth
-                        />
-                        <ErrorMessage name="email" component="div" >{msg => <span style={{ color: "red", fontSize: "12px" }}>{msg}</span>}</ErrorMessage>
-                      </Box>
-
-                      <Box mb={2}>
-                        <Field
-                          as={TextField}
-                          name="phone"
-                          label="Teléfono"
-                          variant="outlined"
-                          fullWidth
-                        />
-                        <ErrorMessage name="phone" component="div" >{msg => <span style={{ color: "red", fontSize: "12px" }}>{msg}</span>}</ErrorMessage>
-                      </Box>
-
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        disabled={isSubmitting}
-                        onClick={registerEvent}
-                      >
-                        {isSubmitting ? 'Guardando...' : 'Guardar turno'}
-                      </Button>
-                    </TabPanel>
-                  </SwipeableViews>
+                      </TabPanel>
+                    </Grow>
+                    <Grow
+                      in={value === "2"}
+                      {...(value === "2" ? { timeout: 500 } : {})}
+                    >
+                      <TabPanel value="2" dir={theme.direction}>
+                        <FormClient registerEvent={registerEvent} isSubmitting={isSubmitting} />
+                      </TabPanel>
+                    </Grow>
+                  </Grid>
                 </Grid>
-              </Grid>
+              </TabContext>
             </Card>
-
           </Form>
         )}
       </Formik>

@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Box, Button, CardActions, CardContent, Chip, Grid, Stack, Step, StepIconProps, StepLabel, Stepper } from "@mui/material";
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import VideoLabelIcon from '@mui/icons-material/VideoLabel';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
-import { ColorlibConnector, ColorlibStepIconRoot } from "contants";
+import { Avatar, Box, Button, Card, CardActions, CardContent, Chip, Grid, Stack, Step, StepLabel, Stepper, Typography } from "@mui/material";
+import { ColorlibConnector, ColorlibStepIcon } from "contants";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -14,22 +10,9 @@ import store from "redux/store";
 import { getAllBarbers } from "redux/actions/barbersAction";
 import SelectDateHours from "./SelectDateHours";
 import FormDataClient from "./FormDataClient";
-
-function ColorlibStepIcon(props: StepIconProps) {
-  const { active, completed, className } = props;
-  const icons: { [index: string]: React.ReactElement } = {
-    1: <ContentCutIcon />,
-    2: <CalendarMonthIcon />,
-    3: <GroupAddIcon />,
-    4: <VideoLabelIcon />,
-  };
-
-  return (
-    <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
-      {icons[String(props.icon)]}
-    </ColorlibStepIconRoot>
-  );
-}
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 dayjs.locale('es');
 
@@ -37,7 +20,7 @@ dayjs.locale('es');
 const ModalContent = () => {
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
-  const [stepAddTurn, setStepAddTurn] = useState(0)
+  const [stepAddTurn, setStepAddTurn] = useState(3)
   const steps = ['Barbero', 'Fecha', 'Datos personales', 'Estado reserva'];
   const [barberId, setBarberId] = React.useState<string | number | null>(null);
   const [dataBarberSelected, setDataBarberSelected] = React.useState<any>({});
@@ -90,68 +73,128 @@ const ModalContent = () => {
     console.info('You clicked the delete icon.');
   };
 
+  const resetForm = () => {
+    setStepAddTurn(0);
+    setBarberId(null);
+    setDataBarberSelected({});
+    setDataService({
+      idService: 0,
+      start_date: "",
+      minutes_services: "",
+      time_turn: "",
+    });
+  };
+
   return (
-    <CardContent>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Stack sx={{ width: '100%' }} spacing={4}>
-          <Stepper alternativeLabel activeStep={stepAddTurn} connector={<ColorlibConnector />}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          {stepAddTurn === 0 && (
-            <Box>
-              <Grid container spacing={2}>
-                {barbers && barbers.length > 0 && barbers.map((barber: any) => (
-                  <Grid item xs={6} sm={4} md={4} key={barber.id}>
-                    <CardBarber id={barber.id} selectedId={barberId} handleClick={handleClick} dataBarber={barber} />
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          )}
-          {stepAddTurn === 1 && (
-            <SelectDateHours barberId={barberId} selectedDataService={selectedDataService} />
-          )}
-          {stepAddTurn === 2 && (
-            <Stack direction="row" spacing={1}>
-              <Chip
-                label={dataBarberSelected && `${dataBarberSelected?.firstName} ${dataBarberSelected?.lastName}`}
-                onClick={handleClickChip}
-                onDelete={handleDelete}
-              />
-              <Chip
-                label={dataService && `${dataService?.time_turn} Hs`}
-                onClick={handleClickChip}
-                onDelete={handleDelete}
-              />
-            </Stack>
-          )}
-          {stepAddTurn === 2 && (
-            <FormDataClient dataService={dataService} barberId={barberId} handleNext={handleNext} />
-          )}
-          {stepAddTurn === 3 && (
-            <div>
-              <h2>Turno guardado exitosamente</h2>
-              <p>¡Gracias por reservar con nosotros!</p>
-              {/* Puedes agregar más detalles de la reserva si es necesario */}
-            </div>
-          )}
-        </Stack >
-      </LocalizationProvider >
+    <>
+      <CardContent>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Stack sx={{ width: '100%' }} spacing={4}>
+
+            <Stepper alternativeLabel activeStep={stepAddTurn} connector={<ColorlibConnector />}>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+            {stepAddTurn > 0 && stepAddTurn < 3 && (
+              <Stack direction="row" spacing={1}>
+                <Box>
+                  <Button onClick={handleBack} style={{ color: "#000" }} startIcon={<ArrowBackIcon />}>
+                    Volver
+                  </Button>
+                </Box>
+                <Box sx={{ paddingLeft: 5 }}>
+                  <Chip
+                    avatar={<Avatar alt="Avatar" src={`${process.env.REACT_APP_URL_BASE}${dataBarberSelected.imagen}`} />}
+                    label={dataBarberSelected && `${dataBarberSelected?.firstName} ${dataBarberSelected?.lastName}`}
+                    onClick={handleClickChip}
+                    onDelete={handleDelete}
+                    style={{ marginRight: 5 }}
+                  />
+                  {stepAddTurn > 1 && (
+                    <>
+                      <Chip
+                        label={dataService && `${dataService?.start_date} `}
+                        onClick={handleClickChip}
+                        onDelete={handleDelete}
+                        style={{ marginRight: 5 }}
+                      />
+                      <Chip
+                        label={dataService && `${dataService?.time_turn} Hs`}
+                        onClick={handleClickChip}
+                        onDelete={handleDelete}
+                      />
+                    </>
+                  )}
+                </Box>
+              </Stack>
+            )}
+            {stepAddTurn === 0 && (
+              <Box>
+                <Typography variant="h5" component="h2" sx={{ pb: 3 }}>
+                  Seleccionar barbero
+                </Typography>
+                <Grid container spacing={2}>
+                  {barbers && barbers.length > 0 && barbers.map((barber: any) => (
+                    <Grid item xs={6} sm={4} md={4} key={barber.id}>
+                      <CardBarber id={barber.id} selectedId={barberId} handleClick={handleClick} dataBarber={barber} />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            )}
+            {stepAddTurn === 1 && (
+              <SelectDateHours barberId={barberId} selectedDataService={selectedDataService} />
+            )}
+            {stepAddTurn === 2 && (
+              <FormDataClient dataService={dataService} barberId={barberId} handleNext={handleNext} />
+            )}
+            {stepAddTurn === 3 && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }} >
+                <Card sx={{ width: '100%', textAlign: 'center', boxShadow: 3, p: 4 }}>
+                  <CardContent>
+                    <CheckCircleIcon sx={{ fontSize: 80, mb: 2 }} color="success" />
+                    <Typography variant="h4" component="h2" gutterBottom>
+                      ¡Reserva exitosa!
+                    </Typography>
+                    <Typography variant="body1" color="textSecondary" paragraph>
+                      Tu turno ha sido guardado exitosamente. Gracias por reservar con nosotros.
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={resetForm}
+                      size="large"
+                    >
+                      Agendar nuevo turno
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Box>
+            )}
+          </Stack >
+        </LocalizationProvider >
+      </CardContent >
       <CardActions>
-        <Box mr={1} my={2} display="flex" justifyContent="space-between" width="100%">
-          <Button onClick={handleBack} variant="outlined" style={{ fontWeight: "bold" }}>
-            Atras
-          </Button>
-          <Button onClick={handleNext} variant="contained" style={{ fontWeight: "bold" }}>
-            Continuar
-          </Button>
+        <Box my={2} mx={1} display="flex" justifyContent="flex-end" width="100%">
+          {(barberId && stepAddTurn === 0) || (dataService.time_turn && stepAddTurn === 1) ? (
+            <Button
+              onClick={handleNext}
+              variant="contained"
+              endIcon={<KeyboardTabIcon />}
+              className="btn_next_button"
+              style={{ fontWeight: "bold" }}
+            >
+              Continuar
+            </Button>
+          ) : null}
         </Box>
       </CardActions>
-    </CardContent >
+    </>
   )
 }
 

@@ -1,10 +1,14 @@
-import { Alert, Box, Stack, StepConnector, stepConnectorClasses, ThemeOptions, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Stack, StepConnector, stepConnectorClasses, StepIconProps, ThemeOptions, Tooltip, Typography } from "@mui/material";
 import { MUIDataTableOptions } from "mui-datatables";
 import { toast } from "react-toastify"
 import { styled } from '@mui/material/styles';
 import io from 'socket.io-client';
 import { components } from "react-select"
 import React from "react";
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import VideoLabelIcon from '@mui/icons-material/VideoLabel';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import ContentCutIcon from '@mui/icons-material/ContentCut';
 
 export const options = {
   actionsCellStyle: {
@@ -297,8 +301,8 @@ export interface Barber {
 interface TabPanelProps {
   children?: React.ReactNode;
   dir?: string;
-  index: number;
-  value: number;
+  index: string;
+  value: string;
 }
 
 export function TabPanel(props: TabPanelProps) {
@@ -318,6 +322,45 @@ export function TabPanel(props: TabPanelProps) {
         </Box>
       )}
     </div>
+  );
+}
+
+export const ColorlibStepIconRoot = styled('div')<{
+  ownerState: { completed?: boolean; active?: boolean };
+}>(({ theme, ownerState }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ccc',
+  zIndex: 1,
+  color: '#fff',
+  width: 50,
+  height: 50,
+  display: 'flex',
+  borderRadius: '50%',
+  justifyContent: 'center',
+  alignItems: 'center',
+  ...(ownerState.active && {
+    backgroundImage:
+      'linear-gradient(136deg, rgb(115 159 243) 0%, rgb(74 92 157) 50%, rgb(54 82 113) 100%);',
+    boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+  }),
+  ...(ownerState.completed && {
+    backgroundImage:
+      'linear-gradient(136deg, rgb(12 4 125) 0%, rgb(0 0 0) 50%, rgb(0 0 0) 100%)',
+  }),
+}));
+
+export function ColorlibStepIcon(props: StepIconProps) {
+  const { active, completed, className } = props;
+  const icons: { [index: string]: React.ReactElement } = {
+    1: <ContentCutIcon />,
+    2: <CalendarMonthIcon />,
+    3: <GroupAddIcon />,
+    4: <VideoLabelIcon />,
+  };
+
+  return (
+    <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
+      {icons[String(props.icon)]}
+    </ColorlibStepIconRoot>
   );
 }
 
@@ -348,25 +391,4 @@ export const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   },
 }));
 
-export const ColorlibStepIconRoot = styled('div')<{
-  ownerState: { completed?: boolean; active?: boolean };
-}>(({ theme, ownerState }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ccc',
-  zIndex: 1,
-  color: '#fff',
-  width: 50,
-  height: 50,
-  display: 'flex',
-  borderRadius: '50%',
-  justifyContent: 'center',
-  alignItems: 'center',
-  ...(ownerState.active && {
-    backgroundImage:
-      'linear-gradient(136deg, rgb(115 159 243) 0%, rgb(74 92 157) 50%, rgb(54 82 113) 100%);',
-    boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
-  }),
-  ...(ownerState.completed && {
-    backgroundImage:
-      'linear-gradient(136deg, rgb(12 4 125) 0%, rgb(0 0 0) 50%, rgb(0 0 0) 100%)',
-  }),
-}));
+

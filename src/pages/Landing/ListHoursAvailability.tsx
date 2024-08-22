@@ -1,39 +1,44 @@
 import { Box, Button, Grid } from "@mui/material"
-import { useState } from "react";
-// import { useDispatch } from "react-redux";
+import { CSSProperties } from "react";
+import ContentCutIcon from '@mui/icons-material/ContentCut';
 
 interface FormCalendarProps {
   availableTimes: string[]
+  selectedTime: string | null
   onSelectTime: (time: string | null) => void
 }
 
+
+
 const ListHoursAvailability = (props: FormCalendarProps) => {
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const { availableTimes, onSelectTime } = props;
+  const { availableTimes, onSelectTime, selectedTime } = props;
   console.log(availableTimes)
 
   const handleSelectTime = (time: string) => {
-    console.log("time", time)
     const newSelectedTime = time === selectedTime ? null : time;
-    setSelectedTime(newSelectedTime);
     onSelectTime(newSelectedTime);
   };
+
+
 
   return (
     <>
       {availableTimes.length > 0 && (
         <Grid container spacing={2} mt={1}>
           {availableTimes.map((time: any, index) => (
-            <Grid item xs={6} key={index}>
+            <Grid item xs={4} md={3} key={index} style={{ '--i': index } as CSSProperties} className="grid_item">
               <Box display="flex" flexDirection="row" width="100%">
-                <Box flex={selectedTime === time.start ? 1 : 2}>
+                <Box flex={selectedTime === time.start ? 1 : 2} display="flex" alignItems="center">
                   <Button
                     variant="contained"
                     fullWidth
                     style={{ fontWeight: selectedTime === time.start ? 'bold' : 'normal' }}
                     onClick={() => handleSelectTime(time.start)}
-                    className={selectedTime === time.start ? "hourSelected" : ""}
+                    className={`btn_hours ${selectedTime === time.start ? "hourSelected" : ""}`}
                   >
+                    {selectedTime === time.start && (
+                      <ContentCutIcon style={{ position: "absolute", left: "5px", fontSize: "15px" }} />
+                    )}
                     {time.start}
                   </Button>
                 </Box>

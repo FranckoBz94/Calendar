@@ -83,7 +83,6 @@ const FormDataClient = (props: dataAddTurnProps) => {
 
   return (
     <>
-      {/* <button onClick={registerEvent}>{JSON.stringify(props.dataService)}</button> */}
       <CompleteFormClient setClientId={setClientId} registerEvent={registerEvent} />
     </>
   )

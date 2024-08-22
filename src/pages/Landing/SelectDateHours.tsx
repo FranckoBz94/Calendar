@@ -20,7 +20,6 @@ interface dataBarberProps {
 
 const SelectDateHours = (props: dataBarberProps) => {
   const { barberId, selectedDataService } = props
-  console.log(barberId)
   const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
@@ -36,7 +35,14 @@ const SelectDateHours = (props: dataBarberProps) => {
     setDateFrom(newValue)
   }
 
+  const getTimeSelected = (time: string | null) => {
+    setSelectedTime(time);
+    selectedDataService({ time_turn: time });
+  }
+
   const fetchTurnsDayAvailable = async (dataSearch: any) => {
+    setAllTimes([])
+    getTimeSelected(null)
     try {
       const response = await dispatch(turnsDayAvailable(dataSearch) as any);
       const data = response.data;
@@ -62,16 +68,12 @@ const SelectDateHours = (props: dataBarberProps) => {
       minutes_services: parseInt(dataTurn.minutes_service, 10),
       time_turn: selectedTime
     }
-    console.log("data", data)
     selectedDataService({ idService: dataTurn.id });
     selectedDataService(data)
     fetchTurnsDayAvailable(data)
   }
 
-  const getTimeSelected = (time: string | null) => {
-    setSelectedTime(time);
-    selectedDataService({ time_turn: time });
-  }
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -130,7 +132,7 @@ const SelectDateHours = (props: dataBarberProps) => {
                     }),
                   }}
                 />
-                <ListHoursAvailability availableTimes={allTimes} onSelectTime={getTimeSelected} />
+                <ListHoursAvailability availableTimes={allTimes} selectedTime={selectedTime} onSelectTime={getTimeSelected} />
               </Box>
             </DemoItem>
           </Grid>

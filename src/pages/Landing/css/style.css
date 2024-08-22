@@ -2777,17 +2777,7 @@ ul {
   letter-spacing: 1px;
 }
 
-/* line 93, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
-.banner_part .banner_text h5:after {
-  position: absolute;
-  content: "";
-  top: 10px;
-  width: 100px;
-  height: 1px;
-  background-color: #fff;
-  opacity: 0.3;
-  left: 157px;
-}
+
 
 @media (max-width: 575px) {
 
@@ -6702,13 +6692,28 @@ h6 {
 
 /*# sourceMappingURL=style.css.map */
 
-.barber_card {
+/* .barber_card {
   width: 100%;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 20px;
   position: relative;
   overflow: hidden;
+  max-height: 340px;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: border-radius 0.3s ease, border 0.3s ease, background-color 0.3s ease;
 }
+
+.barber_card::before{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s ease;
+  z-index: 1;
+} */
 
 .img_card_barber {
   width: 100%;
@@ -6718,21 +6723,76 @@ h6 {
 }
 
 .name_barber_card {
+  text-transform: uppercase;
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  color: #000000;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.84) 0%, rgba(0, 0, 0, 0.03) 100%);
+  color: #fff;
   text-align: center;
-  padding: 10px;
+  padding: 18px;
   box-sizing: border-box;
   z-index: 2;
   margin: 0;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
   font-weight: bold;
   font-size: 1.2rem;
+  white-space: normal; 
+  overflow-wrap: break-word; 
 }
+
+.barberCard {
+  width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    height: 340px;
+    transition: border-radius 0.3s ease, border 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.barberCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: background-color 0.3s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  cursor: pointer;
+}
+
+.selected {
+  border: 2px solid #081d4c !important;
+  border-radius: 50% !important;
+  transition: padding 0.3s ease !important; 
+}
+
+.selected::before {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.selected .name_barber_card {
+  white-space: normal;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  padding: 50px; 
+}
+
+
+
 .hourSelected{
   background: green !important;
   color: #fff;
@@ -6802,6 +6862,13 @@ h6 {
   border-radius: 5px;
 }
 
+@media (max-width:1400px) {
+  .modal_custom,
+  .modal_custom_landing {
+    width: 80% !important;
+  }
+}
+
 @media (max-width:1260px) {
 
   .modal_custom,
@@ -6821,8 +6888,8 @@ h6 {
     width: 100% !important;
   }
 
-  .img_card_barber {
-    height: 75%;
+  .selected{
+    border-radius: 30% !important;
   }
 
   .barber_card {
@@ -6835,7 +6902,7 @@ h6 {
 }
 
 .modal_custom_landing {
-  width: 50%;
+  width: 60%;
   scale:1;
   transition: scale 0.3s ease; 
   overflow-y: auto; /* Permite el scroll vertical cuando el contenido excede la altura */
@@ -6861,4 +6928,33 @@ h6 {
 .modal_custom_landing.hidden {
   scale: 0;
   transition: scale 0.3s ease;
+}
+
+.btn_hours{
+  background-image: linear-gradient(136deg, rgb(12 4 125) 0%, rgb(6 5 34) 50%, rgb(18 17 17) 100%);
+}
+
+.grid_item {
+  opacity: 0; /* Inicialmente invisible */
+  transform: translateY(10px); /* Opcional: para un efecto de subida */
+  animation: fade-in 400ms forwards; /* Aplicar animación de fade-in */
+  animation-delay: calc(var(--i) * 0.1s); /* Retraso basado en el índice */
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* Opcional: para un efecto de subida */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.btn_next_button{
+  font-weight: bold !important;
+  background-image: linear-gradient(132deg, rgb(41 136 255) 0%, rgb(0 26 120) 50%, rgb(6 114 223) 100%);
+  border: 3px solid #000 !important;
+  border-radius: 0 !important;
 }
