@@ -1,4 +1,4 @@
-import { Box, Button, Grid, TextField } from "@mui/material"
+import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material"
 import { ErrorMessage, Field } from "formik"
 
 interface propsForm {
@@ -6,9 +6,10 @@ interface propsForm {
   registerEvent: () => void,
   isSubmitting?: boolean
   isClient?: boolean
+  loadingForm: boolean
 }
 
-const FormClient = ({ registerEvent, isSubmitting, isClient }: propsForm) => {
+const FormClient = ({ registerEvent, isSubmitting, isClient, loadingForm }: propsForm) => {
   return (
     <>
       <Grid container spacing={1}>
@@ -68,10 +69,11 @@ const FormClient = ({ registerEvent, isSubmitting, isClient }: propsForm) => {
         variant="contained"
         color="primary"
         fullWidth
-        disabled={isSubmitting}
+        disabled={loadingForm}
         onClick={registerEvent}
+        startIcon={loadingForm ? <CircularProgress size={24} color="inherit" /> : undefined}
       >
-        {isSubmitting ? 'Guardando...' : 'Guardar turno'}
+        {loadingForm ? 'Guardando...' : 'Guardar turno'}
       </Button>
     </>
   )

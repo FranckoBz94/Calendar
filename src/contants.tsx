@@ -391,4 +391,13 @@ export const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   },
 }));
 
+export const formatDate = (dateString: string): string => {
+  const date = new Date(dateString.replace(' ', 'T'));
+  return date.toString();
+};
 
+export const combineAndFormatToISO = (startDate: string, timeTurn: string): string => {
+  const combinedDateTime = `${startDate}T${timeTurn}:00`;
+  const dateObject = new Date(combinedDateTime);
+  return dateObject.toISOString();
+};

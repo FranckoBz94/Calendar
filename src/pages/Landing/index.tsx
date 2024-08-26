@@ -445,7 +445,6 @@ const Landing = () => {
                     </div>
                     <div className="form-group col-md-6">
                       <select className="form-control" id="Select">
-                        <option value="1" selected>Select service*</option>
                         <option value="2">Name of service</option>
                         <option value="3">Name of service</option>
                         <option value="4">Name of service</option>
@@ -462,7 +461,6 @@ const Landing = () => {
                     </div>
                     <div className="form-group time_icon col-md-6">
                       <select className="form-control" id="Select2">
-                        <option value="" selected>Time *</option>
                         <option value="1">8 AM TO 10AM</option>
                         <option value="1">10 AM TO 12PM</option>
                         <option value="1">12PM TO 2PM</option>
@@ -573,7 +571,7 @@ const Landing = () => {
                     <input className="form-control" name="EMAIL" placeholder="Your Email Address" required type="email" />
                     <button className="btn btn-default text-uppercase"><i className="ti-angle-right"></i></button>
                     <div style={{ position: "absolute", left: "-5000px" }}>
-                      <input name="b_36c4fd991d266f23781ded980_aefe40901a" value=""
+                      <input name="b_36c4fd991d266f23781ded980_aefe40901a"
                         type="text" />
                     </div>
 

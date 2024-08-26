@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Avatar, Box, Button, Card, CardActions, CardContent, Chip, Grid, Stack, Step, StepLabel, Stepper, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardActions, CardContent, Chip, Divider, Grid, Stack, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import { ColorlibConnector, ColorlibStepIcon } from "contants";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -13,6 +13,7 @@ import FormDataClient from "./FormDataClient";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import moment from "moment";
 
 dayjs.locale('es');
 
@@ -20,10 +21,11 @@ dayjs.locale('es');
 const ModalContent = () => {
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
-  const [stepAddTurn, setStepAddTurn] = useState(3)
+  const [stepAddTurn, setStepAddTurn] = useState(0)
   const steps = ['Barbero', 'Fecha', 'Datos personales', 'Estado reserva'];
   const [barberId, setBarberId] = React.useState<string | number | null>(null);
   const [dataBarberSelected, setDataBarberSelected] = React.useState<any>({});
+  const [dataFormClient] = useState<any>({})
   const [dataService, setDataService] = React.useState({
     idService: 0,
     start_date: "",
@@ -64,15 +66,6 @@ const ModalContent = () => {
     fetchData();
   }, []);
 
-
-  const handleClickChip = () => {
-    console.info('You clicked the Chip.');
-  };
-
-  const handleDelete = () => {
-    console.info('You clicked the delete icon.');
-  };
-
   const resetForm = () => {
     setStepAddTurn(0);
     setBarberId(null);
@@ -109,22 +102,16 @@ const ModalContent = () => {
                   <Chip
                     avatar={<Avatar alt="Avatar" src={`${process.env.REACT_APP_URL_BASE}${dataBarberSelected.imagen}`} />}
                     label={dataBarberSelected && `${dataBarberSelected?.firstName} ${dataBarberSelected?.lastName}`}
-                    onClick={handleClickChip}
-                    onDelete={handleDelete}
                     style={{ marginRight: 5 }}
                   />
                   {stepAddTurn > 1 && (
                     <>
                       <Chip
                         label={dataService && `${dataService?.start_date} `}
-                        onClick={handleClickChip}
-                        onDelete={handleDelete}
                         style={{ marginRight: 5 }}
                       />
                       <Chip
                         label={dataService && `${dataService?.time_turn} Hs`}
-                        onClick={handleClickChip}
-                        onDelete={handleDelete}
                       />
                     </>
                   )}
@@ -149,32 +136,44 @@ const ModalContent = () => {
               <SelectDateHours barberId={barberId} selectedDataService={selectedDataService} />
             )}
             {stepAddTurn === 2 && (
-              <FormDataClient dataService={dataService} barberId={barberId} handleNext={handleNext} />
+              <FormDataClient dataService={dataService} barberId={barberId} handleNext={handleNext} dataFormClient={dataFormClient} />
             )}
             {stepAddTurn === 3 && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }} >
-                <Card sx={{ width: '100%', textAlign: 'center', boxShadow: 3, p: 4 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', bgcolor: '#f7f7f7', p: 3 }}>
+                <Card sx={{ width: { xs: '90%', md: '60%' }, textAlign: 'center', boxShadow: 5, p: 4, borderRadius: 2 }}>
                   <CardContent>
-                    <CheckCircleIcon sx={{ fontSize: 80, mb: 2 }} color="success" />
-                    <Typography variant="h4" component="h2" gutterBottom>
+                    <CheckCircleIcon sx={{ fontSize: 80, mb: 3 }} color="success" />
+                    <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
                       ¡Reserva exitosa!
                     </Typography>
-                    <Typography variant="body1" color="textSecondary" paragraph>
+                    <Typography variant="body1" color="textSecondary" paragraph sx={{ mb: 4 }}>
                       Tu turno ha sido guardado exitosamente. Gracias por reservar con nosotros.
                     </Typography>
+                    <Typography variant="body1" color="textSecondary" paragraph sx={{ mb: 4 }}>
+                      Hemos enviado un mail con los datos de la reserva a: {dataFormClient?.email}
+                    </Typography>
+                    <Divider sx={{ my: 3 }} />
+                    <Typography variant="body1" color="textPrimary" sx={{ mb: 2 }}>
+                      <strong>Día:</strong> {moment(dataService?.start_date).format("DD/MM/YYYY")}
+                    </Typography>
+                    <Typography variant="body1" color="textPrimary" sx={{ mb: 4 }}>
+                      <strong>Horario:</strong> {dataService?.time_turn}Hs
+                    </Typography>
                   </CardContent>
-                  <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
+                  <CardActions sx={{ justifyContent: 'center', pt: 3 }}>
                     <Button
                       variant="contained"
                       color="primary"
                       onClick={resetForm}
                       size="large"
+                      sx={{ borderRadius: 20, textTransform: 'none', px: 5 }}
                     >
                       Agendar nuevo turno
                     </Button>
                   </CardActions>
                 </Card>
               </Box>
+
             )}
           </Stack >
         </LocalizationProvider >
