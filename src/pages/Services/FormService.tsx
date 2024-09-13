@@ -13,7 +13,7 @@ import {
 } from "@mui/material"
 import { ThemeProvider } from "@mui/styles"
 import { LoadingButton } from "@mui/lab"
-import { NotifyHelper } from "contants"
+import { NotifyHelper, Option, SingleValue } from "contants"
 import { useDispatch } from "react-redux"
 import { addService, updateService } from "redux/actions/servicesAction"
 import Select from "react-select"
@@ -180,10 +180,11 @@ const FormService: React.FC<FormServiceProps> = (props) => {
                 <FormControl fullWidth>
                   <small className="label_custom" >Minutos</small>
                   <Select
-                    isSearchable={true}
-                    className="custom-select"
+                    isSearchable={false}
+                    className="basic-single select-modal"
                     classNamePrefix="select"
                     options={minuteServices}
+                    components={{ Option: Option, SingleValue: SingleValue }}
                     defaultValue={
                       optionSelected === "Editar"
                         ? {

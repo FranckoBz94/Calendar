@@ -12,15 +12,17 @@ import TabPanel from '@mui/lab/TabPanel';
 interface propsForm {
   setClientId?: (id: string | null) => void,
   registerEvent: () => void,
+  searchAndRegisterEvent: (values: any) => void,
   isSubmitting?: boolean
   isClient?: boolean
   dataFormClient?: any
-  loadingForm: boolean
+  loadingForm: boolean,
+  errorSaveTurn: string | null
 }
 
-const saveClientAndTurn = async (values: any) => {
-  console.log('Saving client and turn:', values);
-};
+// const saveClientAndTurn = async (values: any) => {
+//   console.log('Saving client and turn:', values);
+// };
 
 const validationSchema = Yup.object({
   dni: Yup.string().required('El dni es obligatorio'),
@@ -31,7 +33,7 @@ const validationSchema = Yup.object({
 });
 
 const CompleteFormClient = (props: propsForm) => {
-  const { setClientId, registerEvent, dataFormClient, loadingForm } = props
+  const { setClientId, registerEvent, searchAndRegisterEvent, dataFormClient, loadingForm, errorSaveTurn } = props
   const dispatch = useDispatch()
   const [existClient, setExistClient] = useState(false)
   const [showWarning, setShowWarning] = useState(false);
@@ -49,17 +51,17 @@ const CompleteFormClient = (props: propsForm) => {
   const handleChange = (event: React.SyntheticEvent, newValue: any) => {
     event.preventDefault()
     setValue(newValue);
-    console.log(newValue)
-    if (newValue === 1) {
+    console.log("e", newValue)
+    setFormValues({
+      dni: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+    });
+    setClientId?.(null);
+    if (newValue === "1") {
       console.log("1 en")
-      setFormValues({
-        dni: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-      });
-      setExistClient(false);
       setShowWarning(false);
     }
   };
@@ -82,7 +84,7 @@ const CompleteFormClient = (props: propsForm) => {
           phone: data.telefono,
         });
         if (setClientId) {
-          setClientId(data.id);  // Verifica si setClientId está definido antes de llamarlo
+          setClientId(data.id);
         }
         setExistClient(true);
         setShowWarning(false);
@@ -104,12 +106,6 @@ const CompleteFormClient = (props: propsForm) => {
     }
   }
 
-  const handleSubmit = async (values: any) => {
-    console.log("no")
-    await saveClientAndTurn(values);
-    setExistClient(false)
-  };
-
   useEffect(() => {
     if (value === "1") {
       setFormValues({
@@ -119,7 +115,6 @@ const CompleteFormClient = (props: propsForm) => {
         email: '',
         phone: '',
       });
-      setExistClient(false);
       setShowWarning(false);
     } else if (value === "0") {
       setShowWarning(false);
@@ -128,7 +123,7 @@ const CompleteFormClient = (props: propsForm) => {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
-      event.preventDefault(); // Previene el comportamiento predeterminado del Enter
+      event.preventDefault();
       searchClient();
     }
   };
@@ -147,10 +142,16 @@ const CompleteFormClient = (props: propsForm) => {
       <Formik
         initialValues={formValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-        enableReinitialize // Permite que los valores iniciales se actualicen
+        onSubmit={(values) => {
+          if (value === "1") {
+            registerEvent();
+          } else {
+            searchAndRegisterEvent(values);
+          }
+        }}
+        enableReinitialize
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, values }) => (
           <Form>
             <Card sx={{ width: '100%' }}>
               <TabContext value={value}>
@@ -160,26 +161,24 @@ const CompleteFormClient = (props: propsForm) => {
                       onChange={handleChange} aria-label="lab API tabs example">
                       <Tab sx={{
                         flex: 1,
-                        color: "#fff",
-                        bgcolor: value === "1" ? '#272727' : 'inherit',
+                        color: value === "1" ? "#b79536 !important" : "#fff",
+                        bgcolor: value === "1" ? '#1c1c1c' : 'inherit',
                       }} label="Soy Cliente" value="1" />
                       <Tab sx={{
                         flex: 1,
-                        color: "#fff",
-                        bgcolor: value === "2" ? '#272727' : 'inherit',
+                        color: value === "2" ? "#b79536 !important" : "#fff",
+                        bgcolor: value === "2" ? '#1c1c1c' : 'inherit',
                       }} label="Nuevo Cliente" value="2" />
                     </TabList>
                   </Box>
                 </Box>
                 <Grid container >
-                  {/* <p>{existClient ? "true" : "flase"}</p> */}
-                  <p>{loadingForm ? " loadingForm true" : " loadingForm flase"}</p>
                   <Grid item md={12} sx={{ width: "100%" }}>
                     <Grow
                       in={value === "1"}
                       {...(value === "1" ? { timeout: 500 } : {})}>
                       <TabPanel value="1" dir={theme.direction}>
-                        <Box m={1}>
+                        <Box >
                           <Grid container spacing={1}>
                             <Grid item xs={12} md={8} >
                               <TextField
@@ -202,7 +201,7 @@ const CompleteFormClient = (props: propsForm) => {
                             <Divider sx={{ mt: 3 }} />
                           }
                           {existClient && (
-                            <Stack sx={{ mt: 3 }}> <FormClient registerEvent={registerEvent} isSubmitting={isSubmitting} isClient={true} loadingForm={loadingForm} /></Stack>
+                            <Stack sx={{ mt: 3 }}> <FormClient isSubmitting={isSubmitting} isClient={true} loadingForm={loadingForm} errorSaveTurn={errorSaveTurn} /></Stack>
                           )}
                         </Box>
                       </TabPanel>
@@ -212,7 +211,7 @@ const CompleteFormClient = (props: propsForm) => {
                       {...(value === "2" ? { timeout: 500 } : {})}
                     >
                       <TabPanel value="2" dir={theme.direction}>
-                        <FormClient registerEvent={registerEvent} isSubmitting={isSubmitting} loadingForm={loadingForm} />
+                        <FormClient isSubmitting={isSubmitting} isClient={false} loadingForm={loadingForm} errorSaveTurn={errorSaveTurn} />
                       </TabPanel>
                     </Grow>
                   </Grid>

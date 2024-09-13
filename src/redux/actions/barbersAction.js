@@ -1,7 +1,8 @@
 import axios from "axios"
 import { barbersTypes } from "../contants/action-types"
 
-const ruta = "http://localhost:4000/api/"
+// const ruta = "http://localhost:4000/api/"
+const ruta = process.env.REACT_APP_URL_API + "/"
 
 export const getBarbers = (barber) => {
   return {

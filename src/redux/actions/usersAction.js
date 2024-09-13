@@ -1,7 +1,8 @@
 import axios from "axios"
 import { usersTypes } from "../contants/action-types"
 
-const ruta = "http://localhost:4000/api/"
+// const ruta = "http://localhost:4000/api/"
+const ruta = process.env.REACT_APP_URL_API + "/"
 
 export const getUsers = (users) => {
   return {
@@ -46,11 +47,11 @@ export const getAllUsers = () => {
 export const getMyUser = (id) => {
   return async function () {
     try {
-      const response = await axios.get(`${ruta}users/myprofile/${id}`);
-      return response.data[0];
+      const response = await axios.get(`${ruta}users/myprofile/${id}`)
+      return response.data[0]
     } catch (error) {
-      console.error(error);
-      throw error;
+      console.error(error)
+      throw error
     }
   }
 }
@@ -85,9 +86,12 @@ export const updateUser = (formData, id) => async (dispatch) => {
   }
 }
 
-export const updateStateUser = ( id, data) => async (dispatch) => {
+export const updateStateUser = (id, data) => async (dispatch) => {
   try {
-    const response = await axios.put(ruta + "users/updateStateBarber/" + id, data)
+    const response = await axios.put(
+      ruta + "users/updateStateBarber/" + id,
+      data
+    )
     dispatch(setUpdateUser())
     dispatch(getAllUsers())
     return response.data
@@ -118,35 +122,44 @@ export const loginUser = (dataUser) => async () => {
   }
 }
 
-export const dataGraphics = (idBarber, formattedStartDate ,formattedEndDate) => async () =>{
+export const dataGraphics =
+  (idBarber, formattedStartDate, formattedEndDate) => async () => {
     try {
-      const response = await axios.post(ruta + "users/dataGraphics", { id: idBarber, formattedStartDate, formattedEndDate })
+      const response = await axios.post(ruta + "users/dataGraphics", {
+        id: idBarber,
+        formattedStartDate,
+        formattedEndDate
+      })
       return response.data
     } catch (err) {
       return { rta: -1, message: "Ocurrio un errorrr." + err }
     }
-}
-
-export const countTurnsGraphics = (idBarber, formattedStartDate ,formattedEndDate) => async () =>{
-    try {
-      const response = await axios.post(ruta + "users/countTurnsGraphics",{ id: idBarber,formattedStartDate, formattedEndDate })
-      return response.data
-    } catch (err) {
-      return { rta: -1, message: "Ocurrio un errorrr." + err }
-    }
-  
-}
-
-export const getTurnsDayWeek = (idBarber,formattedStartDate ,formattedEndDate) => async () =>{
-  try {
-    const response = await axios.post(ruta + "users/getTurnsDayWeek", { id: idBarber,formattedStartDate ,formattedEndDate })
-    return response.data
-  } catch (err) {
-    return { rta: -1, message: "Ocurrio un errorrr." + err }
   }
-}
 
+export const countTurnsGraphics =
+  (idBarber, formattedStartDate, formattedEndDate) => async () => {
+    try {
+      const response = await axios.post(ruta + "users/countTurnsGraphics", {
+        id: idBarber,
+        formattedStartDate,
+        formattedEndDate
+      })
+      return response.data
+    } catch (err) {
+      return { rta: -1, message: "Ocurrio un errorrr." + err }
+    }
+  }
 
-
-
-
+export const getTurnsDayWeek =
+  (idBarber, formattedStartDate, formattedEndDate) => async () => {
+    try {
+      const response = await axios.post(ruta + "users/getTurnsDayWeek", {
+        id: idBarber,
+        formattedStartDate,
+        formattedEndDate
+      })
+      return response.data
+    } catch (err) {
+      return { rta: -1, message: "Ocurrio un errorrr." + err }
+    }
+  }

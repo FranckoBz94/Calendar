@@ -1,15 +1,15 @@
-import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material"
+import { Alert, Box, Button, CircularProgress, Grid, TextField } from "@mui/material"
 import { ErrorMessage, Field } from "formik"
 
 interface propsForm {
   setClientId?: (id: string | null) => void,
-  registerEvent: () => void,
   isSubmitting?: boolean
   isClient?: boolean
-  loadingForm: boolean
+  loadingForm: boolean,
+  errorSaveTurn: string | null
 }
 
-const FormClient = ({ registerEvent, isSubmitting, isClient, loadingForm }: propsForm) => {
+const FormClient = ({ isSubmitting, isClient, loadingForm, errorSaveTurn }: propsForm) => {
   return (
     <>
       <Grid container spacing={1}>
@@ -51,30 +51,63 @@ const FormClient = ({ registerEvent, isSubmitting, isClient, loadingForm }: prop
         />
         <ErrorMessage name="email" component="div" >{msg => <span style={{ color: "red", fontSize: "12px" }}>{msg}</span>}</ErrorMessage>
       </Box>
+      <Grid container spacing={1}>
+        <Grid item xs={12} md={6}>
+          <Box mb={2}>
+            <Field
+              as={TextField}
+              name="phone"
+              label="Teléfono"
+              variant="outlined"
+              fullWidth
+              disabled={isClient}
+            />
+            <ErrorMessage name="phone" component="div" >{msg => <span style={{ color: "red", fontSize: "12px" }}>{msg}</span>}</ErrorMessage>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Box mb={2}>
+            <Field
+              as={TextField}
+              name="dni"
+              label="Dni"
+              variant="outlined"
+              fullWidth
+              disabled={isClient}
+            />
+            <ErrorMessage name="dni" component="div" >{msg => <span style={{ color: "red", fontSize: "12px" }}>{msg}</span>}</ErrorMessage>
+          </Box>
+        </Grid>
+      </Grid>
 
-      <Box mb={2}>
-        <Field
-          as={TextField}
-          name="phone"
-          label="Teléfono"
-          variant="outlined"
+      {isClient ? (
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
           fullWidth
-          disabled={isClient}
-        />
-        <ErrorMessage name="phone" component="div" >{msg => <span style={{ color: "red", fontSize: "12px" }}>{msg}</span>}</ErrorMessage>
-      </Box>
-
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
-        disabled={loadingForm}
-        onClick={registerEvent}
-        startIcon={loadingForm ? <CircularProgress size={24} color="inherit" /> : undefined}
-      >
-        {loadingForm ? 'Guardando...' : 'Guardar turno'}
-      </Button>
+          disabled={loadingForm}
+          // onClick={registerEvent}
+          startIcon={loadingForm ? <CircularProgress size={24} color="inherit" /> : undefined}
+        >
+          {loadingForm ? 'Guardando...' : 'Guardar turno'}
+        </Button>
+      ) : (
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          disabled={loadingForm}
+          // onClick={searchAndRegisterEvent}
+          startIcon={loadingForm ? <CircularProgress size={24} color="inherit" /> : undefined}
+        >
+          {loadingForm ? 'Guardando...' : 'Guardar turnoo'}
+        </Button>
+      )}
+      {errorSaveTurn !== null &&
+        <Alert sx={{ mt: 2 }} severity="warning">{errorSaveTurn}</Alert >
+      }
     </>
   )
 }

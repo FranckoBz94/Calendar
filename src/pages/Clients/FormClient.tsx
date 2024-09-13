@@ -67,12 +67,13 @@ const FormClient = (props: FormClientProps) => {
     } else {
       let rtaAddClient
       try {
-        console.log("data", data)
         rtaAddClient = await dispatch(addClient(data) as any)
-        console.log("rtaAddClient", rtaAddClient)
         if (rtaAddClient.rta === 1) {
           NotifyHelper.notifySuccess(rtaAddClient.message)
           setOpenModal(false)
+          setIsLoading(false)
+        } else if (rtaAddClient.rta === -2) {
+          NotifyHelper.notifyWarning(rtaAddClient.message)
           setIsLoading(false)
         } else {
           NotifyHelper.notifyError(rtaAddClient.message)

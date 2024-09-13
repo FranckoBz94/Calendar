@@ -26,6 +26,7 @@ import MainComponent from "pages/AppBar/MainComponent"
 
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar | null>(null)
+  const isDesktop = window.innerWidth >= 768;
   const [openModal, setOpenModal] = useState(false)
   const [openModalEdit, setOpenModalEdit] = useState(false)
   const [openModalHours, setOpenModalHours] = useState(false)
@@ -113,26 +114,29 @@ const Calendar = () => {
 
 
   const handleEventMouseEnter = (info: any) => {
-    const event = info.event;
-    const eventEl = info.el;
-    const rect = eventEl.getBoundingClientRect();
-    const tooltipText = (
-      <Box sx={{ margin: 0, padding: 0, boxShadow: 'none', border: 'none', borderRadius: 5 }}>
-        <div style={{ padding: 8 }}>
-          <Typography variant="h6">{event.title}</Typography>
-          <Typography variant="body2">Turno: {event.extendedProps.description}</Typography>
-          <Typography variant="body2">Inicio: {event.start.toLocaleString()}</Typography>
-          <Typography variant="body2">Fin: {event.end.toLocaleString()}</Typography>
-        </div>
-      </Box>
-    );
-    setTooltipContent(tooltipText);
-    setTooltipPosition({ x: rect.left + window.scrollX + 100, y: rect.top });
+    if (isDesktop) {
+      const event = info.event;
+      const eventEl = info.el;
+      const rect = eventEl.getBoundingClientRect();
+      const tooltipText = (
+        <Box sx={{ margin: 0, padding: 0, boxShadow: 'none', border: 'none', borderRadius: 5 }}>
+          <div style={{ padding: 8 }}>
+            <Typography variant="h6" color="white">{event.title}</Typography>
+            <Typography variant="body2" color="white">Turno: {event.extendedProps.description}</Typography>
+            <Typography variant="body2" color="white">Inicio: {event.start.toLocaleString()}</Typography>
+            <Typography variant="body2" color="white">Fin: {event.end.toLocaleString()}</Typography>
+          </div>
+        </Box>
+      );
+      setTooltipContent(tooltipText);
+      setTooltipPosition({ x: rect.left + window.scrollX + 100, y: rect.top });
+    }
   };
 
   const handleEventMouseLeave = () => {
     setTooltipContent(null);
   };
+
 
   const calculateNewArrayServices = async (dataTurn: any) => {
     let rtaAvailableTurn
@@ -164,6 +168,8 @@ const Calendar = () => {
   }
 
   const handleEventClick = async (clickInfo: any) => {
+    await dispatch(getAllClients() as any);
+    console.log("clickInfo", clickInfo)
     const { event } = clickInfo
     const eventData = event.extendedProps
     const start = event.start ? event.start.toISOString() : null
@@ -197,10 +203,25 @@ const Calendar = () => {
     setOpenModalEdit(true)
   }
 
+  const click = async (info: any) => {
+    console.log("info", info)
+    setOpenModal(true)
+    const data = { start: info.date }
+    setDataSelected(data)
+    const dataTurn = {
+      idBarber: barberSelected?.id,
+      dateBooking: moment(info.date).format("YYYY-MM-DD"),
+      start_date: moment(info.date).format("YYYY-MM-DD HH:mm:ss"),
+      endTimeCalendar: localStorage.getItem("newClosingTime")
+    }
+    await calculateNewArrayServices(dataTurn)
+  }
+
   const handleDateSelect = async (event: any) => {
+    console.log("event", event)
     if (barbersActive.length > 0) {
       const currentView = calendarRef.current?.getApi().view.type
-      if (currentView === "timeGridWeek") {
+      if (currentView !== "dayGridMonth") {
         setOpenModal(true)
         setDataSelected(event)
       }
@@ -227,6 +248,8 @@ const Calendar = () => {
   useEffect(() => {
     getHoursCalendar()
   }, [])
+
+
 
   useEffect(() => {
     setLoadBarbers(false)
@@ -300,7 +323,7 @@ const Calendar = () => {
       <>
         <Box mt={2}>
           <Card variant="outlined">
-            <Box p={4}>
+            <Box sx={{ md: { p: 4 }, sm: { p: 1 } }} >
               <Tabs>
                 {barbersActive && loadBarbers && barbersActive
                   .filter((barber: any) => barber.is_active === 1)
@@ -326,7 +349,7 @@ const Calendar = () => {
               </Tabs>
               <Content active>
                 <Card className="cardCalendar" variant="outlined">
-                  <Box p={4}>
+                  <Box sx={{ md: { p: 4 }, sm: { p: 3 } }}>
                     <Card
                       style={{
                         marginBottom: "20px",
@@ -337,7 +360,7 @@ const Calendar = () => {
                       }}
                       variant="outlined"
                     >
-                      <Box sx={{ width: 1 }}>
+                      <Box sx={{ width: 1, marginTop: 1 }}>
                         {!loadBarbers ? (
                           <Box mt={1}>
                             <Stack sx={{ width: "100%" }} spacing={2}>
@@ -367,7 +390,8 @@ const Calendar = () => {
                             style={{
                               display: "flex",
                               justifyContent: "center",
-                              alignItems: "center"
+                              alignItems: "center",
+                              marginTop: "15px"
                             }}
                           >
                             <InputLabel htmlFor="my-input">
@@ -432,6 +456,8 @@ const Calendar = () => {
                           height={"auto"}
                           selectable={true}
                           select={handleDateSelect}
+                          dateClick={click}
+                          hiddenDays={[0, 6]}
                         />
                       )
                       )}
@@ -487,7 +513,7 @@ const Calendar = () => {
           isOpen={openModalEdit}
           handleClose={handleCloseModalEdit}
         >
-          <Box mt={1} position="relative">
+          <Box mt={1}>
             <FormEditTurn
               dataFormEvent={dataSelected}
               setOpenModalEdit={setOpenModalEdit}

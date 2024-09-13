@@ -436,7 +436,29 @@ inputDisabled input[type="time"] {
   padding: 4;
 }
 
+.fc-header-toolbar{
+  padding: 10px;
+}
 
+@media (max-width: 768px) {
+  .fc-header-toolbar{
+    display: block !important;
+  }
+  .fc-header-toolbar .fc-toolbar-chunk:nth-child(1){
+    display: flex;
+    justify-content: space-between !important;
+  }
+  .fc-header-toolbar .fc-toolbar-chunk:nth-child(2){
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .fc-toolbar-chunk:nth-child(3) .fc-button-group{
+    width: 100%;
+  }
+  .fc-timegrid-slot {
+    height: 35px !important; /* Ajusta esta altura según tus necesidades */
+  }
+}
 
 
 /* react-calendar__tile react-calendar__tile--now react-calendar__month-view__days__day react-calendar__tile react-calendar__tile--now react-calendar__tile--active react-calendar__tile--range react-calendar__tile--rangeStart react-calendar__tile--rangeEnd react-calendar__tile--rangeBothEnds react-calendar__month-view__days__day */

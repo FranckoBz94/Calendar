@@ -1,7 +1,8 @@
 import axios from "axios"
 import { servicesTypes } from "../contants/action-types"
 
-const ruta = "http://localhost:4000/api/services/"
+// const ruta = "http://localhost:4000/api/services/"
+const ruta = process.env.REACT_APP_URL_API + "/services/"
 
 export const getServices = (clients) => {
   return {

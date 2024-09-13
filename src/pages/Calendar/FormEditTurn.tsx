@@ -35,7 +35,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
     idService,
     idTurn
   } = dataFormEvent
-
+  console.log("dataFormEvent", dataFormEvent)
   const [selectedOptionService, setSelectedOptionService] = useState({
     id: null,
     minutes_service: null
@@ -156,11 +156,11 @@ const FormEditTurn = (props: FormCalendarProps) => {
             marginTop: 3,
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+          <form onSubmit={handleSubmit} >
+            <Grid container spacing={2} >
               <Grid item xs={12} mb={2}>
                 <Box
                   sx={{
@@ -234,6 +234,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
               </Grid>
               <Grid item xs={12} mb={2}>
                 <Select
+                  isSearchable={false}
                   className="basic-multi-select"
                   classNamePrefix="select"
                   options={allServices.map((service: any) => ({
@@ -247,20 +248,21 @@ const FormEditTurn = (props: FormCalendarProps) => {
                     label: serviceSelected.name_service + " <small>(" + serviceSelected.minutes_service + " minutos)</small>",
                     value: serviceSelected.id
                   }}
+                  styles={{ menu: provided => ({ border: "1px solid #ddd" }) }}
                   components={{ Option: Option, SingleValue: SingleValue }}
                   placeholder="Servicio"
                   onChange={handleChangeSelectService}
                 />
               </Grid>
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="center">
+                <Box display="flex" justifyContent="center" sx={{ mt: 1 }}>
                   <LoadingButton
                     size="small"
                     type="submit"
                     className="btnSubmitOption2"
                     loading={isLoading}
                     variant="contained"
-                    sx={{ mt: 5, mb: 5, py: 2, px: 4, mx: 3 }}
+                    sx={{ mb: 5, py: 2, px: 4, mx: 3 }}
                   >
                     <span>Actualizar</span>
                   </LoadingButton>
@@ -269,7 +271,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
                     variant="contained"
                     className="radius-35"
                     color="error"
-                    sx={{ mt: 5, mb: 5, py: 2, px: 4, mx: 3 }}
+                    sx={{ mb: 5, py: 2, px: 4, mx: 3 }}
                     onClick={deleteTurn}
                   >
                     <span>Eliminar</span>

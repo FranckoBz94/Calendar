@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import { AnimatePresence } from "framer-motion"
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import { IconButton } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 interface ModalProps {
   isOpen: boolean
@@ -41,6 +43,12 @@ const MotionModal: React.FC<ModalProps> = ({
           style={style}
         >
           <Box className="modal_custom" >
+            <IconButton
+              onClick={handleClose}
+              sx={{ position: 'absolute', top: 8, right: 8, zIndex: 999 }}
+            >
+              <CloseIcon />
+            </IconButton>
             {children}
           </Box>
         </Modal>

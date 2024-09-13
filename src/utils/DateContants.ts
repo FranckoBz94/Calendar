@@ -1,3 +1,5 @@
+import moment from "moment"
+
 export class DateContants {
   static formatDateTime = (fecha: any) => {
     const hora = fecha.getHours()
@@ -44,5 +46,16 @@ export class DateContants {
     } else {
         console.error("Invalid date format: ", startDate);
     }
-}
+  }
+
+  static generateDates = (startDate: Date, endDate: Date): string[] => {
+    const dates: string[] = [];
+    let currentDate: Date = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      dates.push(moment(currentDate).format('YYYY-MM-DD'));
+      currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
+    }
+    return dates;
+  };
 }

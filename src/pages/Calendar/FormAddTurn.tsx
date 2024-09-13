@@ -40,6 +40,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
     setOpenModal,
     barberSelected
   } = props
+  console.log("allServices", allServices)
   const [selectedOptionService, setSelectedOptionService] = useState({
     id: allServices[0]?.id,
     minutes_service: allServices[0]?.minutes_service,
@@ -66,11 +67,15 @@ const FormAddTurn = (props: FormCalendarProps) => {
 
   const registerEvent = async (data: any) => {
     const idService = selectedOptionService.id || undefined
+    console.log("dataFormEvent.start", dataFormEvent.start)
     const endTime = DateContants.calculateEndTime(
       dataFormEvent.start,
       selectedOptionService.minutes_service
     )
     console.log("dataFormEvent.start", dataFormEvent.start)
+    console.log("endTime", moment(moment(endTime).toDate()).format(
+      "YYYY-MM-DD HH:mm:ss"
+    ))
     const dataComplete = {
       ...data,
       end: moment(endTime).toDate(),
@@ -174,8 +179,8 @@ const FormAddTurn = (props: FormCalendarProps) => {
               </TabList>
             </Box>
             <TabPanel value="1">
-              <form onSubmit={handleSubmit}>
-                <Grid container spacing={2}>
+              <form onSubmit={handleSubmit} >
+                <Grid container spacing={2} sx={{ flex: 1, overflowY: 'auto' }}>
                   <Grid item xs={12} mb={2}>
                     <small style={{ marginLeft: "15px", marginBottom: "-4px", color: "rgb(158 158 158)" }}>Cliente</small>
                     <Select
@@ -226,9 +231,9 @@ const FormAddTurn = (props: FormCalendarProps) => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} mb={2}>
+                  <Grid item xs={12} mb={2} pb={1}>
                     <Select
-                      isSearchable={true}
+                      isSearchable={false}
                       options={allServices.map((service: any) => ({
                         label: service.name_service + " <small>(" + service.minutes_service + " minutos)</small>",
                         value: JSON.stringify({
@@ -250,7 +255,13 @@ const FormAddTurn = (props: FormCalendarProps) => {
                           height: 'auto',
                           maxHeight: '200px', // Ajusta esta altura según tus necesidades
                           overflowY: 'auto',
-                          borderRadius: '5px'
+                          borderRadius: '5px',
+                          border: "1px solid #ddd"
+                        }),
+                        container: provided => ({
+                          ...provided,
+                          flex: 1,
+                          marginBottom: 3,
                         }),
                       }}
                     />

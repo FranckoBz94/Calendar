@@ -59,6 +59,7 @@
     "socket.io-client": "^4.7.5",
     "styled-components": "^5.3.6",
     "sweetalert2": "^11.7.3",
+    "twilio": "^5.2.3",
     "typescript": "*",
     "web-vitals": "^2.1.0",
     "yup": "^1.0.2"

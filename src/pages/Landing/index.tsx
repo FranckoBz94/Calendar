@@ -1,11 +1,21 @@
-import { Box, Card } from "@mui/material";
+import { Box, Card, IconButton } from "@mui/material";
 import React, { useState } from "react";
-import ModalContent from "./ModalContent";
+// import ModalContent from "./ModalContent";
 import dayjs from "dayjs";
 import "./css/style.css"
 import "./css/bootstrap.min.css"
 import sectionTittleIcon from './img/logo.png'; // Importa la imagen
 import MotionModalLanding from "components/Modal/Modal_landing";
+import ModalContentNew from "./ModalContentNew";
+import { DateContants } from "utils/DateContants";
+import CloseIcon from '@mui/icons-material/Close';
+import Staff from "./ComponentsLanding/Staff";
+// import cutter from "./img/icon/cutter.svg"
+import about1 from "./img/about_us_1.png"
+import about2 from "./img/about_us_2.png"
+import about3 from "./img/about_us_3.png"
+import Pricing from "./ComponentsLanding/Pricing";
+import DataTeam from "./ComponentsLanding/DataTeam";
 
 dayjs.locale('es');
 
@@ -20,6 +30,12 @@ const Landing = () => {
     setOpenModal(true)
   }
 
+  const startDate = new Date();
+  const endDate = new Date();
+  endDate.setMonth(endDate.getMonth() + 1);
+
+  const dates = DateContants.generateDates(startDate, endDate);
+  console.log("dias prox", dates)
   return (
     <div>
       <MotionModalLanding
@@ -27,8 +43,14 @@ const Landing = () => {
         handleClose={handleCloseModal}
       >
         <Box m={1} position="relative">
+          <IconButton
+            onClick={handleCloseModal}
+            sx={{ position: 'absolute', top: 8, right: 8, zIndex: 999 }}
+          >
+            <CloseIcon />
+          </IconButton>
           <Card>
-            <ModalContent />
+            <ModalContentNew dates={dates} />
           </Card>
         </Box>
       </MotionModalLanding>
@@ -112,323 +134,30 @@ const Landing = () => {
           <div className="row align-items-center">
             <div className="col-md-4 col-lg-6">
               <div className="about_img ">
-                <img src="../img/about_us_1.png" className="about_img_1" alt="" />
-                <img src="../img/about_us_2.png" className="about_img_2" alt="" />
-                <img src="../img/about_us_3.png" className="about_img_3" alt="" />
+                <img src={about1} className="Quote" alt="" />
+                <img src={about2} className="about_img_2" alt="" />
+                <img src={about3} className="about_img_3" alt="" />
               </div>
             </div>
             <div className="col-md-7 offset-md-1 col-lg-3 offset-lg-1">
               <div className="about_text">
-                <h5>About us</h5>
-                <h2>Connect with your dream style</h2>
-                <p>Seed spirit replenish cattle one moved air created. Them fill dont be fed isnt to he
-                  shall god good spirit they are the. Hath Itself their second ifruitful a moving
-                  their creature living every i replenish land and had hen lesser for their good
-                  quality products</p>
-                <p>Seed spirit replenish cattle one moved air created. Them fill dont be fed isnt to he shall
-                  god good spirit they are the. Hath Itself their second ifruitful a moving their creature
-                  living every</p>
-                <a href="#" className="btn_3">Read More</a>
+                <h5>Sobre nosotros</h5>
+                <h2>Conéctate con tu estilo ideal</h2>
+                <p>Nuestro compromiso es ofrecerte un servicio que refleje tu estilo y personalidad. Creemos que
+                  cada detalle cuenta, y es por eso que utilizamos productos de la más alta calidad para garantizar
+                  resultados excepcionales. Nos esforzamos por brindarte una experiencia única en cada visita,
+                  cuidando de cada aspecto de tu bienestar y estilo.</p>
+                <p>Trabajamos con dedicación para proporcionarte un servicio de primera, asegurando que cada
+                  cliente se sienta especial y satisfecho. Ya sea que busques renovar tu imagen o mantener tu
+                  estilo actual, estamos aquí para ayudarte a alcanzar tus objetivos de belleza con la calidad que mereces.</p>
               </div>
             </div>
           </div>
         </div>
       </section >
-      <section className="service_part section_padding">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-7 col-lg-6 col-sm-10">
-              <div className="section_tittle">
-                <img src="/img/section_tittle_icon.png" alt="icon" />
-                <h2>Service Expectation</h2>
-                <p>Good morning forth gathering doesnt god gathering man and had moveth there dry sixth</p>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6 col-lg-4">
-              <div className="single_service_part">
-                <img src="./img/service/single_service_1.png" alt="" />
-                <div className="single_service_text">
-                  <h4>Stylish Hair Cut</h4>
-                  <p>Good morning forth gathering does god gathering man and had moveth there
-                    dry so dominion rule divided had</p>
-                  <a href="#" className="btn_3">Read More</a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-lg-4">
-              <div className="single_service_part">
-                <img src="img/service/single_service_2.png" alt="" />
-                <div className="single_service_text">
-                  <h4>Wedding Hair</h4>
-                  <p>Good morning forth gathering does god gathering man and had moveth there
-                    dry so dominion rule divided had</p>
-                  <a href="#" className="btn_3">Read More</a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-lg-4">
-              <div className="single_service_part">
-                <img src="img/service/single_service_3.png" alt="" />
-                <div className="single_service_text">
-                  <h4>Color & Hair Wash</h4>
-                  <p>Good morning forth gathering does god gathering man and had moveth there
-                    dry so dominion rule divided had</p>
-                  <a href="#" className="btn_3">Read More</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="our_offer">
-        <div className="container-fluid">
-          <div className="row justify-content-between">
-            <div className="col-lg-12">
-              <div className="single_offer_part">
-                <div className="single_offer">
-                  <img src="img/offer_img_1.png" alt="offer_img_1" />
-                  <div className="hover_text">
-                    <img src="img/icon/cutter.svg" alt="#" />
-                    <h2>Best Equipment</h2>
-                    <p>Winged day grass creepeth us second signs</p>
-                    <a href="#" className="offer_btn"><span className="flaticon-slim-right"></span></a>
-                  </div>
-                </div>
-              </div>
-              <div className="single_offer_part">
-                <div className="single_offer">
-                  <img src="img/offer_img_2.png" alt="offer_img_1" />
-                  <div className="hover_text">
-                    <img src="img/icon/cutter.svg" alt="#" />
-                    <h2>Best Price</h2>
-                    <p>Winged day grass creepeth us second signs </p>
-                    <a href="#" className="offer_btn"><span className="flaticon-slim-right"></span></a>
-                  </div>
-                </div>
-              </div>
-              <div className="single_offer_part">
-                <div className="single_offer">
-                  <img src="img/offer_img_3.png" alt="offer_img_1" />
-                  <div className="hover_text">
-                    <img src="img/icon/cutter.svg" alt="#" />
-                    <h2>Fitness Equipment</h2>
-                    <p>Winged day grass creepeth us second signs</p>
-                    <a href="#" className="offer_btn"><span className="flaticon-slim-right"></span></a>
-                  </div>
-                </div>
-              </div>
-              <div className="single_offer_part">
-                <div className="single_offer">
-                  <img src="img/offer_img_4.png" alt="offer_img_1" />
-                  <div className="hover_text">
-                    <img src="img/icon/cutter.svg" alt="#" />
-                    <h2>Fitness Training</h2>
-                    <p>Winged day grass creepeth us second signs</p>
-                    <a href="#" className="offer_btn"><span className="flaticon-slim-right"></span></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="priceing_part">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-7 col-lg-6 col-sm-10">
-              <div className="section_tittle">
-                <img src="img/section_tittle_icon.png" alt="icon" />
-                <h2>Pricing Plan</h2>
-                <p>Good morning forth gathering doesnt god gathering man and had moveth there dry sixth
-                  dominion rule divided behold after had he did not move .</p>
-              </div>
-            </div>
-          </div>
-          <div className="row align-items-center">
-            <div className="col-md-6 col-lg-6">
-              <div className="single_pricing_item">
-                <img src="img/pricing_img/pricing_img_1.png" alt="" />
-                <div className="single_pricing_text">
-                  <h5>Hair Cut</h5>
-                  <h6>$10.00</h6>
-                  <p>Their days lesser and every firmament</p>
-                </div>
-              </div>
-              <div className="single_pricing_item">
-                <img src="img/pricing_img/pricing_img_2.png" alt="" />
-                <div className="single_pricing_text">
-                  <h5>Hair Color</h5>
-                  <h6>$10.00</h6>
-                  <p>Their days lesser and every firmament</p>
-                </div>
-              </div>
-              <div className="single_pricing_item">
-                <img src="img/pricing_img/pricing_img_3.png" alt="" />
-                <div className="single_pricing_text">
-                  <h5>Hair Straight</h5>
-                  <h6>$10.00</h6>
-                  <p>Their days lesser and every firmament</p>
-                </div>
-              </div>
-              <div className="single_pricing_item">
-                <img src="img/pricing_img/pricing_img_4.png" alt="" />
-                <div className="single_pricing_text">
-                  <h5>Shampoo</h5>
-                  <h6>$10.00</h6>
-                  <p>Their days lesser and every firmament</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-lg-6">
-              <div className="single_pricing_item">
-                <img src="img/pricing_img/pricing_img_5.png" alt="" />
-                <div className="single_pricing_text">
-                  <h5>Hair Wash</h5>
-                  <h6>$10.00</h6>
-                  <p>Their days lesser and every firmament</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="review_part gray_bg section_padding">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-10">
-              <div className="client_review_part owl-carousel">
-                <div className="client_review_single">
-                  <img src="img/Quote.png" className="Quote" alt="quote" />
-                  <div className="client_review_text">
-                    <p>Also made from. Give may saying meat there from heaven it lights face had is gathered
-                      god dea earth light for life may itself shall whales made theyre blessed whales
-                      also made from give
-                      may saying meat. There from heaven it lights face had amazing place</p>
-                  </div>
-                  <div className="client_img">
-                    <img src="img/client/client_1.png" alt="" />
-                  </div>
-                  <h4>Mosan Cameron, <span>Executive of fedex</span></h4>
-                </div>
-                <div className="client_review_single">
-                  <img src="img/Quote.png" className="Quote" alt="quote" />
-                  <div className="client_review_text media-body">
-                    <p>Also made from. Give may saying meat there from heaven it lights face had is gathered
-                      god dea earth light for life may itself shall whales made theyre blessed whales
-                      also made from give
-                      may saying meat. There from heaven it lights face had amazing place</p>
-                  </div>
-                  <div className="client_img">
-                    <img src="img/client/client_1.png" alt="" />
-                  </div>
-                  <h4>Mosan Cameron, <span>Executive of fedex</span></h4>
-                </div>
-                <div className="client_review_single">
-                  <img src="img/Quote.png" className="Quote" alt="quote" />
-                  <div className="client_review_text">
-                    <p>Also made from. Give may saying meat there from heaven it lights face had is gathered
-                      god dea earth light for life may itself shall whales made theyre blessed whales
-                      also made from give
-                      may saying meat. There from heaven it lights face had amazing place</p>
-                  </div>
-                  <div className="client_img">
-                    <img src="img/client/client_1.png" alt="" />
-                  </div>
-                  <h4>Mosan Cameron, <span>Executive of fedex</span></h4>
-                </div>
-                <div className="client_review_single">
-                  <img src="img/Quote.png" className="Quote" alt="quote" />
-                  <div className="client_review_text">
-                    <p>Also made from. Give may saying meat there from heaven it lights face had is gathered
-                      god dea earth light for life may itself shall whales made theyre blessed whales
-                      also made from give
-                      may saying meat. There from heaven it lights face had amazing place</p>
-                  </div>
-                  <div className="client_img">
-                    <img src="img/client/client_1.png" alt="" />
-                  </div>
-                  <h4>Mosan Cameron, <span>Executive of fedex</span></h4>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="artist_part">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-7 col-lg-6 col-sm-10">
-              <div className="section_tittle">
-                <img src="img/section_tittle_icon.png" alt="icon" />
-                <h2>Meet Our Artist</h2>
-                <p>Good morning forth gathering doesnt god gathering man and had moveth there dry sixth
-                  dominion rule divided behold after had he did not move .</p>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-sm-6 col-lg-4">
-              <div className="single_blog_item">
-                <div className="single_blog_img">
-                  <img src="img/artist/artist_1.png" alt="artist" />
-                </div>
-                <div className="single_text">
-                  <div className="single_blog_text text-center">
-                    <h3>Adam Billiard</h3>
-                    <p>Chef Master</p>
-                    <div className="social_icon">
-                      <a href="#"> <i className="ti-facebook"></i> </a>
-                      <a href="#"> <i className="ti-twitter-alt"></i> </a>
-                      <a href="#"> <i className="ti-instagram"></i> </a>
-                      <a href="#"> <i className="ti-skype"></i> </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-sm-6 col-lg-4">
-              <div className="single_blog_item">
-                <div className="single_blog_img">
-                  <img src="img/artist/artist_2.png" alt="artist" />
-                </div>
-                <div className="single_text">
-                  <div className="single_blog_text text-center">
-                    <h3>Fred Macyard</h3>
-                    <p>Chef Master</p>
-                    <div className="social_icon">
-                      <a href="#"> <i className="ti-facebook"></i> </a>
-                      <a href="#"> <i className="ti-twitter-alt"></i> </a>
-                      <a href="#"> <i className="ti-instagram"></i> </a>
-                      <a href="#"> <i className="ti-skype"></i> </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-sm-6 col-lg-4">
-              <div className="single_blog_item">
-                <div className="single_blog_img">
-                  <img src="img/artist/artist_3.png" alt="artist" />
-                </div>
-                <div className="single_text">
-                  <div className="single_blog_text text-center">
-                    <h3>Justin Stuard</h3>
-                    <p>Chef Master</p>
-                    <div className="social_icon">
-                      <a href="#"> <i className="ti-facebook"></i> </a>
-                      <a href="#"> <i className="ti-twitter-alt"></i> </a>
-                      <a href="#"> <i className="ti-instagram"></i> </a>
-                      <a href="#"> <i className="ti-skype"></i> </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Staff />
+      <DataTeam />
+      <Pricing />
       <section className="regervation_part section_padding">
         <div className="container">
           <div className="row justify-content-end">
@@ -483,87 +212,37 @@ const Landing = () => {
           </div>
         </div>
       </section>
-      <section className="blog_part service_part section_padding">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-6">
-              <div className="section_tittle">
-                <img src="img/section_tittle_icon.png" alt="icon" />
-                <h2>Latest Style News</h2>
-                <p>Good morning forth gathering doesnt god gathering man and had moveth there
-                  dry sixth dominion rule divided behold after had he did not move .</p>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6 col-lg-4">
-              <div className="single_service_part">
-                <img src="img/service/single_service_1.png" alt="" />
-                <div className="single_service_text">
-                  <p> <a href="blog.html">art, illustration</a> <span>|</span> March 30, 2019</p>
-                  <h4> <a href="#">There our you divide itseld..</a></h4>
-                  <p>Man moveth days wherein youre that made years he after us light let moved.</p>
-                  <a href="#" className="btn_3">Read More</a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-lg-4">
-              <div className="single_service_part">
-                <img src="img/service/single_service_2.png" alt="" />
-                <div className="single_service_text">
-                  <p> <a href="blog.html">art, illustration</a> <span>|</span> March 30, 2019</p>
-                  <h4> <a href="#">One which won two divide..</a></h4>
-                  <p>Man moveth days wherein youre that made years he after us light let moved.</p>
-                  <a href="#" className="btn_3">Read More</a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-lg-4">
-              <div className="single_service_part">
-                <img src="img/service/single_service_3.png" alt="" />
-                <div className="single_service_text">
-                  <p> <a href="blog.html">art, illustration</a> <span>|</span> March 30, 2019</p>
-                  <h4> <a href="#">There our you divide itseld..</a></h4>
-                  <p>Man moveth days wherein youre that made years he after us light let moved.</p>
-                  <a href="#" className="btn_3">Read More</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
       <footer className="footer-area">
         <div className="container">
           <div className="row justify-content-between">
             <div className="col-xl-4 col-sm-6 col-lg-4">
               <div className="single-footer-widget footer_1">
-                <h4>About Us</h4>
-                <p>Do you want to be even more successful? Learn to love learning and growth.
-                  The more effort you put into improving your skills, the bigger the payoff you
-                  will get. Realize that things </p>
-                <p className="mt-3" >The more effort you put into improving your skills, the bigger the stil now</p>
+                <h4>Sobre nosotros</h4>
+                <p>¿Quieres tener aún más éxito? Aprenda a amar el aprendizaje y el crecimiento. Cuanto más esfuerzo pongas en mejorar tus habilidades, mayor será la recompensa que obtendrás. Date cuenta de que las cosas
+                </p>
+                <p className="mt-3" >Cuanto más te esfuerces en mejorar tus habilidades, mayor será tu nivel.</p>
               </div>
             </div>
             <div className="col-xl-3 col-sm-6 col-lg-4">
               <div className="single-footer-widget footer_2">
-                <h4>Contact us</h4>
+                <h4>Contacto</h4>
                 <div className="contact_info">
                   <span className="ti-home"></span>
-                  <h5>Los angeles, United States</h5>
-                  <p>659, Rocky beach bullevard, santa monica, Rocky beach, USA.</p>
+                  <h5>Ubicacion, Provincia, Ciudad</h5>
+                  <p>Av Calle Nueva 1234</p>
                 </div>
                 <div className="contact_info">
                   <span className="ti-headphone-alt"></span>
-                  <h5>+44 6532 986 652</h5>
-                  <p>Mon to Fri 9am to 6 pm.</p>
+                  <h5>+54 123456789</h5>
+                  <p>Lunes a viernes de 9:00Hs a 18:00Hs.</p>
                 </div>
               </div>
             </div>
 
             <div className="col-xl-4 col-sm-8 col-lg-4">
               <div className="single-footer-widget footer_3">
-                <h4>Newsletter</h4>
-                <p>Stay updated with our latest trends The more effort you put into improving your skills, the bigger the payoff you will get realize that things.</p>
+                <h4>Información</h4>
+                <p>Manténgase actualizado con nuestras últimas tendencias. Siempre que intente mejorar sus habilidades, lo más probable es que sea recompensado por lograr estas cosas.</p>
                 <div className="form-wrap" id="mc_embed_signup">
                   <form target="_blank"
                     action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
