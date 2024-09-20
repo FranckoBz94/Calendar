@@ -45,6 +45,7 @@ const RootComponent = () => {
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 // const landing = false
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>
