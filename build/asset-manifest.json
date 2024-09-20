@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.bc713a6a.css",
+    "main.js": "/static/js/main.6da18f07.js",
+    "static/js/787.f4b9e84d.chunk.js": "/static/js/787.f4b9e84d.chunk.js",
+    "static/media/review_bg.png": "/static/media/review_bg.0aca1c12c06687ab4fa1.png",
+    "static/media/bg_home.png": "/static/media/bg_home.4c690bdf330ddb5db3d0.png",
+    "static/media/breadcrumb.png": "/static/media/breadcrumb.eb281497dadec2f09d6d.png",
+    "static/media/reservation_bg.png": "/static/media/reservation_bg.556328076dc1af8af2c7.png",
+    "static/media/offer_img_2.png": "/static/media/offer_img_2.251e20e5f4b065943b2e.png",
+    "static/media/about_us_3.png": "/static/media/about_us_3.0e93aad29ee006aede42.png",
+    "static/media/offer_img_3.png": "/static/media/offer_img_3.043297366eac7d0de716.png",
+    "static/media/offer_img_1.png": "/static/media/offer_img_1.8ffe61f5bbac40008dbe.png",
+    "static/media/offer_img_4.png": "/static/media/offer_img_4.10be7c4f2a792b5e5d5f.png",
+    "static/media/about_us_2.png": "/static/media/about_us_2.09e85fea10cd9c1eb596.png",
+    "static/media/about_us_1.png": "/static/media/about_us_1.151eac6b862b4e6b0641.png",
+    "static/media/cutter.svg": "/static/media/cutter.be80be60bbb44e021c99ecfbf2b67158.svg",
+    "index.html": "/index.html",
+    "main.bc713a6a.css.map": "/static/css/main.bc713a6a.css.map",
+    "main.6da18f07.js.map": "/static/js/main.6da18f07.js.map",
+    "787.f4b9e84d.chunk.js.map": "/static/js/787.f4b9e84d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bc713a6a.css",
+    "static/js/main.6da18f07.js"
+  ]
+}
