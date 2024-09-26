@@ -32,6 +32,13 @@ export const formatter = new Intl.NumberFormat('en-US', {
 export const optionsTable: Partial<MUIDataTableOptions> = {
   selectableRows: "none",
   responsive: 'standard',
+  setRowProps: (row, dataIndex, rowIndex) => {
+    return {
+      style: {
+        height: "5px",
+      },
+    };
+  },
   textLabels: {
     body: {
       noMatch: "No se encontraron registros",
@@ -83,16 +90,30 @@ export const SingleValue = (props: any) => (
 
 export const getMuiTheme = (color: string): ThemeOptions => ({
   components: {
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          padding: "8px 16px", // Ajusta el padding de las celdas
+        },
+      },
+    },
     // Usar 'as any' para evitar la verificación de tipos
     MUIDataTableHeadCell: {
       styleOverrides: {
-        fixedHeader: { backgroundColor: `${color} !important`, color: "#fff" },
+        fixedHeader: { backgroundColor: `${color} !important`, color: "#fff", height: "70px !important" },
         sortActive: { color: "#ddd" },
         sortAction: { color: "#ddd !important", alignItems: "center" },
         sortLabelRoot: { color: "#ddd !important" },
         hintIconWithSortIcon: { color: "#ddd !important" },
       },
     } as any,
+    MuiTableSortLabel: {
+      styleOverrides: {
+        root: {
+          margin: "8px 16px", // Aplica margen al contenido del encabezado
+        },
+      },
+    },
   } as any,
 });
 
