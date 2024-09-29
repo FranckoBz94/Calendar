@@ -40,23 +40,11 @@ export const useStyles: any = makeStyles((theme: Theme) =>
       top: "4px",
       right: "10px"
     },
-    customRadioLabel: {
-      display: "inline-flex",
-      alignItems: "center",
-      padding: "5px",
-      background: "bisque",
-      border: "2px solid #000", // Color del borde personalizable
-      borderRadius: "5px", // Ajusta el radio para hacer un círculo
-      margin: "3px", // Espacio entre radio buttons
-      cursor: "pointer", // Cambia el cursor al pasar el mouse
-      "&:hover": {
-        backgroundColor: "#2196F3" // Cambia el color de fondo al hacer hover (personalizable)
-      }
-    },
+
     inputChecked: {
       display: "inline-flex",
       alignItems: "center",
-      padding: "5px",
+      padding: '10px 20px',
       background: "#2196F3",
       border: "2px solid #000",
       borderRadius: "5px",
@@ -64,6 +52,23 @@ export const useStyles: any = makeStyles((theme: Theme) =>
       cursor: "pointer",
       color: "#fff",
       fontWeight: "bold"
-    }
+    },
+
+    customRadioLabel: {
+      display: 'inline-block',
+      padding: '10px 20px',
+      margin: '5px',
+      border: '2px solid #ddd',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      backgroundColor: '#f5f5f5',
+      fontSize: '1rem',
+      transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+      '&:hover': {
+        backgroundColor: '#e0e0e0',
+      },
+    },
+
+
   })
 )

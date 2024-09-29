@@ -31,7 +31,8 @@ const CalendarSkeleton = () => {
           backgroundColor: '#e0e0e0',
         }}
       >
-        <Skeleton variant="text" width={100} height={20} />
+        <p style={{ position: 'absolute', color: "#495057", paddingTop: "48px", fontWeight: 700 }}>Cargando disponibilidad de fechas...</p>
+        <Skeleton animation="wave" variant="text" width={100} height={20} />
       </Box>
       <Box
         sx={{
@@ -58,7 +59,7 @@ const CalendarSkeleton = () => {
               borderRadius: "4px"
             }}
           >
-            <Skeleton variant="rectangular" width="100%" height="100%" />
+            <Skeleton animation="wave" variant="rectangular" width="100%" height="100%" />
           </Box>
         ))}
       </Box>

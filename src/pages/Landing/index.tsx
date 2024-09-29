@@ -32,7 +32,7 @@ const Landing = () => {
 
   const startDate = new Date();
   const endDate = new Date();
-  endDate.setMonth(endDate.getMonth() + 1);
+  endDate.setDate(startDate.getDate() + 15);  // 15 días después del día actual
 
   const dates = DateContants.generateDates(startDate, endDate);
   console.log("dias prox", dates)

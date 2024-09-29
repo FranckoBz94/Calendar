@@ -98,7 +98,7 @@ const FormClient = (props: FormClientProps) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="md" style={{ padding: 0 }}>
+      <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box
           sx={{
