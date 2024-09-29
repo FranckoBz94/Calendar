@@ -103,15 +103,22 @@ const Calendar = () => {
     localStorage.setItem("newClosingTime", newClosingTime)
   }
 
-  const handleClick = (e: any) => {
-    const index = e.id
-    if (index !== active) {
-      setActive(index)
-      setBarberSelected(e)
-      dispatch(getAllTurns(e.id) as any)
+  const handleClick = async (e: any) => {
+    const index = e.id;
+    setLoadingTurns(true);
+    try {
+      if (index !== active && index !== undefined && index !== null) {
+        setActive(index);
+        setBarberSelected(e);
+        await dispatch(getAllTurns(e.id) as any);
+      }
+      if (index === active) {
+        setLoadingTurns(false);
+      }
+    } catch (error) {
+      console.error("Error fetching turns:", error);
     }
-  }
-
+  };
 
   const handleEventMouseEnter = (info: any) => {
     if (isDesktop) {
@@ -280,15 +287,16 @@ const Calendar = () => {
     }
   };
 
+
   useEffect(() => {
     const fetchData = async () => {
-      setLoadingTurns(false);
       await fetchTurns();
-      setLoadingTurns(true);
+      setLoadingTurns(false);
     };
 
     fetchData();
   }, [turns]);
+
 
   useEffect(() => {
     fetchTurns();
@@ -421,7 +429,8 @@ const Calendar = () => {
                       </Box>
                     </Card>
                     <div id="calendar-container">
-                      {!loadingTurns ? (
+                      <p>{loadingTurns ? "true" : "false"}</p>
+                      {loadingTurns ? (
                         <SkeletonCalendar />
                       ) : (barbersActive.length > 0 && (
                         <FullCalendar

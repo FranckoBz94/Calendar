@@ -186,8 +186,8 @@ const FormBarber = (props: FormBarberProps) => {
             sx={{ mt: 3 }}
           >
             <motion.div>
-              <Grid container spacing={2}>
-                <Grid item md={4}>
+              <Grid container spacing={2} className="container_barber">
+                <Grid item md={4} width="100%">
                   <Paper style={{ width: "auto", height: "200px", border: "1px solid #ddd" }}>
                     <label htmlFor="file" style={{ cursor: "pointer", display: "flex", height: "100%" }}>
                       <Box

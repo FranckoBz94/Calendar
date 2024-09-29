@@ -43,7 +43,8 @@ const SelectDateHoursNew: React.FC<SelectServiceStepProps> = ({
     const formattedDate = moment(date).format('YYYY-MM-DD');
     const today = moment().startOf('day').format('YYYY-MM-DD');
     const endDate = new Date();
-    endDate.setMonth(endDate.getMonth() + 1);
+    endDate.setDate(endDate.getDate() + 15);  // Sumar 15 días desde el día actual
+
     const formattedDateEnd = moment(endDate).format('YYYY-MM-DD');
     if (formattedDate < today || formattedDate > formattedDateEnd) {
       return '';

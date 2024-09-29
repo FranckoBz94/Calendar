@@ -13,6 +13,9 @@ interface ModalProps {
 
 const style = {
   border: "none",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 };
 
 

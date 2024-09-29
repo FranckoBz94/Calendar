@@ -423,6 +423,8 @@ inputDisabled input[type="time"] {
   font-size: 12px;
 }
 
+
+
 .modal_custom {
   position: absolute;
   top: 50%;
@@ -434,6 +436,8 @@ inputDisabled input[type="time"] {
   border-radius: 5px;
   box-shadow: 24;
   padding: 4;
+  max-height: 98vh; /* Limitar la altura del modal al 90% del viewport */
+  overflow-y: auto; /* Hacer scroll si el contenido es muy largo */
 }
 
 .fc-header-toolbar{
@@ -441,6 +445,9 @@ inputDisabled input[type="time"] {
 }
 
 @media (max-width: 768px) {
+  .container_barber{
+    max-width: 100% !important;
+  }
   .fc-header-toolbar{
     display: block !important;
   }
