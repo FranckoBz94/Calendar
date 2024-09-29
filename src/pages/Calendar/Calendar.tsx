@@ -429,7 +429,6 @@ const Calendar = () => {
                       </Box>
                     </Card>
                     <div id="calendar-container">
-                      <p>{loadingTurns ? "true" : "false"}</p>
                       {loadingTurns ? (
                         <SkeletonCalendar />
                       ) : (barbersActive.length > 0 && (
