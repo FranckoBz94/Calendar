@@ -108,14 +108,21 @@ const FormHoursCalendar = (props: FormHoursProps) => {
           </Box>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={6} >
                 <Box borderRight={1}>
-                  <Typography component="h2" variant="h6">
+                  <Typography component="h2" variant="h6" sx={{
+                    display: { xs: "flex" },
+                    justifyContent: { xs: "center" },
+                    mb: 1,
+                  }}>
                     Hora de Apertura
                   </Typography>
                   <Grid container spacing={0}>
                     {availableStartHours.map((hour: string) => (
-                      <Grid item xs={12} sm={6} md={4} key={hour}>
+                      <Grid item xs={12} sm={6} md={4} key={hour} sx={{
+                        display: { xs: "flex" },
+                        justifyContent: { xs: "center" },
+                      }}>
                         <label
                           key={hour}
                           className={
@@ -138,14 +145,21 @@ const FormHoursCalendar = (props: FormHoursProps) => {
                   </Grid>
                 </Box>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} style={{ paddingLeft: 0 }}>
                 <Box>
-                  <Typography component="h2" variant="h6">
+                  <Typography component="h2" variant="h6" sx={{
+                    display: { xs: "flex" },
+                    justifyContent: { xs: "center" },
+                    mb: 1,
+                  }}>
                     Hora de Cierre
                   </Typography>
                   <Grid container spacing={0}>
                     {closeHours.map((hour: string) => (
-                      <Grid item xs={12} sm={6} md={4} key={hour}>
+                      <Grid item xs={12} sm={6} md={4} key={hour} sx={{
+                        display: { xs: "flex" },
+                        justifyContent: { xs: "center" },
+                      }}>
                         <label
                           key={hour}
                           className={

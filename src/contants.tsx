@@ -39,6 +39,10 @@ export const optionsTable: Partial<MUIDataTableOptions> = {
       },
     };
   },
+  onDownload: (buildHead, buildBody, columns, data) => {
+    const csv = `${buildHead(columns)}${buildBody(data)}`.replace(/,/g, ';');
+    return csv;
+  },
   textLabels: {
     body: {
       noMatch: "No se encontraron registros",

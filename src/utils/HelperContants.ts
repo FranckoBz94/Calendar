@@ -71,8 +71,8 @@ export class HelperContants {
       customClass: {
         container: "my-swal-container"
       },
-      text: "El usuario se borrara de su sistema.",
-      title: `<h5 style="margin:0">¿Está seguro que desea desvincular a ${firstName} ${lastName}?</h5>`
+      text: "El barbero no tendrá usuario para ingresar al sistema.",
+      title: `<h5 style="margin:0">¿Está seguro que desea desvincular este usuario: ${firstName} ${lastName}?</h5>`
     }).then((result) => {
       if (result.isConfirmed) {
         rtaDelete = true

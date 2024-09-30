@@ -423,7 +423,9 @@ inputDisabled input[type="time"] {
   font-size: 12px;
 }
 
-
+.swal-overlay {
+  z-index: 99999; 
+}
 
 .modal_custom {
   position: absolute;

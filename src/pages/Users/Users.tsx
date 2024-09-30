@@ -199,12 +199,13 @@ const Users = () => {
               <Box p={2}>
                 <Grid mb={2}>
                   <Card variant="outlined">
-                    <Grid container justifyContent="flex-end" p={2}>
+                    <Grid container justifyContent="flex-end" p={2} >
                       <Button
                         variant="contained"
                         startIcon={<AddCircleOutlineIcon />}
                         onClick={() => handleOpenModal("NewUser")}
                         className={classes.btnAddUser}
+                        sx={{ width: { xs: "100%", md: "auto" } }}
                       >
                         Nuevo Usuario
                       </Button>

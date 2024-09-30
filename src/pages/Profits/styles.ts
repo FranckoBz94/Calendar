@@ -5,8 +5,11 @@ import createStyles from "@mui/styles/createStyles"
 export const useStyles: any = makeStyles((theme: Theme) =>
   createStyles({
     card_title: {
-      paddingX: "5px",
-      paddingY: "10px",
+      display: "flex",
+      alignItems: "center",
+      padding: "10px",
+      margin: 0,
+      fontSize: "17px",
       color: "#fff",
       fontWeight: "bold"
     },

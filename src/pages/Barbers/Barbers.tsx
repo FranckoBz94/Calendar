@@ -198,60 +198,63 @@ const Barbers = () => {
 
   return (
     <MainComponent>
-      <MotionComponent>
-        <>
-          <MotionModal
-            isOpen={openModal}
-            handleClose={handleCloseModal}
-          >
-            <Box mt={1} position="relative">
-              <FormBarber
-                dataForm={dataSelected}
-                optionSelected={optionSelected}
-                setOpenModal={setOpenModal}
-                users={users}
-              />
-            </Box>
-          </MotionModal>
-          <Card variant="outlined" className={classes.colorCard}>
-            <Box px={2}>
-              <p className={classes.card_title}>Barberos</p>
-            </Box>
-          </Card>
-          <Box mt={2}>
-            <Card variant="outlined">
-              <Box p={2}>
-                <Grid mb={2}>
-                  <Card variant="outlined">
-                    <Grid container justifyContent="flex-end" p={2}>
-                      <Button
-                        variant="contained"
-                        startIcon={<AddCircleOutlineIcon />}
-                        onClick={() => handleOpenModal("NewUser")}
-                        className={classes.btnAddUser}
-                      >
-                        Nuevo Barbero
-                      </Button>
-                    </Grid>
-                  </Card>
-                </Grid>
-                <Paper className={classes.cardTable}>
-                  <Grid >
-                    <ThemeProvider theme={getMuiTheme("#0f4c75")}>
-                      <MUIDataTable
-                        title={"Listado de barberos"}
-                        data={modifiedData}
-                        columns={columnsTableBarbers}
-                        options={optionsTable}
-                      />
-                    </ThemeProvider>
-                  </Grid>
-                </Paper>
+      <>
+        <MotionComponent>
+          <>
+            <Card variant="outlined" className={classes.colorCard}>
+              <Box px={2}>
+                <p className={classes.card_title}>Barberos</p>
               </Box>
             </Card>
-          </Box>
-        </>
-      </MotionComponent>
+            <Box mt={2}>
+              <Card variant="outlined">
+                <Box p={2}>
+                  <MotionModal
+                    isOpen={openModal}
+                    handleClose={handleCloseModal}
+                  >
+                    <Box mt={1} position="relative">
+                      <FormBarber
+                        dataForm={dataSelected}
+                        optionSelected={optionSelected}
+                        setOpenModal={setOpenModal}
+                        users={users}
+                      />
+                    </Box>
+                  </MotionModal>
+                  <Grid mb={2}>
+                    <Card variant="outlined">
+                      <Grid container justifyContent="flex-end" p={2}>
+                        <Button
+                          variant="contained"
+                          startIcon={<AddCircleOutlineIcon />}
+                          onClick={() => handleOpenModal("NewUser")}
+                          className={classes.btnAddUser}
+                          sx={{ width: { xs: "100%", md: "auto" } }}
+                        >
+                          Nuevo Barbero
+                        </Button>
+                      </Grid>
+                    </Card>
+                  </Grid>
+                  <Paper>
+                    <Grid>
+                      <ThemeProvider theme={getMuiTheme("#0f4c75")}>
+                        <MUIDataTable
+                          title={"Listado de barberos"}
+                          data={modifiedData}
+                          columns={columnsTableBarbers}
+                          options={optionsTable}
+                        />
+                      </ThemeProvider>
+                    </Grid>
+                  </Paper>
+                </Box>
+              </Card>
+            </Box>
+          </>
+        </MotionComponent>
+      </>
     </MainComponent>
   )
 }

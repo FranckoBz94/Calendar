@@ -112,7 +112,7 @@ const FormClient = (props: FormClientProps) => {
             {optionSelected === "Editar" ? "Datos Cliente" : "Nuevo Cliente"}
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} mt={3}>
               <Grid item md={6} xs={12}>
                 <TextField
                   id="nombre"
@@ -127,7 +127,6 @@ const FormClient = (props: FormClientProps) => {
                       : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -144,7 +143,6 @@ const FormClient = (props: FormClientProps) => {
                       : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -161,7 +159,6 @@ const FormClient = (props: FormClientProps) => {
                       : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -178,7 +175,6 @@ const FormClient = (props: FormClientProps) => {
                       : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -192,7 +188,6 @@ const FormClient = (props: FormClientProps) => {
                     String(errors.dni) !== "undefined" ? String(errors.dni) : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item xs={12}>

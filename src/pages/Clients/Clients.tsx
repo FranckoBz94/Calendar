@@ -169,6 +169,7 @@ const Clients = () => {
                           startIcon={<AddCircleOutlineIcon />}
                           onClick={() => handleOpenModal("NewClient")}
                           className={classes.btnAddClient}
+                          sx={{ width: { xs: "100%", md: "auto" } }}
                         >
                           Nuevo Cliente
                         </Button>
