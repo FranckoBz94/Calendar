@@ -178,7 +178,6 @@ const FormBarber = (props: FormBarberProps) => {
           <Typography component="h1" variant="h5">
             {optionSelected === "Editar" ? "Datos Barbero" : "Nuevo Barbero"}
           </Typography>
-
           <Box
             component="form"
             noValidate

@@ -33,6 +33,7 @@ interface FormCalendarProps {
 const FormAddTurn = (props: FormCalendarProps) => {
   const [selectedOptionClient, setSelectedOptionClient] = useState(null)
   const [value, setValue] = React.useState("1")
+  const [isLoading, setIsLoading] = React.useState(false)
   const {
     dataFormEvent,
     allClients,
@@ -66,6 +67,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
   }
 
   const registerEvent = async (data: any) => {
+    setIsLoading(true);
     const idService = selectedOptionService.id || undefined
     console.log("dataFormEvent.start", dataFormEvent.start)
     const endTime = DateContants.calculateEndTime(
@@ -110,6 +112,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
     } catch (err) {
       NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
     }
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -272,7 +275,8 @@ const FormAddTurn = (props: FormCalendarProps) => {
                         size="small"
                         type="submit"
                         className="btnSubmitOption2"
-                        // loading={isLoading}
+                        loadingPosition="start"
+                        loading={isLoading}
                         variant="contained"
                         sx={{ py: 2, px: 4 }}
                       >

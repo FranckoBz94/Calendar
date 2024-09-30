@@ -24,6 +24,12 @@ body {
 .btnSubmitOption2:hover {
   background: var(--secondary-color) !important;
   font-weight: 600;
+  color: #fff;
+}
+
+.MuiLoadingButton-loading{
+  border: none;
+  background: #166ca594 !important;
 }
 
 .data-table-extensions {
@@ -436,7 +442,7 @@ inputDisabled input[type="time"] {
   border-radius: 5px;
   box-shadow: 24;
   padding: 4;
-  max-height: 98vh; /* Limitar la altura del modal al 90% del viewport */
+  max-height: 96vh; /* Limitar la altura del modal al 90% del viewport */
   overflow-y: auto; /* Hacer scroll si el contenido es muy largo */
 }
 

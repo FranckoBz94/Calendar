@@ -48,7 +48,7 @@ const MotionModal: React.FC<ModalProps> = ({
           <Box className="modal_custom" >
             <IconButton
               onClick={handleClose}
-              sx={{ position: 'absolute', top: 8, right: 8, zIndex: 999 }}
+              sx={{ position: 'absolute', top: 20, right: 8, zIndex: 999 }}
             >
               <CloseIcon />
             </IconButton>
