@@ -250,23 +250,25 @@ const FormAddTurn = (props: FormCalendarProps) => {
                         menu: provided => ({
                           ...provided,
                           height: 'auto',
-                          maxHeight: '200px', // Mantener el scroll dentro del menú del Select
+                          maxHeight: '200px', // Limitar la altura para evitar overflow
                           overflowY: 'auto',
                           borderRadius: '5px',
                           border: "1px solid #ddd",
+                          zIndex: 9999, // Asegura que el menú esté por encima de otros elementos
                         }),
                         container: provided => ({
                           ...provided,
                           flex: 1,
                           marginBottom: 3,
                         }),
-                        // Puedes agregar un zIndex si es necesario para asegurar que el menú se renderice sobre otros componentes
-                        menuPortal: provided => ({
-                          ...provided,
-                          zIndex: 9999,
+                        menuPortal: base => ({
+                          ...base,
+                          zIndex: 1600, // Asegura que el menú esté por encima del modal
                         }),
                       }}
-                      menuPortalTarget={document.body}
+                      menuPosition="fixed" // Asegurar que el menú se posicione de forma fija
+                      menuPortalTarget={document.body}  // Renderiza el menú en el body
+                      menuPlacement="auto"
                     />
                   </Grid>
                   <Grid item xs={12}>
