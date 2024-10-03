@@ -37,10 +37,9 @@ const FormBarber = (props: FormBarberProps) => {
   const [isLoading, setIsLoading] = React.useState(false)
   const [profileImage, setProfileImage] = React.useState<File | null>(null)
   const { dataForm, optionSelected, setOpenModal, users } = props
-  const [selectedOptionUser, setSelectedOptionUser] = React.useState(dataForm.id_user)
+  const [selectedOptionUser, setSelectedOptionUser] = React.useState(dataForm.id_user || 0)
   const dispatch = useDispatch()
 
-  // console.log("dataForm", dataForm)
   const usersAvailable = users?.filter((user: any) => user.is_barber === 0)
 
 
@@ -60,30 +59,24 @@ const FormBarber = (props: FormBarberProps) => {
     console.log("id",)
     const isBarber: any = selectedOptionUser !== 0 ? 1 : 0
     try {
-      // const formData = new FormData();
-      // formData.append("firstName", data.firstName);
-      // formData.append("lastName", data.lastName);
-      // formData.append("email", data.email);
-      // formData.append("telefono", data.telefono);
-      // formData.append("is_active", data.is_active);
-      // formData.append("imageProfile", profileImage || data.imageProfile);
-      // formData.append("id_user", selectedOptionUser)
-      // formData.append("is_barber", isBarber)
       const formData = createFormData(data, profileImage, selectedOptionUser, isBarber);
-
       let rta;
       if (optionSelected === "Editar") {
         rta = await dispatch(updateBarber(formData, dataForm.id) as any);
       } else {
         rta = await dispatch(addBarber(formData) as any);
       }
-
+      console.log("rta", rta)
       if (rta.rta === 1) {
-        const dataUpdateState = {
-          isBarber
+        if (selectedOptionUser !== 0) {
+          const dataUpdateState = {
+            isBarber
+          }
+          console.log("selectedOptionUser", selectedOptionUser)
+          console.log("dataUpdateState", dataUpdateState)
+          const stateIsBarber = await dispatch(updateStateUser(selectedOptionUser, dataUpdateState) as any)
+          console.log("stateIsBarber", stateIsBarber)
         }
-        const stateIsBarber = await dispatch(updateStateUser(selectedOptionUser, dataUpdateState) as any)
-        console.log("stateIsBarber", stateIsBarber)
         NotifyHelper.notifySuccess(rta.message);
         setOpenModal(false);
       } else {

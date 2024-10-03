@@ -33,6 +33,7 @@ interface FormCalendarProps {
 const FormAddTurn = (props: FormCalendarProps) => {
   const [selectedOptionClient, setSelectedOptionClient] = useState(null)
   const [value, setValue] = React.useState("1")
+  const [isSavingTurn, setIsSavingTurn] = useState(false)
   const {
     dataFormEvent,
     allClients,
@@ -66,33 +67,26 @@ const FormAddTurn = (props: FormCalendarProps) => {
   }
 
   const registerEvent = async (data: any) => {
+    setIsSavingTurn(true)
     const idService = selectedOptionService.id || undefined
-    console.log("dataFormEvent.start", dataFormEvent.start)
     const endTime = DateContants.calculateEndTime(
       dataFormEvent.start,
       selectedOptionService.minutes_service
     )
-    console.log("dataFormEvent.start", dataFormEvent.start)
-    console.log("endTime", moment(moment(endTime).toDate()).format(
-      "YYYY-MM-DD HH:mm:ss"
-    ))
+    const formattedStartDate = moment(data.start).format("YYYY-MM-DD HH:mm:ss");
+    const formattedEndDate = moment(endTime).format("YYYY-MM-DD HH:mm:ss");
     const dataComplete = {
       ...data,
       end: moment(endTime).toDate(),
       idBarber: barberSelected.id,
       price: selectedOptionService.price,
       idService,
-      end_date: moment(moment(endTime).toDate()).format(
-        "YYYY-MM-DD HH:mm:ss"
-      ),
-      start_date: moment(moment(data.start).toDate()).format(
-        "YYYY-MM-DD HH:mm:ss"
-      )
+      end_date: formattedEndDate,
+      start_date: formattedStartDate,
     }
-    let rtaAddTurn
+    let rtaAddTurn: any
     let stillAvailable
     try {
-      console.log("dataComplete", dataComplete)
       stillAvailable = await dispatch(hoursAvailableOnSave(dataComplete) as any)
       if (stillAvailable.message.length === 0) {
         rtaAddTurn = await dispatch(addTurn(dataComplete) as any)
@@ -106,9 +100,12 @@ const FormAddTurn = (props: FormCalendarProps) => {
         }
       } else {
         NotifyHelper.notifyWarning("Ya hay un turno registrado en este horario.")
+        setIsSavingTurn(false)
       }
     } catch (err) {
       NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+    } finally {
+      setIsSavingTurn(false)
     }
   }
 
@@ -253,17 +250,23 @@ const FormAddTurn = (props: FormCalendarProps) => {
                         menu: provided => ({
                           ...provided,
                           height: 'auto',
-                          maxHeight: '200px', // Ajusta esta altura según tus necesidades
+                          maxHeight: '200px', // Mantener el scroll dentro del menú del Select
                           overflowY: 'auto',
                           borderRadius: '5px',
-                          border: "1px solid #ddd"
+                          border: "1px solid #ddd",
                         }),
                         container: provided => ({
                           ...provided,
                           flex: 1,
                           marginBottom: 3,
                         }),
+                        // Puedes agregar un zIndex si es necesario para asegurar que el menú se renderice sobre otros componentes
+                        menuPortal: provided => ({
+                          ...provided,
+                          zIndex: 9999,
+                        }),
                       }}
+                      menuPortalTarget={document.body}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -272,11 +275,12 @@ const FormAddTurn = (props: FormCalendarProps) => {
                         size="small"
                         type="submit"
                         className="btnSubmitOption2"
-                        // loading={isLoading}
+                        loading={isSavingTurn}
+                        disabled={isSavingTurn}
                         variant="contained"
                         sx={{ py: 2, px: 4 }}
                       >
-                        <span>Guardar</span>
+                        <span style={{ color: "#fff" }}>{isSavingTurn ? "Guardando" : "Guardar"}</span>
                       </LoadingButton>
                     </Box>
                   </Grid>

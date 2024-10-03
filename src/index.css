@@ -3,6 +3,7 @@
   --secondary-color: #0f4c75;
   --option1-color: #3282b8;
   --option2-color: #bbe1fa;
+  --button-disabled: #43466a;
 }
 
 body {
@@ -15,6 +16,10 @@ body {
   background: var(--primary-color) !important;
   border: 1px solid var(--option1-color) !important;
   border-radius: 35px !important;
+}
+
+.btnSubmitOption2:disabled{
+  background: var(--button-disabled) !important;
 }
 
 .radius-35 {

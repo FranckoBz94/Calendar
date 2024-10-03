@@ -53,8 +53,10 @@ const FormUser = (props: FormUserProps) => {
     formData.append("email", data.email)
     formData.append("is_admin", data.is_admin)
     if (profileImage) {
+      console.log("imnagen", profileImage)
       formData.append("imageProfile", profileImage); // Enviamos la nueva imagen
     } else {
+      console.log("data.imageProfile", data.imageProfile)
       formData.append("imageProfile", data.imageProfile); // Enviamos la imagen existente
     } let rtaUpdateUser
     if (optionSelected === "Editar") {
@@ -275,11 +277,7 @@ const FormUser = (props: FormUserProps) => {
                           onChange={handleChange}
                           value={values.telefono}
                           error={Boolean(errors.telefono)}
-                          helperText={
-                            String(errors.email) !== "undefined"
-                              ? String(errors.email)
-                              : ""
-                          }
+
                         />
                       </Grid>
                       <Grid item xs={12}>

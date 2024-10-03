@@ -196,7 +196,7 @@ const FormClient = (props: FormClientProps) => {
                     size="small"
                     type="submit"
                     className="btnSubmitOption2"
-                    loading={isLoading}
+                    loading={!isLoading}
                     variant="contained"
                     sx={{ mt: 5, mb: 5, py: 2, px: 4 }}
                   >
