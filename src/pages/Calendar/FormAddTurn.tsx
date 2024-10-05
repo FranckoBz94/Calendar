@@ -280,7 +280,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
                         loading={isSavingTurn}
                         disabled={isSavingTurn}
                         variant="contained"
-                        sx={{ py: 2, px: 4 }}
+                        sx={{ py: 2, px: 4, width: { md: "30%", xs: "100%" } }}
                       >
                         <span style={{ color: "#fff" }}>{isSavingTurn ? "Guardando" : "Guardar"}</span>
                       </LoadingButton>

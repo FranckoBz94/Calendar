@@ -262,10 +262,14 @@ const Calendar = () => {
     setLoadBarbers(false)
     if (Array.isArray(barbers) && barbers.length > 0) {
       let activeBarbers: any
+      console.log("user", user)
+      console.log("barbers", barbers)
       if (user?.is_admin === 1) {
         activeBarbers = barbers.filter((barber: Barber) => barber.is_active === 1);
       } else {
-        activeBarbers = barbers.filter((barber: Barber) => parseInt(barber.id) === user?.id_barbero && barber?.is_active === 1);
+        activeBarbers = barbers.filter((barber: Barber) => {
+          return user?.id && barber.id_user === parseInt(user.id) && barber.is_active === 1;
+        });
       }
       setLoadBarbers(true)
       setBarbersActive(activeBarbers);

@@ -10,9 +10,9 @@ import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { motion } from "framer-motion"
-import { Alert, Card, CardContent, Checkbox, FormControlLabel, Paper, Switch } from "@mui/material"
+import { Alert, Card, CardContent, Checkbox, FormControlLabel, Paper } from "@mui/material"
 import { useDispatch } from "react-redux"
-import { createFormData, NotifyHelper, Option, SingleValue, switchStyles } from "contants"
+import { createFormData, NotifyHelper, Option, SingleValue } from "contants"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { addBarber, updateBarber } from "redux/actions/barbersAction"
 import Select from "react-select"
@@ -56,7 +56,6 @@ const FormBarber = (props: FormBarberProps) => {
 
   const registerBarber = async (data: any) => {
     setIsLoading(true);
-    console.log("id",)
     const isBarber: any = selectedOptionUser !== 0 ? 1 : 0
     try {
       const formData = createFormData(data, profileImage, selectedOptionUser, isBarber);
@@ -281,19 +280,13 @@ const FormBarber = (props: FormBarberProps) => {
                         type="telefono"
                         onChange={handleChange}
                         value={values.telefono}
-                        error={Boolean(errors.telefono)}
-                        helperText={
-                          String(errors.email) !== "undefined"
-                            ? String(errors.email)
-                            : ""
-                        }
                       />
                     </Grid>
                     <Grid item xs={12} m={0}>
                       <Card
                         variant="outlined"
                         style={{
-                          backgroundColor: values.is_active ? "rgb(41 139 53)" : "rgb(255 128 128)",
+                          backgroundColor: values.is_active ? "#376c3e" : "rgb(255 128 128)",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
@@ -317,7 +310,7 @@ const FormBarber = (props: FormBarberProps) => {
                           }
                           label={values.is_active ? "Barbero activo" : "Barbero inactivo"}
                           labelPlacement="start"
-                          style={{ flexGrow: 1 }}
+                          style={{ flexGrow: 1, marginBottom: 0, marginRight: 6 }}
                         />
                       </Card>
                     </Grid>
@@ -343,27 +336,7 @@ const FormBarber = (props: FormBarberProps) => {
                     ) : (
                       <CardContent>
                         <Box display="flex" justifyContent="space-between">
-                          <small style={{ marginLeft: "15px", marginBottom: "-4px", color: "rgb(158 158 158)" }}>Usuario asociado</small>
-                          <FormControlLabel
-                            control={
-                              <Switch checked={Boolean(existUser)} onChange={handleChange} name="gilad"
-                                sx={{
-                                  ...switchStyles,
-                                  '& .MuiSwitch-track': {
-                                    backgroundColor: existUser ? 'green !important' : 'red !important',
-                                  },
-                                }} />
-                            }
-                            disabled
-                            sx={{
-                              color: existUser ? 'green' : 'red',
-                              '& .MuiFormControlLabel-label': {
-                                color: existUser ? 'green !important' : 'red !important',
-                              },
-                            }}
-                            labelPlacement="start"
-                            label={existUser ? "Tiene usuario asignado" : "No tiene usuario asignado"}
-                          />
+                          <small style={{ marginLeft: "15px", marginBottom: "5px", color: "rgb(158 158 158)" }}>Usuario asociado</small>
                         </Box>
 
                         <Select

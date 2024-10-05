@@ -35,22 +35,20 @@ const SelectDateHoursNew: React.FC<SelectServiceStepProps> = ({
 
   const calendarKey = dateFrom ? moment(dateFrom).format('YYYY-MM-DD') : 'calendar';
 
-  const isAvailableDate = (date: string) => {
-    return datesAvailableTurn.some(day => day.date === date && day.availability.length > 0);
-  };
-
   const tileClassName = ({ date }: { date: Date }) => {
     const formattedDate = moment(date).format('YYYY-MM-DD');
     const today = moment().startOf('day').format('YYYY-MM-DD');
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + 15);  // Sumar 15 días desde el día actual
-
-    const formattedDateEnd = moment(endDate).format('YYYY-MM-DD');
-    if (formattedDate < today || formattedDate > formattedDateEnd) {
+    const endDate = moment().add(15, 'days').format('YYYY-MM-DD');
+    if (formattedDate < today || formattedDate > endDate) {
       return '';
     }
-    return isAvailableDate(formattedDate) ? 'available-date' : 'no-available-date';
+    const foundDate = datesAvailableTurn.find(day => day.date === formattedDate);
+    if (!foundDate) {
+      return 'pending-date';
+    }
+    return foundDate.availability.length > 0 ? 'available-date' : 'no-available-date';
   };
+
 
   return (
     <Box>

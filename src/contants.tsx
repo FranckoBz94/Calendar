@@ -321,6 +321,7 @@ export interface Barber {
   is_active: number;
   is_admin: number;
   id_barbero: number;
+  id_user: number;
 }
 
 interface TabPanelProps {

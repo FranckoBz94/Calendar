@@ -61,72 +61,155 @@ const ModalContentNew = (props: ModalProps) => {
   const selectedDataService = (data: any) => {
     setDataService(prev => ({ ...prev, ...data }));
   };
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 
   const handleChangeSelectService = async (e: any) => {
-    const dataTurn = e
+    const dataTurn = e;
+
     if (dataTurn !== null) {
-      setLoadingDatesCalendar(true)
+      // setLoadingDatesCalendar(true);
       setSelectedService(dataTurn);
+
+      const day = dayjs().tz("America/Argentina/Buenos_Aires").format('YYYY-MM-DD');
       const formattedDate = dayjs(dateFrom).format('YYYY-MM-DD');
-      const day = dayjs(new Date).tz("America/Argentina/Buenos_Aires").format('YYYY-MM-DD')
-      selectedDataService({ idService: dataTurn.id, minutes_services: dataTurn.minutes_service, start_date: formattedDate });
-      setDateFrom(day)
-      setAllTimes([])
 
-      const fetchAvailabilityForDates = async (dates: string[]) => {
-        const availableDays: any[] = [];
-        for (const date of dates) {
-          const formattedDay = dayjs(date).format('YYYY-MM-DD');
-          const data = {
-            idBarber: barberId,
-            start_date: date,
-            minutes_services: parseInt(dataTurn.minutes_service, 10),
-            time_turn: dataTurn.time_turn
-          };
+      selectedDataService({
+        idService: dataTurn.id,
+        minutes_services: dataTurn.minutes_service,
+        start_date: formattedDate
+      });
 
-          try {
-            const response = await dispatch(turnsDayAvailable(data) as any);
-            const dataResponse = response.data;
-            if (dataResponse.length > 0) {
-              setErrorGetHours(false)
-              const formattedTimes = dataResponse.map((slot: any) => {
-                return {
-                  start: dayjs(slot.slot_start).format('HH:mm'),
-                  end: dayjs(slot.slot_end).format('HH:mm'),
-                };
-              });
+      setDateFrom(day);
+      setAllTimes([]);
+      setDatesAvailableTurn([]);
 
-              availableDays.push({
-                date: formattedDay,
-                availability: formattedTimes
-              });
-            } else {
-              availableDays.push({
-                date: formattedDay,
-                availability: []
-              });
+      for (const date of dates) {
+        const formattedDay = dayjs(date).format('YYYY-MM-DD');
+        const requestData = {
+          idBarber: barberId,
+          start_date: date,
+          minutes_services: parseInt(dataTurn.minutes_service, 10),
+          time_turn: dataTurn.time_turn
+        };
+
+        try {
+          await delay(200);
+          const response = await dispatch(turnsDayAvailable(requestData) as any);
+          const dataResponse = response.data;
+
+          let availability: any = [];
+
+          if (dataResponse.length > 0) {
+            availability = dataResponse.map((slot: any) => ({
+              start: dayjs(slot.slot_start).format('HH:mm'),
+              end: dayjs(slot.slot_end).format('HH:mm'),
+            }));
+            setErrorGetHours(false);
+          } else {
+            setErrorGetHours(true);
+          }
+
+          // Aquí actualizamos progresivamente las fechas disponibles en el estado
+          setDatesAvailableTurn(prevDays => [
+            ...prevDays,
+            {
+              date: formattedDay,
+              availability
             }
-          } catch (error) {
-            console.error(`Error al obtener datos para ${formattedDay}:`, error);
-            setErrorGetHours(true)
-            availableDays.push({
+          ]);
+
+        } catch (error) {
+          console.error(`Error al obtener datos para ${formattedDay}:`, error);
+          setErrorGetHours(true);
+
+          // Aún en caso de error, agregamos la fecha sin disponibilidad
+          setDatesAvailableTurn(prevDays => [
+            ...prevDays,
+            {
               date: formattedDay,
               availability: []
-            });
-          }
+            }
+          ]);
         }
-        console.log('Available Days:', availableDays);
-        setDatesAvailableTurn(availableDays)
       }
-      await fetchAvailabilityForDates(dates);
-      setLoadingDatesCalendar(false)
+
+      setLoadingDatesCalendar(false);
+
     } else {
       setSelectedService(null);
-      setAllTimes([])
+      setAllTimes([]);
       selectedDataService({ idService: 0, time_turn: "" });
-      setSelection(false)
+      setSelection(false);
     }
-  }
+  };
+
+
+  // const handleChangeSelectService = async (e: any) => {
+  //   const dataTurn = e
+  //   if (dataTurn !== null) {
+  //     setLoadingDatesCalendar(true)
+  //     setSelectedService(dataTurn);
+  //     const formattedDate = dayjs(dateFrom).format('YYYY-MM-DD');
+  //     const day = dayjs(new Date).tz("America/Argentina/Buenos_Aires").format('YYYY-MM-DD')
+  //     selectedDataService({ idService: dataTurn.id, minutes_services: dataTurn.minutes_service, start_date: formattedDate });
+  //     setDateFrom(day)
+  //     setAllTimes([])
+
+  //     const fetchAvailabilityForDates = async (dates: string[]) => {
+  //       const availableDays: any[] = [];
+  //       for (const date of dates) {
+  //         const formattedDay = dayjs(date).format('YYYY-MM-DD');
+  //         const data = {
+  //           idBarber: barberId,
+  //           start_date: date,
+  //           minutes_services: parseInt(dataTurn.minutes_service, 10),
+  //           time_turn: dataTurn.time_turn
+  //         };
+
+  //         try {
+  //           const response = await dispatch(turnsDayAvailable(data) as any);
+  //           const dataResponse = response.data;
+  //           if (dataResponse.length > 0) {
+  //             setErrorGetHours(false)
+  //             const formattedTimes = dataResponse.map((slot: any) => {
+  //               return {
+  //                 start: dayjs(slot.slot_start).format('HH:mm'),
+  //                 end: dayjs(slot.slot_end).format('HH:mm'),
+  //               };
+  //             });
+
+  //             availableDays.push({
+  //               date: formattedDay,
+  //               availability: formattedTimes
+  //             });
+  //           } else {
+  //             availableDays.push({
+  //               date: formattedDay,
+  //               availability: []
+  //             });
+  //           }
+  //         } catch (error) {
+  //           console.error(`Error al obtener datos para ${formattedDay}:`, error);
+  //           setErrorGetHours(true)
+  //           availableDays.push({
+  //             date: formattedDay,
+  //             availability: []
+  //           });
+  //         }
+  //       }
+  //       console.log('Available Days:', availableDays);
+  //       setDatesAvailableTurn(availableDays)
+  //     }
+  //     await fetchAvailabilityForDates(dates);
+  //     setLoadingDatesCalendar(false)
+  //   } else {
+  //     setSelectedService(null);
+  //     setAllTimes([])
+  //     selectedDataService({ idService: 0, time_turn: "" });
+  //     setSelection(false)
+  //   }
+  // }
 
   const handleClick = useCallback((id: string | number | null, dataBarber: {}) => {
     selectedDataService({ idService: 0 });

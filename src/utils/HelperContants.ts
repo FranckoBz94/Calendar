@@ -27,6 +27,31 @@ export class HelperContants {
     return { id, rtaDelete }
   }
 
+  static async SwalDeleteService(e: any) {
+    // eslint-disable-next-line camelcase
+    const { id, name_service:nameService } = e
+
+    let rtaDelete: boolean = false
+    await Swal.fire({
+      cancelButtonColor: "#3085d6",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Eliminar",
+      icon: "error",
+      reverseButtons: true,
+      showCancelButton: true,
+      text: "El usuario se borrara de su sistema.",
+      title: `<h5 style="margin:0">¿Está seguro que desea eliminar a ${nameService}?</h5>`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        rtaDelete = true
+      } else {
+        rtaDelete = false
+      }
+    })
+    return { id, rtaDelete }
+  }
+
   static async SwalDeleteTurn(turn: any) {
     // eslint-disable-next-line camelcase
     const { idTurn } = turn

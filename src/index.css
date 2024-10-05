@@ -203,6 +203,9 @@ inputDisabled input[type="time"] {
     width: calc(100% - 260px);
     padding: 5px;
   }
+  .btnSubmitOption2{
+    width: 100% !important;
+  }
 }
 
 .react-datepicker__time-container {

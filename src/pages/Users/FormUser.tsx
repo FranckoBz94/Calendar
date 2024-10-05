@@ -165,7 +165,7 @@ const FormUser = (props: FormUserProps) => {
             <motion.div>
               <Grid container spacing={2} alignItems="stretch">
                 <Grid item md={4} xs={12} style={{ display: 'flex' }}>
-                  <Paper elevation={5} style={{ padding: "20px", textAlign: "center" }}
+                  <Paper elevation={5} style={{ padding: "20px", textAlign: "center", width: "100%" }}
                   >
                     <label htmlFor="file" style={{ cursor: "pointer", display: "flex", height: "100%" }}>
                       <Box

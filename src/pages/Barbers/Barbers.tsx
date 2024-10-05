@@ -25,7 +25,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CloseIcon from '@mui/icons-material/Close';
 import MainComponent from "pages/AppBar/MainComponent"
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import { getAllUsers } from "redux/actions/usersAction"
+import { getAllUsers, updateStateUser } from "redux/actions/usersAction"
 import { useUser } from "components/UserProvider"
 
 const Barbers = () => {
@@ -51,7 +51,7 @@ const Barbers = () => {
   }
 
   const dataRow = async (option: string, e: any) => {
-    console.log(e)
+    console.log(e[8])
     const values = {
       id: e[0],
       imagen: e[1],
@@ -63,6 +63,7 @@ const Barbers = () => {
       is_active: e[7],
       id_user: e[8],
     };
+    console.log("values.id_user", values.id_user)
     if (option === "Editar") {
       handleOpenModal("Editar")
       setDataSelected(values)
@@ -71,7 +72,22 @@ const Barbers = () => {
       if (rtaDelete) {
         const rtaRemoveBarber = await dispatch(removeBarber(id) as any)
         if (rtaRemoveBarber.rta === 1) {
-          NotifyHelper.notifySuccess(`Barbero eliminado correctamente.`)
+          let successMessage = "Barbero eliminado correctamente.";
+
+          if (values.id_user !== 0) {
+            const stateIsBarber = await dispatch(updateStateUser(values.id_user, 0) as any);
+            console.log("stateIsBarber", stateIsBarber);
+
+            if (stateIsBarber.rta === 1) {
+              successMessage += " Usuario desvinculado correctamente.";
+            } else {
+              NotifyHelper.notifyError(`Error al desvincular al usuario.`);
+              handleCloseModal();
+              return;
+            }
+          }
+
+          NotifyHelper.notifySuccess(successMessage);
         } else {
           NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
         }
