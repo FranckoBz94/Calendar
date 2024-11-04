@@ -1,5 +1,5 @@
 import axios from "axios"
-import { hoursTypes } from "../contants/action-types"
+import { hoursTypes, daysTypes } from "../contants/action-types"
 
 // const ruta = "http://localhost:4000/api/"
 const ruta = process.env.REACT_APP_URL_API + "/"
@@ -14,6 +14,19 @@ export const getHours = (hours) => {
 export const setUpdatHours = () => {
   return {
     type: hoursTypes.UPDATE_HOURS
+  }
+}
+
+export const getDays = (days) => {
+  return {
+    type: daysTypes.GET_DAYS,
+    payload: days
+  }
+}
+
+export const setUpdatDays = () => {
+  return {
+    type: daysTypes.UPDATE_DAYS
   }
 }
 
@@ -32,11 +45,39 @@ export const getAllHours = () => {
   }
 }
 
+export const getAllDays = () => {
+  return function (dispatch) {
+    try {
+      axios
+        .get(ruta + "hours/days")
+        .then((response) => {
+          dispatch(getDays(response.data))
+        })
+        .catch((error) => console.error(error))
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
+
 export const updateHours = (data, id) => async (dispatch) => {
   try {
     const response = await axios.put(ruta + "hours/" + id, data)
     dispatch(setUpdatHours())
     dispatch(getAllHours())
+    return response.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export const updateDataDays = (data) => async (dispatch) => {
+  try {
+    console.log("da", data)
+    const response = await axios.post(ruta + "hours/update-days", data)
+    dispatch(setUpdatDays())
+    dispatch(getAllDays())
+    console.log("response", response)
     return response.data
   } catch (err) {
     console.log(err)

@@ -46,8 +46,8 @@ const Staff = () => {
           {barbers && barbers.map((barber: any) => {
             return (
               <div className="col-sm-6 col-lg-4" key={barber.id}>
-                <div className="single_blog_item">
-                  <div className="single_blog_img">
+                <div className="single_blog_item h-100">
+                  <div className="single_blog_img d-flex justify-content-center" >
                     <img src={`${process.env.REACT_APP_URL_BASE}${barber.imagen}`} alt="artist" style={{ borderRadius: "5px" }} />
                   </div>
                   <div className="single_text">

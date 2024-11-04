@@ -122,6 +122,41 @@ export const loginUser = (dataUser) => async () => {
   }
 }
 
+export const forgotPassword = (email) => async () => {
+  console.log(email)
+  try {
+    const response = await axios.post(ruta + "users/forgot-password", email)
+    if (response.status === 200) {
+      return response.data // Retorna los datos en caso de éxito
+    } else {
+      return {
+        success: false,
+        message: response.data.message || "Error desconocido."
+      }
+    }
+  } catch (err) {
+    // Captura errores de la solicitud (no códigos de estado)
+    return {
+      success: false,
+      message:
+        "Ocurrió un error: " +
+        (err.response ? err.response.data.message : err.message)
+    }
+  }
+}
+
+export const resetPassword = (dataPassword) => async () => {
+  try {
+    const response = await axios.post(
+      ruta + "users/reset-password",
+      dataPassword
+    )
+    return response.data
+  } catch (err) {
+    return { rta: -1, message: "Ocurrio un errorrr." + err }
+  }
+}
+
 export const dataGraphics =
   (idBarber, formattedStartDate, formattedEndDate) => async () => {
     try {

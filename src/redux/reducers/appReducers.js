@@ -4,17 +4,19 @@ import {
   servicesTypes,
   barbersTypes,
   turnsTypes,
-  hoursTypes
+  hoursTypes,
+  daysTypes
 } from "../contants/action-types"
 
 const initialState = {
   users: [],
-  dataGraphics:[],
+  dataGraphics: [],
   clients: [],
   services: [],
   barbers: [],
   turns: [],
   hours: [],
+  days: [],
   isLoadingUsers: false
 }
 
@@ -108,6 +110,17 @@ export const hoursReducer = (state = initialState.hours, { type, payload }) => {
       return { ...state, hours: payload }
     case hoursTypes.UPDATE_HOURS:
       return { ...state, hours: payload }
+    default:
+      return state
+  }
+}
+
+export const daysReducer = (state = initialState.days, { type, payload }) => {
+  switch (type) {
+    case daysTypes.GET_DAYS:
+      return { ...state, days: payload }
+    case daysTypes.UPDATE_DAYS:
+      return { ...state, days: payload }
     default:
       return state
   }

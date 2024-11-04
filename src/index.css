@@ -476,6 +476,63 @@ inputDisabled input[type="time"] {
     height: 35px !important; /* Ajusta esta altura según tus necesidades */
   }
 }
+.css-1bdad8q-MuiResponsiveChart-container {
+  width: auto !important;
+}
 
-
-/* react-calendar__tile react-calendar__tile--now react-calendar__month-view__days__day react-calendar__tile react-calendar__tile--now react-calendar__tile--active react-calendar__tile--range react-calendar__tile--rangeStart react-calendar__tile--rangeEnd react-calendar__tile--rangeBothEnds react-calendar__month-view__days__day */
+.toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+.toggle__switch {
+  width: 100px; /* Ajusta el ancho según el texto */
+  height: 34px;
+  background-color: #ccc;
+  border-radius: 34px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Espaciado entre texto y círculo */
+  padding: 0 10px; /* Espacio interno */
+  transition: background-color 0.2s;
+}
+.toggle__circle {
+  width: 26px;
+  height: 26px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: transform 0.2s;
+}
+.toggle__switch.on {
+  background-color: #4a4c6d;
+}
+.toggle__switch.on .toggle__circle {
+  transform: translateX(66px); /* Mueve el círculo cuando está "on" */
+}
+.toggle__switch.off {
+  background-color: #b95151;
+}
+.toggle__switch.off .toggle__circle {
+  transform: translateX(0);
+}
+.toggle__text {
+  color: white;
+  font-weight: bold;
+  user-select: none; 
+}
+.toggle__switch.on .toggle__text{
+  margin-left: 0px;
+}
+.toggle__switch.off .toggle__text{
+  margin-left: 25px;
+}
+.unabailable-day{
+  background-color: #f0f0f0 !important;
+  color:"#adb8d2";
+  pointer-events: none;
+}

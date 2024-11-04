@@ -91,6 +91,9 @@ const FormAddTurn = (props: FormCalendarProps) => {
       if (stillAvailable.message.length === 0) {
         rtaAddTurn = await dispatch(addTurn(dataComplete) as any)
         if (rtaAddTurn.rta === 1) {
+          const requestData = { dataComplete, selectedOptionService, barberSelected }
+          // const response = await dispatch(sendMail(requestData) as any);
+          console.log("res mail", requestData)
           dispatch(getAllTurns(barberSelected.id) as any)
           NotifyHelper.notifySuccess(rtaAddTurn.message)
           socket.emit("turn", barberSelected.id);

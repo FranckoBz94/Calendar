@@ -189,7 +189,7 @@ const FormHoursCalendar = (props: FormHoursProps) => {
                     type="submit"
                     className="btnSubmitOption2"
                     variant="contained"
-                    sx={{ mt: 5, mb: 5, py: 2, px: 4 }}
+                    sx={{ mt: 5, mb: 5, py: 2, px: 4, w: 100 }}
                   >
                     <span>Guardar</span>
                   </LoadingButton>

@@ -427,3 +427,9 @@ export const combineAndFormatToISO = (startDate: string, timeTurn: string): stri
   const dateObject = new Date(combinedDateTime);
   return dateObject.toISOString();
 };
+
+export interface Day {
+  id: number;
+  day_of_week: string;
+  is_open: boolean;
+}

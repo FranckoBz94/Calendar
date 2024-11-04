@@ -48,14 +48,20 @@ export class DateContants {
     }
   }
 
-  static generateDates = (startDate: Date, endDate: Date): string[] => {
+  static generateDates = (startDate: Date, endDate: Date, hiddenDays: number[]): string[] => {
     const dates: string[] = [];
     let currentDate: Date = new Date(startDate);
 
     while (currentDate <= endDate) {
-      dates.push(moment(currentDate).format('YYYY-MM-DD'));
+      const dayIndex = currentDate.getDay(); 
+        if (!hiddenDays.includes(dayIndex)) {
+        dates.push(moment(currentDate).format('YYYY-MM-DD'));
+      }
       currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
     }
+    
     return dates;
   };
+  
+  
 }

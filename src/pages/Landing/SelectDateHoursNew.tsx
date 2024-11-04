@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Box, Grid, Typography } from '@mui/material';
 import Calendar from 'react-calendar';
 import { DemoItem } from "@mui/x-date-pickers/internals/demo";
@@ -6,6 +6,9 @@ import ListHoursAvailability from "./ListHoursAvailability";
 import { Label } from "contants";
 import moment from 'moment';
 import CalendarSkeleton from './AllSkeleton/CalendarSkeleton';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import store from 'redux/store';
+import { getAllDays } from 'redux/actions/hoursAction';
 
 interface SelectServiceStepProps {
   allTimes: any[];
@@ -32,13 +35,38 @@ const SelectDateHoursNew: React.FC<SelectServiceStepProps> = ({
   loadingDatesCalendar,
   errorGetHours
 }) => {
+  type RootState = ReturnType<typeof store.getState>
+  const storeComplete: any = useSelector((state: RootState) => state)
+  const { days } = useSelector((state: RootState) => storeComplete.days, shallowEqual);
+  const dispatch = useDispatch()
+
+  const [hiddenDays, setHiddenDays] = useState<number[]>([]);
 
   const calendarKey = dateFrom ? moment(dateFrom).format('YYYY-MM-DD') : 'calendar';
+  useEffect(() => {
+    if (days && days.length > 0) {
+      const calculatedHiddenDays = days.reduce((acc: number[], day: any, index: number) => {
+        if (!day.is_open) {
+          acc.push(day.id); // Usa el índice para los días de la semana
+        }
+        return acc;
+      }, []);
+      setHiddenDays(calculatedHiddenDays);
+    }
+  }, [days]);
+
+  useEffect(() => {
+    dispatch(getAllDays() as any)
+  }, [])
 
   const tileClassName = ({ date }: { date: Date }) => {
     const formattedDate = moment(date).format('YYYY-MM-DD');
     const today = moment().startOf('day').format('YYYY-MM-DD');
-    const endDate = moment().add(15, 'days').format('YYYY-MM-DD');
+    const endDate = moment().add(19, 'days').format('YYYY-MM-DD');
+    const dayIndex = date.getDay();
+    if (hiddenDays.includes(dayIndex)) {
+      return 'unabailable-day';
+    }
     if (formattedDate < today || formattedDate > endDate) {
       return '';
     }
@@ -81,13 +109,19 @@ const SelectDateHoursNew: React.FC<SelectServiceStepProps> = ({
                     Sin turnos disponibles
                   </Typography>
                 </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                  <Box sx={{ backgroundColor: '#f0f0f0', border: "1px solid #8f8f8f", color: 'white', width: 15, height: 15 }} />
+                  <Typography variant="body1" sx={{ ml: 1 }}>
+                    Dia cerrado
+                  </Typography>
+                </Box>
               </Box>
             </Box>
           </DemoItem>
         </Grid>
         {selection && (
           <Grid item xs={12} md={6}>
-            <DemoItem label={<Label componentName={availableTurns ? "Seleccione una horario" : ""} />}>
+            <DemoItem label={<Label componentName={availableTurns ? "Seleccione un horario" : ""} />}>
               {errorGetHours ? (
                 <Alert severity="warning">
                   Ocurrio un error al obtener los horarios disponibles

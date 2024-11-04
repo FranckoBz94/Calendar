@@ -118,3 +118,12 @@ export const turnsDayAvailable = (data) => async () => {
     console.log(err)
   }
 }
+
+export const sendMail = (data) => async () => {
+  try {
+    const response = await axios.post(ruta + "turns/sendEmailForClient", data)
+    return response.data
+  } catch (err) {
+    console.log(err)
+  }
+}

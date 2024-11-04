@@ -191,7 +191,7 @@ const CompleteFormClient = (props: propsForm) => {
                               />
                             </Grid>
                             <Grid item xs={12} md={4}>
-                              <Button variant='contained' sx={{ height: "100%" }} fullWidth onClick={searchClient}>Buscar</Button>
+                              <Button variant='contained' sx={{ height: "100%" }} className="btn_next_button" fullWidth onClick={searchClient}>Buscar</Button>
                             </Grid>
                           </Grid>
                           {showWarning && !existClient && <Stack sx={{ width: '100%', border: "1px solid #edcda2", borderRadius: "4px" }} spacing={2} mt={1}>

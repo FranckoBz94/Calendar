@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect } from "react"
 import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
-import { Alert, Avatar, Box, Button, Card, InputLabel, Stack, Tooltip, Typography } from "@mui/material"
+import { Alert, Avatar, Box, Button, Card, CardContent, Container, InputLabel, Stack, Tooltip, Typography } from "@mui/material"
 import esLocale from "@fullcalendar/core/locales/es"
-import { Tabs, Tab, Content } from "../../components/Tabs/tabs"
+import { Tabs, TabsModal, Tab, Content, TabModal } from "../../components/Tabs/tabs"
 import { useDispatch, useSelector } from "react-redux"
 import { getAllBarbers } from "redux/actions/barbersAction"
 import store from "redux/store"
@@ -19,10 +19,10 @@ import { Barber, NotifyHelper, newArrayServices, socket, transformarTurno } from
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"
 import moment from "moment"
 import FormHoursCalendar from "./FormHoursCalendar"
-import { getAllHours } from "redux/actions/hoursAction"
+import { getAllDays, getAllHours } from "redux/actions/hoursAction"
 import SkeletonCalendar from "./SkeletonCalendar"
 import MainComponent from "pages/AppBar/MainComponent"
-
+import DaySwitch from "./DaySwitch"
 
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar | null>(null)
@@ -44,10 +44,14 @@ const Calendar = () => {
   const [loadBarbers, setLoadBarbers] = useState(false)
   const [events, setEvents] = useState([{}])
   const [active, setActive] = useState<string | null>(null);
+  const [value, setValue] = useState(1);
+  const [hiddenDays, setHiddenDays] = useState<number[]>([]);
 
   const dispatch = useDispatch()
-  const getHoursCalendar = async () => {
+
+  const getDataCalendar = async () => {
     dispatch(getAllHours() as any)
+    dispatch(getAllDays() as any)
   }
 
   const handleCloseModal = () => {
@@ -65,11 +69,13 @@ const Calendar = () => {
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
   const { hours } = useSelector((state: RootState) => storeComplete.hours)
+  const { days } = useSelector((state: RootState) => storeComplete.days)
   const { barbers } = useSelector((state: RootState) => storeComplete.barbers)
   const { turns } = useSelector((state: RootState) => storeComplete.turns)
   const { clients } = useSelector((state: RootState) => storeComplete.clients)
   const { services } = useSelector((state: RootState) => storeComplete.services)
   const [allServices, setAllServices] = useState([])
+
   useEffect(() => {
     setOpeningTime(hours?.min_hour_calendar)
     setClosingTime(hours?.max_hour_calendar)
@@ -77,6 +83,20 @@ const Calendar = () => {
     localStorage.setItem("newOpeningTime", hours?.min_hour_calendar)
     localStorage.setItem("newClosingTime", hours?.max_hour_calendar)
   }, [hours])
+
+  useEffect(() => {
+    if (days && days.length > 0) {
+      const calculatedHiddenDays = days.reduce((acc: number[], day: any, index: number) => {
+        if (!day.is_open) {
+          console.log("day c", day)
+          acc.push(day.id);
+        }
+        return acc;
+      }, []);
+      console.log("calculatedHiddenDays", calculatedHiddenDays)
+      setHiddenDays(calculatedHiddenDays);
+    }
+  }, [days]);
 
   useEffect(() => {
     socket.on("turn", (barberId) => {
@@ -253,7 +273,7 @@ const Calendar = () => {
   };
 
   useEffect(() => {
-    getHoursCalendar()
+    getDataCalendar()
   }, [])
 
 
@@ -276,7 +296,7 @@ const Calendar = () => {
       selectBarber(activeBarbers);
       console.log("user", user)
     }
-  }, [barbers]);
+  }, [barbers, user]);
 
   const fetchTurns = async () => {
     try {
@@ -326,6 +346,7 @@ const Calendar = () => {
   React.useEffect(() => {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
+      console.log("entra", userFromLocalStorage)
       setUser(JSON.parse(userFromLocalStorage));
     }
   }, []);
@@ -345,14 +366,21 @@ const Calendar = () => {
                       onClick={() => handleClick(barber)}
                       active={active === barber.id}
                       id={barber.id}
+                      style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
+                      sx={{ padding: "10px" }}
                     >
-                      <Box display="flex" alignItems="center" justifyContent="center" sx={{ padding: "10px" }}>
+                      <Box display="flex" alignItems="center" justifyContent="center" sx={{
+                        p: { xs: 1, sm: 2, md: 2 }
+                      }}>
                         <Avatar
                           alt="Imagen"
                           src={`${process.env.REACT_APP_URL_BASE}${barber.imagen}`}
-                          sx={{ width: 30, height: 30, marginRight: "10px", objectFit: "cover" }}
+                          sx={{ width: 40, height: 40, marginRight: "10px", objectFit: "cover" }}
                         />
-                        <p style={{ margin: 0 }}>
+                        <p style={{
+                          margin: 0,
+                          ...(active === barber.id && { color: "#fff", fontWeight: "bold", fontSize: "1.2rem" })
+                        }}>
                           {barber.firstName} {barber.lastName}
                         </p>
                       </Box>
@@ -360,7 +388,7 @@ const Calendar = () => {
                   ))}
               </Tabs>
               <Content active>
-                <Card className="cardCalendar" variant="outlined">
+                <Card className="cardCalendar" variant="outlined" sx={{ border: "none" }}>
                   <Box sx={{ md: { p: 4 }, sm: { p: 3 } }}>
                     <Card
                       style={{
@@ -368,7 +396,10 @@ const Calendar = () => {
                         padding: "0px 10px",
                         position: "relative",
                         display: "flex",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
+                        borderRadius: 0,
+                        borderRight: 0,
+                        borderLeft: 0
                       }}
                       variant="outlined"
                     >
@@ -403,10 +434,10 @@ const Calendar = () => {
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
-                              marginTop: "15px"
+                              marginTop: "15px",
                             }}
                           >
-                            <InputLabel htmlFor="my-input">
+                            <InputLabel htmlFor="my-input" sx={{ mr: 1 }}>
                               Agenda de:
                             </InputLabel>
                             <h4>
@@ -469,7 +500,7 @@ const Calendar = () => {
                           selectable={true}
                           select={handleDateSelect}
                           dateClick={click}
-                          hiddenDays={[0, 6]}
+                          hiddenDays={hiddenDays}
                         />
                       )
                       )}
@@ -535,20 +566,50 @@ const Calendar = () => {
             />
           </Box>
         </MotionModal>
-        <MotionModal
-          isOpen={openModalHours}
-          handleClose={handleCloseModalHours}
-        >
-          <Box mt={1} position="relative">
-            <FormHoursCalendar
-              openingTime={openingTime}
-              closingTime={closingTime}
-              idHoursCalendar={idHoursCalendar}
-              setOpenModalHours={setOpenModalHours}
-              updateCalendarData={updateCalendarData}
-            />
+        <MotionModal isOpen={openModalHours} handleClose={handleCloseModalHours}>
+          <Box mt={1} position="relative" sx={{ my: 5 }}>
+            <Container component="main" maxWidth="md">
+              <Card>
+                <TabsModal >
+                  <TabModal
+                    key="1"
+                    onClick={() => setValue(1)}
+                    active={value === 1}
+                  >
+                    <Box display="flex" alignItems="center" justifyContent="center" sx={{ padding: "20px" }}>
+                      Horarios de atención
+                    </Box>
+                  </TabModal>
+                  <TabModal
+                    key="2"
+                    onClick={() => setValue(2)}
+                    active={value === 2}
+                  >
+                    <Box display="flex" alignItems="center" justifyContent="center" sx={{ padding: "20px" }}>
+                      Dias disponibles
+                    </Box>
+                  </TabModal>
+
+                </TabsModal>
+                <CardContent>
+                  <Content active={value === 1}>
+                    <FormHoursCalendar
+                      openingTime={openingTime}
+                      closingTime={closingTime}
+                      idHoursCalendar={idHoursCalendar}
+                      setOpenModalHours={setOpenModalHours}
+                      updateCalendarData={updateCalendarData}
+                    />
+                  </Content>
+                  <Content active={value === 2}>
+                    <DaySwitch setOpenModalHours={setOpenModalHours} days={days} />
+                  </Content>
+                </CardContent>
+              </Card>
+            </Container>
           </Box>
         </MotionModal>
+
       </>
     </MainComponent>
   )
