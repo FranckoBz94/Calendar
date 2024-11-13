@@ -36,10 +36,10 @@ const ResetPassword = () => {
       const response = await dispatch(resetPassword(dataPass) as any);
       console.log("response", response)
       if (response.success) {
-        setMessage('Contraseña actualizada correctamente.');
+        setMessage(response.message);
         setTypeMessage("success")
       } else {
-        setMessage('Error al actualizar la contraseña.');
+        setMessage(response.message);
         setTypeMessage("error")
       }
     } catch (error) {
@@ -58,6 +58,7 @@ const ResetPassword = () => {
     <Grid container mt={9}>
       <Grid item md={12} display="flex" justifyContent="center">
         <Card>
+          <p>{token}</p>
           <CardContent>
             <Box component="form" onSubmit={handleSubmit}>
               <Typography variant="h5" display="flex" justifyContent="center" mb={3} mt={2}>Restablecer Contraseña</Typography>

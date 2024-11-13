@@ -6895,24 +6895,22 @@ h6 {
 
 .btn_hours{
   background: #403e4b !important;
-  /* background-image: linear-gradient(163deg, rgb(74 59 18) 0%, rgb(74 59 18) 15%, rgb(28 28 28) 25%, rgb(28 28 28) 50%, rgb(28 28 28) 75%, rgb(74 59 18) 85%, rgb(74 59 18) 100%); */
   border:2px solid #000 !important;
 }
 .btn_hours.hourSelected{
-  background: #101013 !important;
-  border: 1px solid #fbbc13 !important;
+  background: #f7c331 !important;
+  color: #000;
 }
 
 .btn_change{
   background: #403e4b !important;
-  /* background-image: linear-gradient(163deg, rgb(74 59 18) 0%, rgb(74 59 18) 15%, rgb(28 28 28) 25%, rgb(28 28 28) 50%, rgb(28 28 28) 75%, rgb(74 59 18) 85%, rgb(74 59 18) 100%); */
   border:1px solid #fff !important;
 }
 
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(10px); /* Opcional: para un efecto de subida */
+    transform: translateY(10px); 
   }
   to {
     opacity: 1;

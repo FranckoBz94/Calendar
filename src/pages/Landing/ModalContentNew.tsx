@@ -52,6 +52,7 @@ const ModalContentNew = (props: ModalProps) => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [datesAvailableTurn, setDatesAvailableTurn] = useState<any[]>([]);
   const [loadingDatesCalendar, setLoadingDatesCalendar] = useState(false)
+  const [loadingHoursCalendar, setLoadingHoursCalendar] = useState(false)
   const [selectedService, setSelectedService] = useState(null);
 
   const { barbers } = useSelector((state: RootState) => storeComplete.barbers, shallowEqual);
@@ -192,6 +193,7 @@ const ModalContentNew = (props: ModalProps) => {
   };
 
   const selectDay = async (newValue: Date | undefined) => {
+    setLoadingHoursCalendar(true)
     setAllTimes([])
     setSelection(true)
     const formattedDate = dayjs(newValue).tz("America/Argentina/Buenos_Aires").format('YYYY-MM-DD');
@@ -207,6 +209,7 @@ const ModalContentNew = (props: ModalProps) => {
     }
     console.log("data", data)
     await fetchTurnsDayAvailable(data)
+    setLoadingHoursCalendar(false)
   }
 
 
@@ -318,6 +321,7 @@ const ModalContentNew = (props: ModalProps) => {
                     availableTurns={availableTurns}
                     datesAvailableTurn={datesAvailableTurn}
                     loadingDatesCalendar={loadingDatesCalendar}
+                    loadingHoursCalendar={loadingHoursCalendar}
                     errorGetHours={errorGetHours}
                   />
                 )}

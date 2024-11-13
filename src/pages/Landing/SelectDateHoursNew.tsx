@@ -9,6 +9,7 @@ import CalendarSkeleton from './AllSkeleton/CalendarSkeleton';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import store from 'redux/store';
 import { getAllDays } from 'redux/actions/hoursAction';
+import HourSkeleton from './AllSkeleton/HourSkeleton';
 
 interface SelectServiceStepProps {
   allTimes: any[];
@@ -20,6 +21,7 @@ interface SelectServiceStepProps {
   availableTurns: boolean
   datesAvailableTurn: any[],
   loadingDatesCalendar: boolean,
+  loadingHoursCalendar: boolean,
   errorGetHours: boolean
 }
 
@@ -33,6 +35,7 @@ const SelectDateHoursNew: React.FC<SelectServiceStepProps> = ({
   availableTurns,
   datesAvailableTurn,
   loadingDatesCalendar,
+  loadingHoursCalendar,
   errorGetHours
 }) => {
   type RootState = ReturnType<typeof store.getState>
@@ -112,7 +115,7 @@ const SelectDateHoursNew: React.FC<SelectServiceStepProps> = ({
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                   <Box sx={{ backgroundColor: '#f0f0f0', border: "1px solid #8f8f8f", color: 'white', width: 15, height: 15 }} />
                   <Typography variant="body1" sx={{ ml: 1 }}>
-                    Dia cerrado
+                    Días cerrado
                   </Typography>
                 </Box>
               </Box>
@@ -128,12 +131,21 @@ const SelectDateHoursNew: React.FC<SelectServiceStepProps> = ({
                 </Alert>
               ) : (
                 <Box >
-                  {availableTurns ? (
-                    <ListHoursAvailability availableTimes={allTimes} selectedTime={selectedTime} onSelectTime={onSelectTime} />
-                  ) : (
-                    <Alert severity="warning" sx={{ mt: 3, border: "1px solid" }}>
-                      No hay disponibilidad de este servicio para el {moment(dateFrom).format('DD/MM/YYYY')}.
-                    </Alert>)}
+                  {
+                    loadingHoursCalendar ? (
+                      <HourSkeleton />
+                    ) : availableTurns ? (
+                      <ListHoursAvailability
+                        availableTimes={allTimes}
+                        selectedTime={selectedTime}
+                        onSelectTime={onSelectTime}
+                      />
+                    ) : (
+                      <Alert severity="warning" sx={{ mt: 3, border: "1px solid" }}>
+                        No hay disponibilidad de este servicio para el {moment(dateFrom).format('DD/MM/YYYY')}.
+                      </Alert>
+                    )
+                  }
                 </Box>
               )}
             </DemoItem>

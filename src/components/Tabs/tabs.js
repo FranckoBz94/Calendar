@@ -34,7 +34,7 @@ export const Tab = styled.button`
   box-sizing: border-box;
   border: none;
   outline: none;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   width: 100%;
   position: relative;
   font-size: 1em;

@@ -35,7 +35,7 @@ const Calendar = () => {
   const [closingTime, setClosingTime] = useState("")
   const [barbersActive, setBarbersActive] = useState<Barber[]>([]);
   const [barberSelected, setBarberSelected] = useState<Barber | null>(null);
-  const [loadingTurns, setLoadingTurns] = useState(false)
+  const [loadingTurns, setLoadingTurns] = useState(true)
   const [dataSelected, setDataSelected] = useState({})
   const [filteredServices, setFilteredServices] = useState([])
   const [user, setUser] = React.useState<Barber | null>(null);
@@ -46,7 +46,7 @@ const Calendar = () => {
   const [active, setActive] = useState<string | null>(null);
   const [value, setValue] = useState(1);
   const [hiddenDays, setHiddenDays] = useState<number[]>([]);
-
+  console.log("se monta el componente")
   const dispatch = useDispatch()
 
   const getDataCalendar = async () => {
@@ -75,43 +75,7 @@ const Calendar = () => {
   const { clients } = useSelector((state: RootState) => storeComplete.clients)
   const { services } = useSelector((state: RootState) => storeComplete.services)
   const [allServices, setAllServices] = useState([])
-
-  useEffect(() => {
-    setOpeningTime(hours?.min_hour_calendar)
-    setClosingTime(hours?.max_hour_calendar)
-    setIdHoursCalendar(hours?.id)
-    localStorage.setItem("newOpeningTime", hours?.min_hour_calendar)
-    localStorage.setItem("newClosingTime", hours?.max_hour_calendar)
-  }, [hours])
-
-  useEffect(() => {
-    if (days && days.length > 0) {
-      const calculatedHiddenDays = days.reduce((acc: number[], day: any, index: number) => {
-        if (!day.is_open) {
-          console.log("day c", day)
-          acc.push(day.id);
-        }
-        return acc;
-      }, []);
-      console.log("calculatedHiddenDays", calculatedHiddenDays)
-      setHiddenDays(calculatedHiddenDays);
-    }
-  }, [days]);
-
-  useEffect(() => {
-    socket.on("turn", (barberId) => {
-      console.log("barberSelected", barberSelected?.id);
-      console.log("barberId", barberId);
-      if (barberSelected?.id === barberId) {
-        dispatch(getAllTurns(barberId) as any);
-      }
-    });
-
-    return () => {
-      socket.off("turn");
-    };
-  }, [barberSelected, dispatch]);
-
+  const turnsLoadedRef = useRef(false);
   const updateCalendarData = (
     newOpeningTime: string,
     newClosingTime: string
@@ -123,16 +87,40 @@ const Calendar = () => {
     localStorage.setItem("newClosingTime", newClosingTime)
   }
 
+  const fetchTurns = async () => {
+    try {
+      console.log("turns", turns)
+      if (turns && barbersActive.length > 0 && turns.length > 0) {
+        const turnosTransformados = await Promise.all(turns.map(transformarTurno));
+        setEvents(turnosTransformados);
+        console.log("tyertmiino", turnosTransformados)
+        setLoadingTurns(false);
+      } else {
+        console.log("entro aca")
+        setEvents([]);
+      }
+    } catch (e) {
+      console.error(e);
+      setLoadingTurns(false);
+    }
+  };
+
   const handleClick = async (e: any) => {
     const index = e.id;
     setLoadingTurns(true);
+    console.log("e", index)
+    console.log("inde", index)
+    console.log("active", active)
     try {
       if (index !== active && index !== undefined && index !== null) {
+        turnsLoadedRef.current = false
         setActive(index);
         setBarberSelected(e);
         await dispatch(getAllTurns(e.id) as any);
+        setLoadingTurns(false);
       }
       if (index === active) {
+        console.log("llego aca a erste")
         setLoadingTurns(false);
       }
     } catch (error) {
@@ -272,59 +260,87 @@ const Calendar = () => {
     }
   };
 
-  useEffect(() => {
-    getDataCalendar()
-  }, [])
-
 
 
   useEffect(() => {
-    setLoadBarbers(false)
-    if (Array.isArray(barbers) && barbers.length > 0) {
-      let activeBarbers: any
-      console.log("user", user)
-      console.log("barbers", barbers)
-      if (user?.is_admin === 1) {
-        activeBarbers = barbers.filter((barber: Barber) => barber.is_active === 1);
-      } else {
-        activeBarbers = barbers.filter((barber: Barber) => {
-          return user?.id && barber.id_user === parseInt(user.id) && barber.is_active === 1;
-        });
+    if (hours?.min_hour_calendar && hours?.max_hour_calendar) {
+      setOpeningTime(hours.min_hour_calendar);
+      setClosingTime(hours.max_hour_calendar);
+      setIdHoursCalendar(hours.id);
+
+      if (!localStorage.getItem("newOpeningTime")) {
+        localStorage.setItem("newOpeningTime", hours.min_hour_calendar);
+        localStorage.setItem("newClosingTime", hours.max_hour_calendar);
       }
-      setLoadBarbers(true)
+    }
+  }, [hours]);
+
+  useEffect(() => {
+    if (days?.length) {
+      const calculatedHiddenDays = days.reduce((acc: number[], day: any) => {
+        if (!day.is_open) acc.push(day.id);
+        return acc;
+      }, []);
+      setHiddenDays(calculatedHiddenDays);
+    }
+  }, [days]);
+
+  useEffect(() => {
+    const handleSocketTurn = (barberId: any) => {
+      if (barberSelected?.id === barberId) {
+        dispatch(getAllTurns(barberId) as any);
+      }
+    };
+    socket.on("turn", handleSocketTurn);
+    return () => {
+      socket.off("turn", handleSocketTurn);
+    };
+  }, [barberSelected, dispatch]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const userFromLocalStorage = localStorage.getItem('user');
+      if (userFromLocalStorage) {
+        setUser(JSON.parse(userFromLocalStorage));
+      }
+      await getDataCalendar();
+      fetchTurns();
+    };
+
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    setLoadBarbers(false);
+    if (Array.isArray(barbers) && barbers.length > 0) {
+      const activeBarbers = barbers.filter((barber) => {
+        if (user?.is_admin === 1) {
+          return barber.is_active === 1;
+        } else {
+          return user?.id && barber.id_user === parseInt(user.id) && barber.is_active === 1;
+        }
+      });
+
+      setLoadBarbers(true);
       setBarbersActive(activeBarbers);
       selectBarber(activeBarbers);
-      console.log("user", user)
     }
   }, [barbers, user]);
 
-  const fetchTurns = async () => {
-    try {
-      if (turns && barbersActive.length > 0 && turns.length > 0) {
-        const turnosTransformados = await Promise.all(turns.map(transformarTurno));
-        setEvents(turnosTransformados);
-      } else {
-        setEvents([]);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-
   useEffect(() => {
     const fetchData = async () => {
-      await fetchTurns();
-      setLoadingTurns(false);
+      console.log("Entrando a fetchData");
+      console.log("turnsLoadedRef.current", turnsLoadedRef.current);
+      if (turns && !turnsLoadedRef.current) {
+        console.log("entroo");
+        setLoadingTurns(true);
+        console.log("Cargando turnos...");
+        await fetchTurns();
+        turnsLoadedRef.current = true;
+      }
     };
-
     fetchData();
   }, [turns]);
-
-
-  useEffect(() => {
-    fetchTurns();
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -343,14 +359,6 @@ const Calendar = () => {
     setAllServices(services)
   }, [services])
 
-  React.useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem('user');
-    if (userFromLocalStorage) {
-      console.log("entra", userFromLocalStorage)
-      setUser(JSON.parse(userFromLocalStorage));
-    }
-  }, []);
-
   return (
     <MainComponent>
       <>
@@ -365,6 +373,7 @@ const Calendar = () => {
                       key={index}
                       onClick={() => handleClick(barber)}
                       active={active === barber.id}
+                      disabled={loadingTurns}
                       id={barber.id}
                       style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
                       sx={{ padding: "10px" }}
@@ -464,6 +473,8 @@ const Calendar = () => {
                       </Box>
                     </Card>
                     <div id="calendar-container">
+                      {/* <p>load {firstLoad ? "true" : "false"}</p> */}
+                      <p>loadingTurns {loadingTurns ? "true" : "false"}</p>
                       {loadingTurns ? (
                         <SkeletonCalendar />
                       ) : (barbersActive.length > 0 && (

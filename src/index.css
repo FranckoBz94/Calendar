@@ -536,3 +536,8 @@ inputDisabled input[type="time"] {
   color:"#adb8d2";
   pointer-events: none;
 }
+.react-calendar__navigation__label{
+  cursor: not-allowed !important;
+  opacity: 0.5;
+  pointer-events: none;
+}

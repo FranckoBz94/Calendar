@@ -68,11 +68,6 @@ const CompleteFormClient = (props: propsForm) => {
 
   const searchClient = async () => {
     if (dni !== '') {
-      console.log("si", dni)
-    } else {
-      console.log("no", dni)
-    }
-    if (dni !== '') {
       const clientData = await dispatch(fetchClientData({ dni }) as any);
       if (clientData && clientData.length > 0) {
         const data = clientData[0];
@@ -89,7 +84,6 @@ const CompleteFormClient = (props: propsForm) => {
         setExistClient(true);
         setShowWarning(false);
       } else {
-        // Cliente no encontrado, resetea los campos del cliente
         setExistClient(false);
         setFormValues({
           dni: '',
@@ -101,7 +95,6 @@ const CompleteFormClient = (props: propsForm) => {
         setShowWarning(true);
       }
     } else {
-      console.log("cambie")
       setShowWarning(true);
     }
   }
