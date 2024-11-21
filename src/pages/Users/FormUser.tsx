@@ -52,8 +52,13 @@ const FormUser = (props: FormUserProps) => {
     formData.append("lastName", data.lastName)
     formData.append("email", data.email)
     formData.append("is_admin", data.is_admin)
-    formData.append("imageProfile", profileImage || data.imageProfile)
-    let rtaUpdateUser
+    if (profileImage) {
+      console.log("imnagen", profileImage)
+      formData.append("imageProfile", profileImage); // Enviamos la nueva imagen
+    } else {
+      console.log("data.imageProfile", data.imageProfile)
+      formData.append("imageProfile", data.imageProfile); // Enviamos la imagen existente
+    } let rtaUpdateUser
     if (optionSelected === "Editar") {
       try {
         rtaUpdateUser = await dispatch(updateUser(formData, dataForm.id) as any)
@@ -120,9 +125,19 @@ const FormUser = (props: FormUserProps) => {
 
   const loadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
+      console.log("event.target.files[0]", event.target.files[0])
       setProfileImage(event.target.files[0])
     }
   }
+
+  const imageUrl = profileImage ? URL.createObjectURL(profileImage) : '';
+
+  React.useEffect(() => {
+    return () => {
+      if (profileImage) URL.revokeObjectURL(imageUrl); // Liberar el ObjectURL
+    };
+  }, [profileImage]);
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -148,13 +163,14 @@ const FormUser = (props: FormUserProps) => {
             sx={{ mt: 3 }}
           >
             <motion.div>
-              <Grid container spacing={2}>
-                <Grid item md={4} xs={12}>
-                  <Paper style={{ width: "auto", height: "200px", border: "1px solid #ddd" }}
+              <Grid container spacing={2} alignItems="stretch">
+                <Grid item md={4} xs={12} style={{ display: 'flex' }}>
+                  <Paper elevation={5} style={{ padding: "20px", textAlign: "center", width: "100%" }}
                   >
                     <label htmlFor="file" style={{ cursor: "pointer", display: "flex", height: "100%" }}>
                       <Box
                         width="100%"
+                        height="100%"
                         display="flex"
                         justifyContent="center"
                         alignItems="center"
@@ -168,131 +184,151 @@ const FormUser = (props: FormUserProps) => {
                           onChange={loadFile}
                           style={{ display: "none" }}
                         />
-
-
-                        {optionSelected === "Editar" ? (
+                        {profileImage ? (
                           <img
-                            src={urlBase + dataForm.url_image}
+                            src={imageUrl}
                             id="output"
-                            width="200"
-                            alt="Imagen del usuario"
-                          />
-                        ) : (
-                          <img
-                            src={profileImage ? URL.createObjectURL(profileImage) : urlBase + "uploads/profile.png"}
-                            id="output"
-                            width="200"
-                            style={{ padding: "1px" }}
+                            style={{
+                              padding: "1px",
+                              width: "100%",
+                              height: "auto",
+                              maxWidth: "250px",
+                              maxHeight: "250px",
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                              border: "1px solid #ddd",
+                              aspectRatio: "1/1",
+                            }}
                             alt="Vista previa"
                           />
+                        ) : (
+                          /* Si no hay nueva imagen seleccionada, mostrar la imagen del usuario o la predeterminada */
+                          <img
+                            src={optionSelected === "Editar" ? urlBase + dataForm.url_image : urlBase + "uploads/profile.png"}
+                            id="output"
+                            style={{
+                              padding: "1px",
+                              width: "100%",
+                              height: "auto",
+                              maxWidth: "250px",
+                              maxHeight: "250px",
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                              border: "1px solid #ddd",
+                              aspectRatio: "1/1",
+                            }}
+                            alt="Imagen del usuario"
+                          />
                         )}
+                        <p style={{ marginTop: "10px" }}>
+                          Allowed *.jpeg, *.jpg, *.png, *.gif <br />
+                          Max size of 3MB
+                        </p>
                       </Box>
                     </label>
                   </Paper>
                 </Grid>
-                <Grid item md={8} xs={12}>
-                  <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                      <TextField
-                        name="firstName"
-                        required
-                        fullWidth
-                        label="Nombre"
-                        type="text"
-                        onChange={(e) =>
-                          handleInputChange("firstName", e.target.value)
-                        }
-                        value={values.firstName}
-                        error={Boolean(errors.firstName)}
-                        helperText={
-                          String(errors.firstName) !== "undefined"
-                            ? String(errors.firstName)
-                            : ""
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        required
-                        fullWidth
-                        label="Apellido"
-                        name="lastName"
-                        type="text"
-                        onChange={handleChange}
-                        value={values.lastName}
-                        error={Boolean(errors.lastName)}
-                        helperText={
-                          String(errors.lastName) !== "undefined"
-                            ? String(errors.lastName)
-                            : ""
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        required
-                        fullWidth
-                        label="Teléfono"
-                        name="telefono"
-                        type="telefono"
-                        onChange={handleChange}
-                        value={values.telefono}
-                        error={Boolean(errors.telefono)}
-                        helperText={
-                          String(errors.email) !== "undefined"
-                            ? String(errors.email)
-                            : ""
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        required
-                        fullWidth
-                        label="Email"
-                        name="email"
-                        type="email"
-                        onChange={handleChange}
-                        value={values.email}
-                        error={Boolean(errors.email)}
-                        helperText={
-                          String(errors.email) !== "undefined"
-                            ? String(errors.email)
-                            : ""
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={12} m={0}>
-                      <Card
-                        style={{
-                          backgroundColor: values.is_admin ? "#bbe1fa" : "",
-                          cursor: "pointer",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          paddingRight: "17px",
-                        }}
-                        variant="outlined"
-                        onClick={isAdminClick}
-                      >
-                        <FormControlLabel
-                          value={values.is_admin}
-                          onClick={isAdminClick}
-                          name="is_admin"
-                          id="is_admin"
-                          control={
-                            <Checkbox
-                              checked={values.is_admin}
-                              onChange={handleCheckboxChange}
-                              style={{ marginLeft: "auto" }}
-                            />
+                <Grid item md={8} xs={12} style={{ display: 'flex' }}>
+                  <Paper elevation={5} style={{ padding: "20px", textAlign: "center" }}>
+                    <Grid container spacing={1} height="100%">
+                      <Grid item xs={6}>
+                        <TextField
+                          name="firstName"
+                          required
+                          fullWidth
+                          label="Nombre"
+                          type="text"
+                          onChange={(e) =>
+                            handleInputChange("firstName", e.target.value)
                           }
-                          label="Es administrador"
-                          labelPlacement="start"
-                          style={{ flexGrow: 1 }}
+                          value={values.firstName}
+                          error={Boolean(errors.firstName)}
+                          helperText={
+                            String(errors.firstName) !== "undefined"
+                              ? String(errors.firstName)
+                              : ""
+                          }
                         />
-                      </Card>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <TextField
+                          required
+                          fullWidth
+                          label="Apellido"
+                          name="lastName"
+                          type="text"
+                          onChange={handleChange}
+                          value={values.lastName}
+                          error={Boolean(errors.lastName)}
+                          helperText={
+                            String(errors.lastName) !== "undefined"
+                              ? String(errors.lastName)
+                              : ""
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          required
+                          fullWidth
+                          label="Teléfono"
+                          name="telefono"
+                          type="telefono"
+                          onChange={handleChange}
+                          value={values.telefono}
+                          error={Boolean(errors.telefono)}
+
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          required
+                          fullWidth
+                          label="Email"
+                          name="email"
+                          type="email"
+                          onChange={handleChange}
+                          value={values.email}
+                          error={Boolean(errors.email)}
+                          helperText={
+                            String(errors.email) !== "undefined"
+                              ? String(errors.email)
+                              : ""
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12} m={0}>
+                        <Card
+                          style={{
+                            backgroundColor: values.is_admin ? "#bbe1fa" : "",
+                            cursor: "pointer",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            paddingRight: "17px",
+                          }}
+                          variant="outlined"
+                          onClick={isAdminClick}
+                        >
+                          <FormControlLabel
+                            value={values.is_admin}
+                            onClick={isAdminClick}
+                            name="is_admin"
+                            id="is_admin"
+                            control={
+                              <Checkbox
+                                checked={values.is_admin}
+                                onChange={handleCheckboxChange}
+                                style={{ marginLeft: "auto" }}
+                              />
+                            }
+                            label="Es administrador"
+                            labelPlacement="start"
+                            style={{ flexGrow: 1, marginBottom: 5, marginTop: 5 }}
+                          />
+                        </Card>
+                      </Grid>
                     </Grid>
-                  </Grid>
+                  </Paper>
                 </Grid>
               </Grid>
             </motion.div>

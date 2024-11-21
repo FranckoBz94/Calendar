@@ -39,6 +39,10 @@ export const optionsTable: Partial<MUIDataTableOptions> = {
       },
     };
   },
+  onDownload: (buildHead, buildBody, columns, data) => {
+    const csv = `${buildHead(columns)}${buildBody(data)}`.replace(/,/g, ';');
+    return csv;
+  },
   textLabels: {
     body: {
       noMatch: "No se encontraron registros",
@@ -317,6 +321,7 @@ export interface Barber {
   is_active: number;
   is_admin: number;
   id_barbero: number;
+  id_user: number;
 }
 
 interface TabPanelProps {
@@ -422,3 +427,9 @@ export const combineAndFormatToISO = (startDate: string, timeTurn: string): stri
   const dateObject = new Date(combinedDateTime);
   return dateObject.toISOString();
 };
+
+export interface Day {
+  id: number;
+  day_of_week: string;
+  is_open: boolean;
+}

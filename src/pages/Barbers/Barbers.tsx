@@ -25,7 +25,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CloseIcon from '@mui/icons-material/Close';
 import MainComponent from "pages/AppBar/MainComponent"
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import { getAllUsers } from "redux/actions/usersAction"
+import { getAllUsers, updateStateUser } from "redux/actions/usersAction"
 import { useUser } from "components/UserProvider"
 
 const Barbers = () => {
@@ -51,7 +51,7 @@ const Barbers = () => {
   }
 
   const dataRow = async (option: string, e: any) => {
-    console.log(e)
+    console.log(e[8])
     const values = {
       id: e[0],
       imagen: e[1],
@@ -63,6 +63,7 @@ const Barbers = () => {
       is_active: e[7],
       id_user: e[8],
     };
+    console.log("values.id_user", values.id_user)
     if (option === "Editar") {
       handleOpenModal("Editar")
       setDataSelected(values)
@@ -71,7 +72,22 @@ const Barbers = () => {
       if (rtaDelete) {
         const rtaRemoveBarber = await dispatch(removeBarber(id) as any)
         if (rtaRemoveBarber.rta === 1) {
-          NotifyHelper.notifySuccess(`Barbero eliminado correctamente.`)
+          let successMessage = "Barbero eliminado correctamente.";
+
+          if (values.id_user !== 0) {
+            const stateIsBarber = await dispatch(updateStateUser(values.id_user, 0) as any);
+            console.log("stateIsBarber", stateIsBarber);
+
+            if (stateIsBarber.rta === 1) {
+              successMessage += " Usuario desvinculado correctamente.";
+            } else {
+              NotifyHelper.notifyError(`Error al desvincular al usuario.`);
+              handleCloseModal();
+              return;
+            }
+          }
+
+          NotifyHelper.notifySuccess(successMessage);
         } else {
           NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
         }
@@ -198,60 +214,63 @@ const Barbers = () => {
 
   return (
     <MainComponent>
-      <MotionComponent>
-        <>
-          <MotionModal
-            isOpen={openModal}
-            handleClose={handleCloseModal}
-          >
-            <Box mt={1} position="relative">
-              <FormBarber
-                dataForm={dataSelected}
-                optionSelected={optionSelected}
-                setOpenModal={setOpenModal}
-                users={users}
-              />
-            </Box>
-          </MotionModal>
-          <Card variant="outlined" className={classes.colorCard}>
-            <Box px={2}>
-              <p className={classes.card_title}>Barberos</p>
-            </Box>
-          </Card>
-          <Box mt={2}>
-            <Card variant="outlined">
-              <Box p={2}>
-                <Grid mb={2}>
-                  <Card variant="outlined">
-                    <Grid container justifyContent="flex-end" p={2}>
-                      <Button
-                        variant="contained"
-                        startIcon={<AddCircleOutlineIcon />}
-                        onClick={() => handleOpenModal("NewUser")}
-                        className={classes.btnAddUser}
-                      >
-                        Nuevo Barbero
-                      </Button>
-                    </Grid>
-                  </Card>
-                </Grid>
-                <Paper className={classes.cardTable}>
-                  <Grid >
-                    <ThemeProvider theme={getMuiTheme("#0f4c75")}>
-                      <MUIDataTable
-                        title={"Listado de barberos"}
-                        data={modifiedData}
-                        columns={columnsTableBarbers}
-                        options={optionsTable}
-                      />
-                    </ThemeProvider>
-                  </Grid>
-                </Paper>
+      <>
+        <MotionComponent>
+          <>
+            <Card variant="outlined" className={classes.colorCard}>
+              <Box px={2}>
+                <p className={classes.card_title}>Barberos</p>
               </Box>
             </Card>
-          </Box>
-        </>
-      </MotionComponent>
+            <Box mt={2}>
+              <Card variant="outlined">
+                <Box p={2}>
+                  <MotionModal
+                    isOpen={openModal}
+                    handleClose={handleCloseModal}
+                  >
+                    <Box mt={1} position="relative">
+                      <FormBarber
+                        dataForm={dataSelected}
+                        optionSelected={optionSelected}
+                        setOpenModal={setOpenModal}
+                        users={users}
+                      />
+                    </Box>
+                  </MotionModal>
+                  <Grid mb={2}>
+                    <Card variant="outlined">
+                      <Grid container justifyContent="flex-end" p={2}>
+                        <Button
+                          variant="contained"
+                          startIcon={<AddCircleOutlineIcon />}
+                          onClick={() => handleOpenModal("NewUser")}
+                          className={classes.btnAddUser}
+                          sx={{ width: { xs: "100%", md: "auto" } }}
+                        >
+                          Nuevo Barbero
+                        </Button>
+                      </Grid>
+                    </Card>
+                  </Grid>
+                  <Paper>
+                    <Grid>
+                      <ThemeProvider theme={getMuiTheme("#0f4c75")}>
+                        <MUIDataTable
+                          title={"Listado de barberos"}
+                          data={modifiedData}
+                          columns={columnsTableBarbers}
+                          options={optionsTable}
+                        />
+                      </ThemeProvider>
+                    </Grid>
+                  </Paper>
+                </Box>
+              </Card>
+            </Box>
+          </>
+        </MotionComponent>
+      </>
     </MainComponent>
   )
 }

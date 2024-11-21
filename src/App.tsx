@@ -15,6 +15,7 @@ import Login from "pages/Login"
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Dashboard from "pages/Dashboard"
 import PrivateRoute from "components/PrivateRoute"
+import ResetPassword from "pages/ResetPassword"
 
 const App = () => {
   const darkTheme = createTheme({
@@ -85,6 +86,10 @@ const App = () => {
           <Route path="/login" element={
             <PrivateRoute element={<Login />} />
           } />
+          <Route path="/reset-password" element={
+            <PrivateRoute element={<ResetPassword />} />
+          } />
+          {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
         </Routes>
       </ThemeProvider>
     </Provider>

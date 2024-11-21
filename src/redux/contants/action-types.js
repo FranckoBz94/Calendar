@@ -37,3 +37,8 @@ export const hoursTypes = {
   GET_HOURS: "GET_HOURS",
   UPDATE_HOURS: "UPDATE_HOURS"
 }
+
+export const daysTypes = {
+  GET_DAYS: "GET_DAYS",
+  UPDATE_DAYS: "UPDATE_DAYS"
+}

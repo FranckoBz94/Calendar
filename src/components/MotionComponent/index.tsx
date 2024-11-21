@@ -10,7 +10,7 @@ const MotionComponent = ({ children }: Props) => {
   const motionVariants = {
     initial: {
       opacity: 0,
-      scale: 0.99,
+      scale: 0.98, // Más sutil
     },
     in: {
       opacity: 1,
@@ -18,14 +18,13 @@ const MotionComponent = ({ children }: Props) => {
     },
     out: {
       opacity: 0,
-      scale: 1.1,
+      scale: 1.02, // Más sutil
     },
   };
 
   const motionTransition = {
-    type: 'tween',
-    ease: 'anticipate',
-    duration: 0.8, // Ajusta la duración para una transición más suave
+    duration: 0, // Reducido
+    ease: 'easeInOut', // Usar ease
   };
 
   return (

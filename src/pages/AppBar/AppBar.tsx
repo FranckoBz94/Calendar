@@ -143,7 +143,7 @@ export function AppBarComponent(props: Props) {
           </Typography>
           <React.Fragment>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-              <Tooltip title="Account settings">
+              <Tooltip title="Mi cuenta">
                 <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
                   <Avatar sx={{ width: 32, height: 32 }} src={`${process.env.REACT_APP_URL_BASE}${user?.url_image}`}></Avatar>
                 </IconButton>

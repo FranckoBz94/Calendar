@@ -33,7 +33,7 @@ interface FormCalendarProps {
 const FormAddTurn = (props: FormCalendarProps) => {
   const [selectedOptionClient, setSelectedOptionClient] = useState(null)
   const [value, setValue] = React.useState("1")
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [isSavingTurn, setIsSavingTurn] = useState(false)
   const {
     dataFormEvent,
     allClients,
@@ -67,38 +67,33 @@ const FormAddTurn = (props: FormCalendarProps) => {
   }
 
   const registerEvent = async (data: any) => {
-    setIsLoading(true);
+    setIsSavingTurn(true)
     const idService = selectedOptionService.id || undefined
-    console.log("dataFormEvent.start", dataFormEvent.start)
     const endTime = DateContants.calculateEndTime(
       dataFormEvent.start,
       selectedOptionService.minutes_service
     )
-    console.log("dataFormEvent.start", dataFormEvent.start)
-    console.log("endTime", moment(moment(endTime).toDate()).format(
-      "YYYY-MM-DD HH:mm:ss"
-    ))
+    const formattedStartDate = moment(data.start).format("YYYY-MM-DD HH:mm:ss");
+    const formattedEndDate = moment(endTime).format("YYYY-MM-DD HH:mm:ss");
     const dataComplete = {
       ...data,
       end: moment(endTime).toDate(),
       idBarber: barberSelected.id,
       price: selectedOptionService.price,
       idService,
-      end_date: moment(moment(endTime).toDate()).format(
-        "YYYY-MM-DD HH:mm:ss"
-      ),
-      start_date: moment(moment(data.start).toDate()).format(
-        "YYYY-MM-DD HH:mm:ss"
-      )
+      end_date: formattedEndDate,
+      start_date: formattedStartDate,
     }
-    let rtaAddTurn
+    let rtaAddTurn: any
     let stillAvailable
     try {
-      console.log("dataComplete", dataComplete)
       stillAvailable = await dispatch(hoursAvailableOnSave(dataComplete) as any)
       if (stillAvailable.message.length === 0) {
         rtaAddTurn = await dispatch(addTurn(dataComplete) as any)
         if (rtaAddTurn.rta === 1) {
+          const requestData = { dataComplete, selectedOptionService, barberSelected }
+          // const response = await dispatch(sendMail(requestData) as any);
+          console.log("res mail", requestData)
           dispatch(getAllTurns(barberSelected.id) as any)
           NotifyHelper.notifySuccess(rtaAddTurn.message)
           socket.emit("turn", barberSelected.id);
@@ -108,11 +103,13 @@ const FormAddTurn = (props: FormCalendarProps) => {
         }
       } else {
         NotifyHelper.notifyWarning("Ya hay un turno registrado en este horario.")
+        setIsSavingTurn(false)
       }
     } catch (err) {
       NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+    } finally {
+      setIsSavingTurn(false)
     }
-    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -256,17 +253,25 @@ const FormAddTurn = (props: FormCalendarProps) => {
                         menu: provided => ({
                           ...provided,
                           height: 'auto',
-                          maxHeight: '200px', // Ajusta esta altura según tus necesidades
+                          maxHeight: '200px', // Limitar la altura para evitar overflow
                           overflowY: 'auto',
                           borderRadius: '5px',
-                          border: "1px solid #ddd"
+                          border: "1px solid #ddd",
+                          zIndex: 9999, // Asegura que el menú esté por encima de otros elementos
                         }),
                         container: provided => ({
                           ...provided,
                           flex: 1,
                           marginBottom: 3,
                         }),
+                        menuPortal: base => ({
+                          ...base,
+                          zIndex: 1600, // Asegura que el menú esté por encima del modal
+                        }),
                       }}
+                      menuPosition="fixed" // Asegurar que el menú se posicione de forma fija
+                      menuPortalTarget={document.body}  // Renderiza el menú en el body
+                      menuPlacement="auto"
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -275,12 +280,12 @@ const FormAddTurn = (props: FormCalendarProps) => {
                         size="small"
                         type="submit"
                         className="btnSubmitOption2"
-                        loadingPosition="start"
-                        loading={isLoading}
+                        loading={isSavingTurn}
+                        disabled={isSavingTurn}
                         variant="contained"
-                        sx={{ py: 2, px: 4 }}
+                        sx={{ py: 2, px: 4, width: { md: "30%", xs: "100%" } }}
                       >
-                        <span>Guardar</span>
+                        <span style={{ color: "#fff" }}>{isSavingTurn ? "Guardando" : "Guardar"}</span>
                       </LoadingButton>
                     </Box>
                   </Grid>

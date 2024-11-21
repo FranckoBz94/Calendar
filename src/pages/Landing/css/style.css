@@ -2631,20 +2631,36 @@ ul {
   height: 20px;
 }
 
-/**************** banner part css start ****************/
-/* line 2, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
 .banner_part {
+  width: 100%; 
   height: 890px;
   position: relative;
   background-image: url(../img/bg_home.png);
   background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-position: left top;
+  background-size: cover; 
+  background-position: center;
+  z-index: 2;
+}
+
+
+.banner_part::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  z-index: 1; 
+}
+
+
+.banner_text{
+  position: relative;
   z-index: 2;
 }
 
 @media (max-width: 575px) {
-
   /* line 2, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
   .banner_part {
     height: 650px;
@@ -2662,11 +2678,13 @@ ul {
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
-
-  /* line 2, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
   .banner_part {
     height: 700px;
     background-size: cover;
+  }
+  .banner_text{
+    position: relative;
+    z-index: 2;
   }
 }
 
@@ -2679,37 +2697,7 @@ ul {
   }
 }
 
-@media only screen and (min-width: 1200px) and (max-width: 1440px) {
 
-  /* line 2, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
-  .banner_part {
-    background-size: cover;
-  }
-}
-
-@media (max-width: 575px) {
-
-  /* line 29, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
-  .banner_part:after {
-    display: none;
-  }
-}
-
-@media only screen and (min-width: 576px) and (max-width: 767px) {
-
-  /* line 29, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
-  .banner_part:after {
-    display: none;
-  }
-}
-
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-
-  /* line 29, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
-  .banner_part:after {
-    display: none;
-  }
-}
 
 /* line 53, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
 .banner_part .banner_text {
@@ -2802,44 +2790,23 @@ ul {
     display: none;
   }
 }
-
-/* line 115, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
+.banner_part .banner_text h5 {
+  position: relative;
+  display: inline-block;
+}
 .banner_part .banner_text h5:before {
   position: absolute;
   content: "";
   top: -14px;
-  width: 90px;
-  height: 50px;
+  left: 0;
+  right: -10px;
+  bottom: -10px;
   background-color: #fff;
   opacity: 0.3;
-  left: 0px;
+  z-index: -1;
+  border-radius: 4px;
 }
 
-@media (max-width: 575px) {
-
-  /* line 115, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
-  .banner_part .banner_text h5:before {
-    left: 20%;
-  }
-}
-
-@media only screen and (min-width: 576px) and (max-width: 767px) {
-
-  /* line 115, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
-  .banner_part .banner_text h5:before {
-    left: 30%;
-  }
-}
-
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-
-  /* line 115, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
-  .banner_part .banner_text h5:before {
-    left: 40%;
-  }
-}
-
-/* line 139, ../../01 cl html template/New folder/May 2019/173 Hipstyle Barber/Hipstyle Barber template/sass/_banner.scss */
 .banner_part .banner_text p {
   margin-bottom: 45px;
   color: #fff;
@@ -6777,7 +6744,7 @@ h6 {
 }
 
 .selected {
-  border: 2px solid #081d4c !important;
+  border: 5px solid #0a111e !important;
   /* border-radius: 50% !important; */
   transition: padding 0.3s ease !important; 
 }
@@ -6791,17 +6758,6 @@ h6 {
   overflow-wrap: break-word;
   box-sizing: border-box;
   padding: 50px; 
-}
-
-
-
-.hourSelected{
-  background: #b79536  !important;
-  color: #fff;
-}
-
-.btn_change_service{
-
 }
 
 .css-1aquho2-MuiTabs-indicator{
@@ -6938,19 +6894,23 @@ h6 {
 }
 
 .btn_hours{
-  background-image: linear-gradient(163deg, rgb(74 59 18) 0%, rgb(74 59 18) 15%, rgb(28 28 28) 25%, rgb(28 28 28) 50%, rgb(28 28 28) 75%, rgb(74 59 18) 85%, rgb(74 59 18) 100%);
+  background: #403e4b !important;
   border:2px solid #000 !important;
+}
+.btn_hours.hourSelected{
+  background: #f7c331 !important;
+  color: #000;
 }
 
 .btn_change{
-  background-image: linear-gradient(163deg, rgb(74 59 18) 0%, rgb(74 59 18) 15%, rgb(28 28 28) 25%, rgb(28 28 28) 50%, rgb(28 28 28) 75%, rgb(74 59 18) 85%, rgb(74 59 18) 100%);
+  background: #403e4b !important;
   border:1px solid #fff !important;
 }
 
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(10px); /* Opcional: para un efecto de subida */
+    transform: translateY(10px); 
   }
   to {
     opacity: 1;
@@ -6960,7 +6920,30 @@ h6 {
 
 .btn_next_button{
   font-weight: bold !important;
-  background-image: linear-gradient(132deg, rgb(41 136 255) 0%, rgb(0 26 120) 50%, rgb(6 114 223) 100%);
-  border: 3px solid #000 !important;
-  border-radius: 0 !important;
+  background-image: linear-gradient(to bottom, rgb(66 88 139), rgb(64 62 75));
+  border: 2px solid #000 !important;
+  border-radius: 5px !important;
 }
+
+.list_menu{
+  color: rgba(255, 255, 255, 0.7);
+}
+.nameMenu > span{
+  font-size: 15px !important;
+}
+.list_menu:hover{
+  color: white;
+}
+
+.appBarLanding {
+  background-color: transparent !important;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+  box-shadow: none !important;
+  position: absolute !important;
+  width: 100% !important;
+}
+.btn_menu_landing:focus{
+  outline: 0px;
+}
+
+

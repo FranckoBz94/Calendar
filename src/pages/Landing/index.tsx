@@ -1,26 +1,31 @@
 import { Box, Card, IconButton } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import ModalContent from "./ModalContent";
 import dayjs from "dayjs";
 import "./css/style.css"
 import "./css/bootstrap.min.css"
-import sectionTittleIcon from './img/logo.png'; // Importa la imagen
+// import sectionTittleIcon from './img/logo.png'; // Importa la imagen
 import MotionModalLanding from "components/Modal/Modal_landing";
 import ModalContentNew from "./ModalContentNew";
 import { DateContants } from "utils/DateContants";
 import CloseIcon from '@mui/icons-material/Close';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 import Staff from "./ComponentsLanding/Staff";
-// import cutter from "./img/icon/cutter.svg"
 import about1 from "./img/about_us_1.png"
 import about2 from "./img/about_us_2.png"
 import about3 from "./img/about_us_3.png"
 import Pricing from "./ComponentsLanding/Pricing";
 import DataTeam from "./ComponentsLanding/DataTeam";
+import Navbar from "./NavBar";
+import store from "redux/store";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { getAllDays } from "redux/actions/hoursAction";
 
 dayjs.locale('es');
 
 const Landing = () => {
   const [openModal, setOpenModal] = useState(false)
+  const [hiddenDays, setHiddenDays] = useState<number[]>([]);
 
   const handleCloseModal = () => {
     setOpenModal(false)
@@ -29,13 +34,33 @@ const Landing = () => {
   const handleOpenModal = () => {
     setOpenModal(true)
   }
-
+  type RootState = ReturnType<typeof store.getState>
+  const storeComplete: any = useSelector((state: RootState) => state)
+  const { days } = useSelector((state: RootState) => storeComplete.days, shallowEqual);
   const startDate = new Date();
   const endDate = new Date();
-  endDate.setDate(startDate.getDate() + 15);  // 15 días después del día actual
+  endDate.setDate(startDate.getDate() + 19);
 
-  const dates = DateContants.generateDates(startDate, endDate);
-  console.log("dias prox", dates)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (days && days.length > 0) {
+      const calculatedHiddenDays = days.reduce((acc: number[], day: any, index: number) => {
+        if (!day.is_open) {
+          acc.push(day.id); // Usa el índice para los días de la semana
+        }
+        return acc;
+      }, []);
+      console.log("calculatedHiddenDays", calculatedHiddenDays);
+      setHiddenDays(calculatedHiddenDays);
+    }
+  }, [days]);
+
+  useEffect(() => {
+    dispatch(getAllDays() as any)
+  }, [])
+
+  const dates = DateContants.generateDates(startDate, endDate, hiddenDays);
+
   return (
     <div>
       <MotionModalLanding
@@ -57,54 +82,7 @@ const Landing = () => {
       <div className="main_menu home_menu">
         <div className="container">
           <div className="row align-items-center">
-            <div className="col-lg-12">
-              <nav className="navbar navbar-expand-lg navbar-light">
-                <a className="navbar-brand" href="index.html"> <img src={sectionTittleIcon} alt="logo" /></a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse"
-                  data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                  aria-expanded="false" aria-label="Toggle navigation">
-                  <span className="menu_icon"></span>
-                </button>
-
-                <div className="collapse navbar-collapse main-menu-item"
-                  id="navbarSupportedContent">
-                  <ul className="navbar-nav">
-                    <li className="nav-item">
-                      <a className="nav-link" href="index.html">Home</a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="about.html">About</a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="service.html">Service</a>
-                    </li>
-                    <li className="nav-item dropdown">
-                      <a className="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Blog
-                      </a>
-                      <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a className="dropdown-item" href="blog.html"> blog</a>
-                        <a className="dropdown-item" href="single-blog.html">Single blog</a>
-
-                      </div>
-                    </li>
-                    <li className="nav-item dropdown">
-                      <a className="nav-link dropdown-toggle" href="blog.html" id="navbarDropdown_1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        pages
-                      </a>
-                      <div className="dropdown-menu" aria-labelledby="navbarDropdown_1">
-                        <a className="dropdown-item" href="team.html">team</a>
-                        <a className="dropdown-item" href="price.html">price</a>
-                        <a className="dropdown-item" href="elements.html">Elements</a>
-                      </div>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="contact.html">Contact</a>
-                    </li>
-                  </ul>
-                </div>
-              </nav>
-            </div>
+            <Navbar />
           </div>
         </div>
       </div>
@@ -121,7 +99,8 @@ const Landing = () => {
                     it meat yielding for air in without one upon it without, his creepeth tree
                     gathering behold and, greater have given deep his</p>
                   <div className="banner_btn">
-                    <a href="#" className="btn_1" onClick={() => handleOpenModal()}>Nuevo turno</a>
+
+                    <a href="#" className="btn_1" style={{ borderRadius: 10 }} onClick={() => handleOpenModal()}><EventNoteIcon sx={{ mr: 1 }} />Nuevo turno</a>
                   </div>
                 </div>
               </div>
@@ -158,60 +137,6 @@ const Landing = () => {
       <Staff />
       <DataTeam />
       <Pricing />
-      <section className="regervation_part section_padding">
-        <div className="container">
-          <div className="row justify-content-end">
-            <div className="col-lg-7">
-              <div className="regervation_part_iner">
-                <form>
-                  <div className="form-row">
-                    <div className="form-group col-md-6">
-                      <input type="email" className="form-control" id="inputEmail4" placeholder="Name *" />
-                    </div>
-                    <div className="form-group col-md-6">
-                      <input type="password" className="form-control" id="inputPassword4"
-                        placeholder="Email address *" />
-                    </div>
-                    <div className="form-group col-md-6">
-                      <select className="form-control" id="Select">
-                        <option value="2">Name of service</option>
-                        <option value="3">Name of service</option>
-                        <option value="4">Name of service</option>
-                        <option value="5">Name of service</option>
-                      </select>
-                    </div>
-                    <div className="form-group col-md-6">
-                      <input type="text" className="form-control" id="pnone" placeholder="Phone number *" />
-                    </div>
-                    <div className="form-group col-md-6">
-                      <div className="input-group date">
-                        <input id="datepicker" type="text" className="form-control" placeholder="Date *" />
-                      </div>
-                    </div>
-                    <div className="form-group time_icon col-md-6">
-                      <select className="form-control" id="Select2">
-                        <option value="1">8 AM TO 10AM</option>
-                        <option value="1">10 AM TO 12PM</option>
-                        <option value="1">12PM TO 2PM</option>
-                        <option value="1">2PM TO 4PM</option>
-                        <option value="1">4PM TO 6PM</option>
-                        <option value="1">6PM TO 8PM</option>
-                        <option value="1">4PM TO 10PM</option>
-                        <option value="1">10PM TO 12PM</option>
-                      </select>
-                    </div>
-                  </div>
-
-
-                  <div className="regerv_btn">
-                    <a href="#" className="regerv_btn_iner">Make an Appointment</a>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
       <footer className="footer-area">
         <div className="container">
           <div className="row justify-content-between">

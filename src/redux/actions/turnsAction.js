@@ -31,14 +31,11 @@ export const setRemoveTurn = () => {
 
 export const getAllTurns = (idBarber) => async (dispatch) => {
   try {
-    axios
-      .get(ruta + "turns/" + idBarber)
-      .then((response) => {
-        dispatch(getTurns(response.data))
-      })
-      .catch((error) => console.error(error))
-  } catch (err) {
-    console.log(err)
+    const response = await axios.get(ruta + "turns/" + idBarber)
+    dispatch(getTurns(response.data)) // Dispatch the result if successful
+  } catch (error) {
+    console.error("Error fetching turns:", error)
+    throw new Error(error.response ? error.response.data : "Error de conexión") // Propagate the error with a message
   }
 }
 
@@ -113,6 +110,15 @@ export const searchTurnsProfits = (data) => async () => {
 export const turnsDayAvailable = (data) => async () => {
   try {
     const response = await axios.post(ruta + "turns/turnsDayAvailable", data)
+    return response.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export const sendMail = (data) => async () => {
+  try {
+    const response = await axios.post(ruta + "turns/sendEmailForClient", data)
     return response.data
   } catch (err) {
     console.log(err)

@@ -5,7 +5,8 @@ import {
   hoursReducer,
   serviceReducer,
   turnReducer,
-  usersReducer
+  usersReducer,
+  daysReducer
 } from "./appReducers"
 import themeReducer from "./themeReducer"
 
@@ -16,7 +17,8 @@ const reducers = combineReducers({
   services: serviceReducer,
   barbers: berberReducer,
   turns: turnReducer,
-  hours: hoursReducer
+  hours: hoursReducer,
+  days: daysReducer
 })
 
 export default reducers

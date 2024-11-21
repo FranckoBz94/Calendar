@@ -1,7 +1,7 @@
 import { combineAndFormatToISO, formatDate, socket } from "contants";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-import { addTurn, hoursAvailableOnSave } from "redux/actions/turnsAction";
+import { addTurn, hoursAvailableOnSave, sendMail } from "redux/actions/turnsAction";
 import { DateContants } from "utils/DateContants";
 import CompleteFormClient from "./CompleteFormClient";
 import { useState } from "react";
@@ -12,20 +12,18 @@ interface dataAddTurnProps {
   dataService: { idService: number; start_date: string; minutes_services: string, time_turn: string };
   barberId: string | number | null;
   handleNext: () => void;
-  dataFormClient: any
+  dataFormClient: any;
+  dataBarber: any;
+  selectedService: any;
 }
 
 const FormDataClient = (props: dataAddTurnProps) => {
-  const { barberId, handleNext, dataFormClient } = props
+  const { barberId, handleNext, dataFormClient, dataBarber, selectedService } = props
   const { idService, start_date: startDate, minutes_services: minuteServices, time_turn: timeTurn } = props.dataService;
   const [idClient, setClientId] = useState<string | null>(null);
   const [errorSaveTurn, setErrorSaveTurn] = useState<string | null>(null)
   const [loadingForm, setLoadingForm] = useState(false)
   const dispatch = useDispatch()
-
-  console.log("dataService", props.dataService)
-
-
 
   const registerEvent = async (clientId?: any) => {
     setLoadingForm(true)
@@ -63,6 +61,9 @@ const FormDataClient = (props: dataAddTurnProps) => {
       if (stillAvailable.message.length === 0) {
         rtaAddTurn = await dispatch(addTurn(dataComplete) as any)
         if (rtaAddTurn.rta === 1) {
+          const requestData = { dataComplete, dataFormClient, dataBarber, selectedService }
+          const response = await dispatch(sendMail(requestData) as any);
+          console.log("response", response)
           socket.emit("turn", barberId);
           setLoadingForm(false)
           handleNext();
@@ -95,7 +96,7 @@ const FormDataClient = (props: dataAddTurnProps) => {
       rtaAddClient = await dispatch(addClient(data) as any)
       console.log("rtaAddClient", rtaAddClient)
       if (rtaAddClient.rta === 1) {
-        setErrorSaveTurn(rtaAddClient.message)
+        // setErrorSaveTurn(rtaAddClient.message)
         const clientData = await dispatch(fetchClientData({ dni: formValues?.dni }) as any);
         if (clientData && clientData.length > 0) {
           const data = clientData[0];

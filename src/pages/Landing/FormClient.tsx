@@ -85,27 +85,30 @@ const FormClient = ({ isSubmitting, isClient, loadingForm, errorSaveTurn }: prop
           type="submit"
           variant="contained"
           color="primary"
+          sx={{ p: 2 }}
+          className="btn_next_button"
           fullWidth
           disabled={loadingForm}
-          // onClick={registerEvent}
           startIcon={loadingForm ? <CircularProgress size={24} color="inherit" /> : undefined}
         >
           {loadingForm ? 'Guardando...' : 'Guardar turno'}
-        </Button>
+        </Button >
       ) : (
         <Button
           type="submit"
           variant="contained"
+          className="btn_next_button"
           color="primary"
+          sx={{ p: 2 }}
           fullWidth
           disabled={loadingForm}
-          // onClick={searchAndRegisterEvent}
           startIcon={loadingForm ? <CircularProgress size={24} color="inherit" /> : undefined}
         >
-          {loadingForm ? 'Guardando...' : 'Guardar turnoo'}
+          {loadingForm ? 'Guardando...' : 'Guardar turno'}
         </Button>
       )}
-      {errorSaveTurn !== null &&
+      {
+        errorSaveTurn !== null &&
         <Alert sx={{ mt: 2 }} severity="warning">{errorSaveTurn}</Alert >
       }
     </>

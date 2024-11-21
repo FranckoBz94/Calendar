@@ -102,17 +102,17 @@ const FormClient = (props: FormClientProps) => {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 3,
+            mt: 3,
             display: "flex",
             flexDirection: "column",
             alignItems: "center"
           }}
         >
           <Typography component="h1" variant="h5">
-            {optionSelected === "Editar" ? "Datos Cliente" : "Nuevo Cliente"}
+            {optionSelected === "Editar" ? "DATOS CLIENTE" : "DATOS NUEVO CLIENTE"}
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} mt={2} mb={2}>
               <Grid item md={6} xs={12}>
                 <TextField
                   id="nombre"
@@ -127,7 +127,6 @@ const FormClient = (props: FormClientProps) => {
                       : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -144,7 +143,6 @@ const FormClient = (props: FormClientProps) => {
                       : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -161,7 +159,6 @@ const FormClient = (props: FormClientProps) => {
                       : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -178,7 +175,6 @@ const FormClient = (props: FormClientProps) => {
                       : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -192,7 +188,6 @@ const FormClient = (props: FormClientProps) => {
                     String(errors.dni) !== "undefined" ? String(errors.dni) : ""
                   }
                   fullWidth
-                  margin="normal"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -203,7 +198,7 @@ const FormClient = (props: FormClientProps) => {
                     className="btnSubmitOption2"
                     loading={isLoading}
                     variant="contained"
-                    sx={{ mt: 5, mb: 5, py: 2, px: 4 }}
+                    sx={{ mt: 3, mb: 3, py: 2, px: 4, color: "#fff", width: { md: "30%", xs: "100%" } }}
                   >
                     <span>
                       {optionSelected === "Editar" ? "Actualizar" : "Guardar"}

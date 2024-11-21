@@ -45,12 +45,13 @@ const Services = () => {
       minutes_service: e[3],
       event_color: e[4],
     };
+    console.log("values", values)
     if (option === "Editar") {
       handleOpenModal("Editar")
       console.log(values)
       setDataSelected(values)
     } else {
-      const { id, rtaDelete } = await HelperContants.SwalDeleteUser(values)
+      const { id, rtaDelete } = await HelperContants.SwalDeleteService(values)
       if (rtaDelete) {
         const rtaRemoveUser = await dispatch(removeService(id) as any)
         if (rtaRemoveUser.rta === 1) {
@@ -178,6 +179,7 @@ const Services = () => {
                         startIcon={<AddCircleOutlineIcon />}
                         onClick={() => handleOpenModal("NewClient")}
                         className={classes.btnAddClient}
+                        sx={{ width: { xs: "100%", md: "auto" } }}
                       >
                         Nuevo Servicio
                       </Button>
