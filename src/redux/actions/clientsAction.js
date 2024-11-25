@@ -33,7 +33,10 @@ export const getAllClients = () => {
   return function (dispatch) {
     try {
       axios
-        .get(ruta + "clients/")
+        .get(ruta + "clients/", {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" }
+        })
         .then((response) => {
           dispatch(getClients(response.data))
         })

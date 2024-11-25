@@ -114,7 +114,14 @@ export const removeUser = (id) => async (dispatch) => {
 export const loginUser = (dataUser) => async () => {
   console.log(dataUser)
   try {
-    const response = await axios.post(ruta + "users/login", dataUser)
+    const response = await axios.post(
+      ruta + "users/login",
+      dataUser, // data debe ir aquí
+      {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" }
+      }
+    )
     return response.data
   } catch (err) {
     return { rta: -1, message: "Ocurrio un errorrr." + err }
