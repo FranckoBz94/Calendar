@@ -256,7 +256,6 @@ export const createFormData = (
   selectedOptionUser: number,
   isBarber: number
 ): FormData => {
-  console.log("data", data)
   const formData = new FormData();
   formData.append("firstName", data.firstName);
   formData.append("lastName", data.lastName);

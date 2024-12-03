@@ -55,8 +55,8 @@ const ModalContentNew = (props: ModalProps) => {
   const [loadingHoursCalendar, setLoadingHoursCalendar] = useState(false)
   const [selectedService, setSelectedService] = useState(null);
 
-  const { barbers } = useSelector((state: RootState) => storeComplete.barbers, shallowEqual);
-  const { services } = useSelector((state: RootState) => storeComplete.services, shallowEqual);
+  const barbers = useSelector((state: RootState) => storeComplete.barbers, shallowEqual);
+  const services = useSelector((state: RootState) => storeComplete.services, shallowEqual);
   const dispatch = useDispatch()
 
   const selectedDataService = (data: any) => {

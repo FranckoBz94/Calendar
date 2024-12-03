@@ -7,7 +7,7 @@ import { NotifyHelper, getMuiTheme, optionsTable } from "contants"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import MotionComponent from "components/MotionComponent"
 import MotionModal from "components/Modal/Modal"
-import { useDispatch, useSelector } from "react-redux"
+import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import store from "redux/store"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
@@ -25,8 +25,8 @@ const Services = () => {
   const dispatch = useDispatch()
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
+  const services = useSelector((state: RootState) => storeComplete.services, shallowEqual);
 
-  const { services } = useSelector((state: RootState) => storeComplete.services)
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})

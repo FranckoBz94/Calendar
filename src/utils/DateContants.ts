@@ -37,8 +37,6 @@ export class DateContants {
     
     // Verifica que la conversión fue exitosa
     if (!isNaN(startDate.getTime())) {
-        console.log("startDate", startDate.getTime());
-
         if (optionTimeEnd !== null) {
             const end = new Date(startDate.getTime() + (optionTimeEnd * 60000));
             return end;

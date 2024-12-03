@@ -40,7 +40,7 @@ const formProfits = () => {
   const [isSearch, setIsSearch] = useState(false)
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
-  const { barbers } = useSelector((state: RootState) => storeComplete.barbers)
+  const barbers = useSelector((state: RootState) => storeComplete.barbers)
   const classes: any = useStyles()
   const dispatch = useDispatch()
 

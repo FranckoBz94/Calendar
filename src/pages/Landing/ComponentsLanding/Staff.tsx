@@ -11,7 +11,7 @@ const Staff = () => {
   type RootState = ReturnType<typeof store.getState>
   const dispatch = useDispatch()
   const storeComplete: any = useSelector((state: RootState) => state)
-  const { barbers } = useSelector((state: RootState) => storeComplete.barbers, shallowEqual);
+  const barbers = useSelector((state: RootState) => storeComplete.barbers, shallowEqual);
 
   useEffect(() => {
     const fetchData = async () => {

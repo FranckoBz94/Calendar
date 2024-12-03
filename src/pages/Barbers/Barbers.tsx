@@ -3,7 +3,7 @@ import MotionComponent from "components/MotionComponent"
 import Paper from "@mui/material/Paper"
 import { NotifyHelper, getMuiTheme, optionsTable } from "contants"
 import { useStyles } from "./styles"
-import { useDispatch, useSelector } from "react-redux"
+import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import store from "redux/store"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -36,10 +36,10 @@ const Barbers = () => {
   const dispatch = useDispatch()
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
-  const { barbers } = useSelector((state: RootState) => storeComplete.barbers)
-  const { users } = useSelector((state: RootState) => storeComplete.users)
+  const barbers = useSelector((state: RootState) => storeComplete.barbers, shallowEqual);
+  const users = useSelector((state: RootState) => storeComplete.users, shallowEqual)
   const { user: userLogged } = useUser();
-
+  console.log("entra barbers", barbers)
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})
@@ -193,20 +193,22 @@ const Barbers = () => {
     },
   ];
 
-  const modifiedData = barbers?.map((row: any) => ({
-    ...row,
-    nameBarber: row.firstName + row.lastName,
-    id_user: row.id_user,
-    data_user: row.id_user === 0 ? (
-      <Alert severity="error">No tiene usuario</Alert>
-    ) : (
-      <Alert icon={<MailOutlineIcon fontSize="inherit" />} severity="info">
-        <AlertTitle>{row.nameBarber} {row.lastNameBarber}</AlertTitle>
-        {row.emailUser}
-      </Alert>
-    ),
-  }));
+  // const modifiedData = barbers?.map((row: any) => ({
+  //   ...row,
+  //   nameBarber: row.firstName + row.lastName,
+  //   id_user: row.id_user,
+  //   data_user: row.id_user === 0 ? (
+  //     <Alert severity="error">No tiene usuario</Alert>
+  //   ) : (
+  //     <Alert icon={<MailOutlineIcon fontSize="inherit" />} severity="info">
+  //       <AlertTitle>{row.nameBarber} {row.lastNameBarber}</AlertTitle>
+  //       {row.emailUser}
+  //     </Alert>
+  //   ),
+  // }));
 
+  const modifiedData = barbers ? barbers.map((row: any) => ({ ...row, nameBarber: row.firstName + " " + row.lastName, data_user: row.id_user === 0 ? (<Alert severity="error">No tiene usuario</Alert>) : (<Alert icon={<MailOutlineIcon fontSize="inherit" />} severity="info"> <AlertTitle>{row.firstName} {row.lastName}</AlertTitle> {row.emailUser} </Alert>), })) : [];
+  console.log("modifiedData", modifiedData)
   useEffect(() => {
     dispatch(getAllBarbers() as any)
     dispatch(getAllUsers() as any)

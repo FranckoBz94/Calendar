@@ -31,7 +31,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   type RootState = ReturnType<typeof store.getState>;
   const storeComplete: any = useSelector((state: RootState) => state);
-  const { barbers } = useSelector((state: RootState) => storeComplete.barbers);
+  const barbers = useSelector((state: RootState) => storeComplete.barbers);
   const { user } = useUser();
 
   const formatDateTime = (date: Dayjs | null): string | null => {

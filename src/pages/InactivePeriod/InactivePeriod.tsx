@@ -29,8 +29,8 @@ const InactivePeriod = () => {
 
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
-  const { barbers } = useSelector((state: RootState) => storeComplete.barbers)
-  const { hours } = useSelector((state: RootState) => storeComplete.hours)
+  const barbers = useSelector((state: RootState) => storeComplete.barbers)
+  const hours = useSelector((state: RootState) => storeComplete.hours)
   const classes: any = useStyles()
   const dispatch = useDispatch()
 

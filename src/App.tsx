@@ -5,6 +5,7 @@ import Clients from "pages/Clients"
 import Users from "pages/Users"
 import Services from "pages/Services"
 import MyCalendar from "pages/Calendar"
+import CalendarCopy from "pages/Calendar/CalendarCopy"
 import Barbers from "pages/Barbers"
 import InactivePeriod from "pages/InactivePeriod"
 import Profits from "pages/Profits"
@@ -33,6 +34,12 @@ const App = () => {
             path="/"
             element={
               <PrivateRoute element={<MyCalendar />} />
+            }
+          />
+          <Route
+            path="/CalendarCopy"
+            element={
+              <PrivateRoute element={<CalendarCopy />} />
             }
           />
           <Route

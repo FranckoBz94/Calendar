@@ -5,7 +5,7 @@ import Paper from "@mui/material/Paper"
 import { NotifyHelper, optionsTable, getMuiTheme } from "contants"
 import { useStyles } from "./styles"
 import { getAllUsers, removeUser } from "redux/actions/usersAction"
-import { useDispatch, useSelector } from "react-redux"
+import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import store from "redux/store"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -34,7 +34,8 @@ const Users = () => {
   const dispatch = useDispatch()
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
-  const { users } = useSelector((state: RootState) => storeComplete.users)
+  const users = useSelector((state: RootState) => storeComplete.users, shallowEqual);
+
   const { user: userLogged } = useUser();
 
   const handleOpenModal = (option: string) => {

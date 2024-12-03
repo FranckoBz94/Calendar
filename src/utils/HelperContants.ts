@@ -68,7 +68,6 @@ export class HelperContants {
       customClass: {
         container: "my-swal-container"
       },
-      text: "El usuario se borrara de su sistema.",
       title: `<h5 style="margin:0">¿Está seguro que desea eliminar el turno de ${turn.titleTurn}?</h5>`
     }).then((result) => {
       if (result.isConfirmed) {

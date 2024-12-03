@@ -106,6 +106,8 @@ const FormEditTurn = (props: FormCalendarProps) => {
     const { idTurn, rtaDelete } = await HelperContants.SwalDeleteTurn(
       dataFormEvent
     )
+    console.log("idTurn", idTurn)
+    console.log("rtaDelete", rtaDelete)
     if (rtaDelete) {
       const rtaRemoveTurn = await dispatch(removeTurn(idTurn) as any)
       if (rtaRemoveTurn.rta === 1) {

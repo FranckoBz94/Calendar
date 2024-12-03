@@ -8,7 +8,7 @@ const Pricing = () => {
   type RootState = ReturnType<typeof store.getState>
   const dispatch = useDispatch()
   const storeComplete: any = useSelector((state: RootState) => state)
-  const { services } = useSelector((state: RootState) => storeComplete.services, shallowEqual);
+  const services = useSelector((state: RootState) => storeComplete.services, shallowEqual);
   useEffect(() => {
     const fetchData = async () => {
       try {

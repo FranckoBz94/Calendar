@@ -28,6 +28,7 @@ interface FormCalendarProps {
   allClients: []
   allServices: any
   barberSelected: any
+  turnsLoadedRef: any
 }
 
 const FormAddTurn = (props: FormCalendarProps) => {
@@ -39,7 +40,8 @@ const FormAddTurn = (props: FormCalendarProps) => {
     allClients,
     allServices,
     setOpenModal,
-    barberSelected
+    barberSelected,
+    turnsLoadedRef
   } = props
   console.log("allServices", allServices)
   const [selectedOptionService, setSelectedOptionService] = useState({
@@ -94,9 +96,11 @@ const FormAddTurn = (props: FormCalendarProps) => {
           const requestData = { dataComplete, selectedOptionService, barberSelected }
           // const response = await dispatch(sendMail(requestData) as any);
           console.log("res mail", requestData)
-          dispatch(getAllTurns(barberSelected.id) as any)
+          await dispatch(getAllTurns(barberSelected.id) as any)
+          console.log("turnos traidos")
           NotifyHelper.notifySuccess(rtaAddTurn.message)
           socket.emit("turn", barberSelected.id);
+          turnsLoadedRef.current = false
           setOpenModal(false)
         } else {
           NotifyHelper.notifyError(rtaAddTurn.message)

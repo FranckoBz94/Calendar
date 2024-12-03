@@ -36,7 +36,8 @@ const Landing = () => {
   }
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
-  const { days } = useSelector((state: RootState) => storeComplete.days, shallowEqual);
+  const days = useSelector((state: RootState) => storeComplete.days, shallowEqual);
+
   const startDate = new Date();
   const endDate = new Date();
   endDate.setDate(startDate.getDate() + 19);

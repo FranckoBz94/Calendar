@@ -17,22 +17,25 @@ export const setAddTurn = () => {
   }
 }
 
-export const setUpdateTurn = () => {
+export const setUpdateTurn = (idTurn) => {
   return {
-    type: turnsTypes.UPDATE_TURN
+    type: turnsTypes.UPDATE_TURN,
+    payload: idTurn
   }
 }
 
-export const setRemoveTurn = () => {
+export const setRemoveTurn = (id) => {
   return {
-    type: turnsTypes.REMOVE_SELECTED_TURN
+    type: turnsTypes.REMOVE_SELECTED_TURN,
+    payload: id
   }
 }
 
 export const getAllTurns = (idBarber) => async (dispatch) => {
   try {
     const response = await axios.get(ruta + "turns/" + idBarber)
-    dispatch(getTurns(response.data)) // Dispatch the result if successful
+    console.log("turnos action", response)
+    dispatch(getTurns(response.data))
   } catch (error) {
     console.error("Error fetching turns:", error)
     throw new Error(error.response ? error.response.data : "Error de conexión") // Propagate the error with a message
@@ -53,7 +56,7 @@ export const addTurn = (dataTurn) => async (dispatch) => {
 export const updateTurn = (data, id) => async (dispatch) => {
   try {
     const response = await axios.put(ruta + "turns/" + id, data)
-    dispatch(setUpdateTurn())
+    dispatch(setUpdateTurn(id))
     dispatch(getAllTurns(data.idBarber))
     return response.data
   } catch (err) {
@@ -62,9 +65,10 @@ export const updateTurn = (data, id) => async (dispatch) => {
 }
 
 export const removeTurn = (id) => async (dispatch) => {
+  console.log("id turnoooo", id)
   try {
     const response = await axios.delete(`${ruta}turns/${id}`)
-    dispatch(setRemoveTurn())
+    dispatch(setRemoveTurn(id))
     return response.data
   } catch (error) {
     console.error(error)

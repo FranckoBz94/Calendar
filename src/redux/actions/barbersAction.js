@@ -29,17 +29,28 @@ export const setRemoveBarber = () => {
   }
 }
 
+// export const getAllBarbers = () => {
+//   return function (dispatch) {
+//     try {
+//       axios
+//         .get(ruta + "barbers/")
+//         .then((response) => {
+//           dispatch(getBarbers(response.data))
+//         })
+//         .catch((error) => console.error(error))
+//     } catch (err) {
+//       console.log(err)
+//     }
+//   }
+// }
+
 export const getAllBarbers = () => {
-  return function (dispatch) {
+  return async function (dispatch) {
     try {
-      axios
-        .get(ruta + "barbers/")
-        .then((response) => {
-          dispatch(getBarbers(response.data))
-        })
-        .catch((error) => console.error(error))
-    } catch (err) {
-      console.log(err)
+      const response = await axios.get(ruta + "barbers/")
+      dispatch(getBarbers(response.data))
+    } catch (error) {
+      console.error("Error fetching barbers:", error)
     }
   }
 }

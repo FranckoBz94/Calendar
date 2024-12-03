@@ -7,7 +7,7 @@ import { NotifyHelper, getMuiTheme, optionsTable } from "contants"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import MotionComponent from "components/MotionComponent"
 import MotionModal from "components/Modal/Modal"
-import { useDispatch, useSelector } from "react-redux"
+import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import store from "redux/store"
 import { getAllClients, removeClient } from "redux/actions/clientsAction"
 import EditIcon from "@mui/icons-material/Edit"
@@ -26,7 +26,7 @@ const Clients = () => {
   const dispatch = useDispatch()
   type RootState = ReturnType<typeof store.getState>
   const storeComplete: any = useSelector((state: RootState) => state)
-  const { clients } = useSelector((state: RootState) => storeComplete.clients)
+  const clients = useSelector((state: RootState) => storeComplete.clients, shallowEqual);
 
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
