@@ -17,17 +17,12 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from 'components/UserProvider';
 import { Card, CardContent } from '@mui/material';
 import ForgotPassword from './ForgotPassword';
-import store from 'redux/store';
-import { getAllServices } from 'redux/actions/servicesAction';
 
 const defaultTheme = createTheme();
 
 const Login = () => {
   const [loading, setLoading] = React.useState(false);
   const [isForgotPassword, setIsForgotPassword] = React.useState(false)
-  type RootState = ReturnType<typeof store.getState>
-  const storeComplete: any = useSelector((state: RootState) => state)
-  const services = useSelector((state: RootState) => storeComplete.services, shallowEqual);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -58,20 +53,8 @@ const Login = () => {
     }
   };
 
-  // React.useEffect(() => {
-  //   dispatch(getAllServices() as any);
-
-  // }, [])
-
-  const getServices = () => {
-    dispatch(getAllServices() as any);
-
-  }
-
   return (
     <ThemeProvider theme={defaultTheme}>
-      <p>{JSON.stringify(services)}</p>
-      <button onClick={getServices}>Click</button>
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
