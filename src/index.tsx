@@ -25,11 +25,12 @@ const darkTheme = createTheme({
 })
 
 const RootComponent = () => {
-  const { user } = useUser();
+  const { user, loading } = useUser();
   const location = useLocation();
-
   const isLandingPage = location.pathname === "/landing";
-
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
   return (
     <>
       {!isLandingPage && user ? (
@@ -42,26 +43,25 @@ const RootComponent = () => {
     </>
   );
 };
-
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 // const landing = false
 
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <UserProvider>
-        <ThemeProvider theme={darkTheme}>
-          <CssBaseline />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/landing" element={<Landing />} />
-              <Route path="*" element={<RootComponent />} />
-            </Routes>
-          </BrowserRouter>
-        </ThemeProvider>
-      </UserProvider>
-    </Provider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
+    <UserProvider>
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/landing" element={<Landing />} />
+            <Route path="*" element={<RootComponent />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </UserProvider>
+  </Provider>
+  // </React.StrictMode>
 );
 
 reportWebVitals();

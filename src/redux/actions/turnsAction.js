@@ -34,8 +34,9 @@ export const setRemoveTurn = (id) => {
 export const getAllTurns = (idBarber) => async (dispatch) => {
   try {
     const response = await axios.get(ruta + "turns/" + idBarber)
-    console.log("turnos action", response)
-    dispatch(getTurns(response.data))
+    console.log("turnos action")
+    await dispatch(getTurns(response.data))
+    console.log("termina turnos action")
   } catch (error) {
     console.error("Error fetching turns:", error)
     throw new Error(error.response ? error.response.data : "Error de conexión") // Propagate the error with a message

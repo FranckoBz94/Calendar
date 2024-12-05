@@ -22,7 +22,8 @@ import FormEditTurn from './FormEditTurn';
 import FormHoursCalendar from './FormHoursCalendar';
 import DaySwitch from './DaySwitch';
 import esLocale from "@fullcalendar/core/locales/es"
-import useLoadData from './hooks/useLoadData';
+// import useLoadData from './hooks/useLoadData';
+import { useData } from './hooks/useContextCalendar';
 
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar | null>(null);
@@ -43,7 +44,7 @@ const Calendar = () => {
   const [active, setActive] = useState<string | null>(null);
   const [value, setValue] = useState(1);
   const [hiddenDays, setHiddenDays] = useState<number[]>([]);
-  const [allServices, setAllServices] = useState([])
+  const [allServices, setAllServices] = useState<any[]>([])
 
   const dispatch = useDispatch()
 
@@ -60,9 +61,10 @@ const Calendar = () => {
     days,
     loadingTurns,
     setLoadingTurns,
-    turnsLoadedRef,
-  } = useLoadData();
+    turnsLoadedRef
+  } = useData();
 
+  console.log("loadBarbers", loadBarbers)
 
   const handleEventMouseEnter = (info: any) => {
     if (isDesktop) {
@@ -96,19 +98,11 @@ const Calendar = () => {
     setTooltipContent(null);
   };
 
-  const getDataCalendar = async () => {
-    dispatch(getAllHours() as any)
-    dispatch(getAllDays() as any)
-  }
-
   const fetchTurns = async () => {
     try {
-      console.log("turns", turns)
-      console.log("turns", turns)
       if (turns && barbersActive.length > 0 && turns.length > 0) {
         const turnosTransformados = await Promise.all(turns.map(transformarTurno));
         setEvents(turnosTransformados);
-        console.log("tyertmiino", turnosTransformados)
         setLoadingTurns(false);
       } else {
         setEvents([]);
@@ -207,11 +201,13 @@ const Calendar = () => {
     }
   };
 
-  const selectBarber = (barbers: Barber[]) => {
+  const selectBarber = async (barbers: Barber[]) => {
     if (barbers.length > 0) {
       setBarberSelected(barbers[0]);
       setActive(barbers[0].id);
-      dispatch(getAllTurns(barbers[0].id) as any);
+      console.log("selectBarber function")
+      await dispatch(getAllTurns(barbers[0].id) as any);
+      console.log("termina")
       setLoadingTurns(false)
     }
   };
@@ -242,22 +238,16 @@ const Calendar = () => {
   const handleClick = async (e: any) => {
     const index = e.id;
     setLoadingTurns(true);
-    console.log("e", index)
-    console.log("inde", index)
-    console.log("active", active)
     try {
       if (index !== active && index !== undefined && index !== null) {
         turnsLoadedRef.current = false
         setActive(index);
         setBarberSelected(e);
+        console.log("handle click evento")
         await dispatch(getAllTurns(e.id) as any);
         setLoadingTurns(false);
-        // console.log("antes de buscar")
-        // await fetchTurns()
-        // console.log("desp de buscar")
       }
       if (index === active) {
-        console.log("llego aca a erste")
         setLoadingTurns(false);
       }
     } catch (error) {
@@ -293,16 +283,10 @@ const Calendar = () => {
   }, [days]);
 
   useEffect(() => {
-    // if (barberSelected?.id) {
-    //   dispatch(getAllTurns(barberSelected.id) as any);
-    //   fetchTurns()
-    // }
     const handleSocketTurn = async (barberId: any) => {
-      console.log("barbero id donde se guyarda", barberId)
-      console.log("barberSelected", barberSelected)
-      console.log("barberSelected?.id === barberId", barberSelected?.id === barberId)
+      console.log("turno effect barberselected")
       if (barberSelected?.id === barberId) {
-        await dispatch(getAllTurns(barberId) as any);
+        // await dispatch(getAllTurns(barberId) as any);
         await fetchTurns()
       }
     };
@@ -310,19 +294,17 @@ const Calendar = () => {
     return () => {
       socket.off("turn", handleSocketTurn);
     };
-  }, [barberSelected, dispatch]);
+  }, [barberSelected]);
 
   useEffect(() => {
     turnsLoadedRef.current = false;
-
     const loadData = async () => {
       const userFromLocalStorage = localStorage.getItem('user');
       if (userFromLocalStorage) {
         setUser(JSON.parse(userFromLocalStorage));
       }
-      await getDataCalendar();
+      // await getDataCalendar();
       // fetchTurns();
-      console.log("se coloca en false")
     };
 
     loadData();
@@ -330,63 +312,59 @@ const Calendar = () => {
 
 
   useEffect(() => {
-    setLoadBarbers(false);
-    if (barbers && barbers.length > 0) {
+    if (barbers && barbers.length > 0 && !loadBarbers && barbersActive?.length === 0) {
       const activeBarbers = barbers.filter((barber: any) => {
         if (user?.is_admin === 1) {
-          console.log("barber adentro", barber)
           return barber.is_active === 1;
         } else {
           return user?.id && barber.id_user === parseInt(user.id) && barber.is_active === 1;
         }
-      });
-      setLoadBarbers(true);
-      setBarbersActive(activeBarbers);
-      selectBarber(activeBarbers);
+      }); setLoadBarbers(true); setBarbersActive(activeBarbers); selectBarber(activeBarbers);
     }
-  }, [barbers, user]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     console.log("entra a bnuscar turnos", turns)
-  //     console.log("turnsLoadedRef.current", turnsLoadedRef.current)
-
-  //     if (turns && !turnsLoadedRef.current) {
-  //       console.log("carga")
-  //       setLoadingTurns(true);
-  //       await fetchTurns();
-  //       console.log("desp de cargar")
-  //       turnsLoadedRef.current = true;
-  //     }
-  //   };
-  //   fetchData();
-  // }, [turns]);
+  }, [barbers, user, barbersActive, loadBarbers, setBarbersActive]);
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("entra a buscar turnos", turns);
-      console.log("turnsLoadedRef.current", turnsLoadedRef.current);
-      console.log("carga");
       setLoadingTurns(true);
       await fetchTurns();
-      console.log("desp de cargar");
       turnsLoadedRef.current = true;
     };
     fetchData();
   }, [turns]);
 
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       console.log("barberos")
+  //       await dispatch(getAllBarbers() as any);
+  //       dispatch(getAllClients() as any);
+  //       dispatch(getAllServices() as any);
+  //     } catch (error) {
+  //       console.error('Error al obtener los datos:', error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [dispatch]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await dispatch(getAllBarbers() as any);
-        dispatch(getAllClients() as any);
-        dispatch(getAllServices() as any);
-      } catch (error) {
-        console.error('Error al obtener los datos:', error);
+    const initializeData = async () => {
+      const userFromLocalStorage = localStorage.getItem('user');
+      console.log("inicia aca")
+      if (userFromLocalStorage) {
+        setUser(JSON.parse(userFromLocalStorage));
       }
+      await dispatch(getAllHours() as any);
+      await dispatch(getAllDays() as any);
+      await dispatch(getAllBarbers() as any);
+      await dispatch(getAllClients() as any);
+      await dispatch(getAllServices() as any);
     };
-    fetchData();
+    try {
+      initializeData();
+    } catch (error) {
+      console.error('Error al obtener los datos:', error);
+    }
   }, [dispatch]);
 
   useEffect(() => {
@@ -397,7 +375,6 @@ const Calendar = () => {
     <MainComponent>
       <>
         <Box mt={2}>
-          {/* <p>{JSON.stringify(events, null, 2)}</p> */}
           <Card variant="outlined">
             <Box sx={{ md: { p: 4 }, sm: { p: 1 } }} >
               <Tabs>

@@ -25,7 +25,7 @@ import FormClient from "pages/Clients/FormClient"
 interface FormCalendarProps {
   dataFormEvent: any
   setOpenModal: (send: boolean) => void
-  allClients: []
+  allClients: any
   allServices: any
   barberSelected: any
   turnsLoadedRef: any
@@ -289,7 +289,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
                         variant="contained"
                         sx={{ py: 2, px: 4, width: { md: "30%", xs: "100%" } }}
                       >
-                        <span style={{ color: "#fff" }}>{isSavingTurn ? "Guardando" : "Guardar"}</span>
+                        <span style={{ color: !isSavingTurn ? "#fff" : "#95969b" }}>{isSavingTurn ? "Guardando" : "Guardar"}</span>
                       </LoadingButton>
                     </Box>
                   </Grid>

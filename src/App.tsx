@@ -17,6 +17,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Dashboard from "pages/Dashboard"
 import PrivateRoute from "components/PrivateRoute"
 import ResetPassword from "pages/ResetPassword"
+import Prueba from "pages/Calendar/Prueba"
+import { DataProviderCalendar } from "pages/Calendar/hooks/useContextCalendar"
 
 const App = () => {
   const darkTheme = createTheme({
@@ -24,7 +26,6 @@ const App = () => {
       mode: 'light',
     },
   });
-
   return (
     <Provider store={store}>
       <ThemeProvider theme={darkTheme}>
@@ -39,7 +40,13 @@ const App = () => {
           <Route
             path="/CalendarCopy"
             element={
-              <PrivateRoute element={<CalendarCopy />} />
+              <PrivateRoute element={<DataProviderCalendar><CalendarCopy /></DataProviderCalendar>} />
+            }
+          />
+          <Route
+            path="/prueba"
+            element={
+              <PrivateRoute element={<Prueba />} />
             }
           />
           <Route

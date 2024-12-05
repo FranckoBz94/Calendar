@@ -8,7 +8,6 @@ import { getAllServices } from 'redux/actions/servicesAction';
 import { getAllTurns } from 'redux/actions/turnsAction';
 import store from 'redux/store';
 
-
 const useLoadData = () => {
   const dispatch = useDispatch();
 
@@ -19,6 +18,7 @@ const useLoadData = () => {
   const [barberSelected, setBarberSelected] = useState<Barber | null>(null);
   const turnsLoadedRef = useRef(false);
   const [loadingTurns, setLoadingTurns] = useState(true);
+  const [dataLoaded, setDataLoaded] = useState(false); // Estado para controlar si los datos iniciales han sido cargados
 
   const barbers = useSelector((state: RootState) => storeComplete.barbers, shallowEqual);
   const turns = useSelector((state: RootState) => storeComplete.turns, shallowEqual);
@@ -27,6 +27,8 @@ const useLoadData = () => {
   const hours = useSelector((state: RootState) => storeComplete.hours, shallowEqual);
   const days = useSelector((state: RootState) => storeComplete.days, shallowEqual);
 
+  console.log("barbers", barbers);
+
   useEffect(() => {
     const loadData = async () => {
       await dispatch(getAllBarbers() as any);
@@ -34,19 +36,23 @@ const useLoadData = () => {
       await dispatch(getAllServices() as any);
       await dispatch(getAllHours() as any);
       await dispatch(getAllDays() as any);
+      setDataLoaded(true);
     };
 
     loadData();
   }, [dispatch]);
 
+  // Manejar la selección del primer barbero una vez que los datos estén cargados
   useEffect(() => {
-    if (barbers?.length > 0) {
+    if (dataLoaded && barbers?.length > 0) {
+      console.log("Setting active barbers and selecting the first one");
       setBarbersActive(barbers);
       setBarberSelected(barbers[0]); // Seleccionar el primer barbero por defecto
       dispatch(getAllTurns(barbers[0].id) as any);
     }
-  }, [barbers, dispatch]);
+  }, [dataLoaded, barbers, dispatch]);
 
+  // Manejar eventos de socket
   useEffect(() => {
     const handleSocketTurn = (barberId: any) => {
       if (barberSelected?.id === barberId) {
