@@ -32,13 +32,13 @@ const App = () => {
         <ToastContainer />
         <Routes>
           <Route
-            path="/"
+            path="/CalendarCopy"
             element={
               <PrivateRoute element={<MyCalendar />} />
             }
           />
           <Route
-            path="/CalendarCopy"
+            path="/"
             element={
               <PrivateRoute element={<DataProviderCalendar><CalendarCopy /></DataProviderCalendar>} />
             }
