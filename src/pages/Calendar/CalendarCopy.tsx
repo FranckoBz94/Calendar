@@ -402,7 +402,7 @@ const Calendar = () => {
                           margin: 0,
                           ...(active === barber.id && { color: "#fff", fontWeight: "bold", fontSize: "1.2rem" })
                         }}>
-                          {barber.firstName} {barber.lastName} {barber.id}
+                          {barber.firstName} {barber.lastName}
                         </p>
                       </Box>
                     </Tab>
