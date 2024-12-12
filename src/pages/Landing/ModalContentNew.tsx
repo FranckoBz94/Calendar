@@ -168,18 +168,25 @@ const ModalContentNew = (props: ModalProps) => {
     }
   }
 
+  const convertToLocalTime = (utcDateString: any) => {
+    const date = new Date(utcDateString);
+    return date.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires', hour: '2-digit', minute: '2-digit', hour12: false });
+  };
+
   const fetchTurnsDayAvailable = async (dataSearch: any) => {
     setAllTimes([])
     getTimeSelected(null)
     try {
       const response = await dispatch(turnsDayAvailable(dataSearch) as any);
+      console.log("response.data", response.data)
       const data = response.data;
       if (data.length > 0) {
         const formattedTimes = data.map((slot: any) => {
-          return {
-            start: dayjs(slot.slot_start).format('HH:mm'),
-            end: dayjs(slot.slot_end).format('HH:mm'),
-          };
+          console.log("slot", slot)
+          const start = convertToLocalTime(slot.slot_start);
+          const end = convertToLocalTime(slot.slot_end);
+          console.log("start", start)
+          return { start, end };
         });
         setAvailableTurns(true)
         setAllTimes(formattedTimes);
