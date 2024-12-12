@@ -17,15 +17,17 @@ export const setAddClient = () => {
   }
 }
 
-export const setUpdateClient = () => {
+export const setUpdateClient = (client) => {
   return {
-    type: clientsTypes.UPDATE_CLIENT
+    type: clientsTypes.UPDATE_CLIENT,
+    payload: client
   }
 }
 
-export const setRemoveClient = () => {
+export const setRemoveClient = (id) => {
   return {
-    type: clientsTypes.REMOVE_SELECTED_CLIENT
+    type: clientsTypes.REMOVE_SELECTED_CLIENT,
+    payload: id
   }
 }
 
@@ -63,7 +65,7 @@ export const addClient = (user) => async (dispatch) => {
 export const updateClient = (data, id) => async (dispatch) => {
   try {
     const response = await axios.put(ruta + "clients/" + id, data)
-    dispatch(setUpdateClient())
+    dispatch(setUpdateClient(data))
     dispatch(getAllClients())
     return response.data
   } catch (err) {
@@ -74,7 +76,7 @@ export const updateClient = (data, id) => async (dispatch) => {
 export const removeClient = (id) => async (dispatch) => {
   try {
     const response = await axios.delete(`${ruta}clients/${id}`)
-    dispatch(setRemoveClient())
+    dispatch(setRemoveClient(id))
     dispatch(getAllClients())
     return response.data
   } catch (error) {

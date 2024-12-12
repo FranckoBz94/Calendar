@@ -17,9 +17,10 @@ export const setAddUser = () => {
   }
 }
 
-export const setUpdateUser = () => {
+export const setUpdateUser = (idUser) => {
   return {
-    type: usersTypes.UPDATE_USER
+    type: usersTypes.UPDATE_USER,
+    payload: idUser
   }
 }
 
@@ -78,7 +79,7 @@ export const updateUser = (formData, id) => async (dispatch) => {
         "Content-Type": "multipart/form-data"
       }
     })
-    dispatch(setUpdateUser())
+    dispatch(setUpdateUser(id))
     dispatch(getAllUsers())
     return response.data
   } catch (err) {
@@ -92,7 +93,7 @@ export const updateStateUser = (id, data) => async (dispatch) => {
       ruta + "users/updateStateBarber/" + id,
       data
     )
-    dispatch(setUpdateUser())
+    dispatch(setUpdateUser(id))
     dispatch(getAllUsers())
     return response.data
   } catch (err) {
@@ -114,14 +115,7 @@ export const removeUser = (id) => async (dispatch) => {
 export const loginUser = (dataUser) => async () => {
   console.log("dataUser", dataUser)
   try {
-    const response = await axios.post(
-      ruta + "users/login",
-      dataUser // data debe ir aquí
-      // {
-      //   // withCredentials: true,
-      //   headers: { "Content-Type": "application/json" }
-      // }
-    )
+    const response = await axios.post(ruta + "users/login", dataUser)
     console.log("res", response)
     return response.data
   } catch (err) {

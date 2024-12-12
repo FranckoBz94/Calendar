@@ -49,6 +49,7 @@ const FormClient = (props: FormClientProps) => {
     let rtaUpdateClient
     if (optionSelected === "Editar") {
       try {
+        console.log("dataFormClient", dataFormClient)
         rtaUpdateClient = await dispatch(
           updateClient(data, dataFormClient.id) as any
         )
@@ -57,11 +58,11 @@ const FormClient = (props: FormClientProps) => {
           setOpenModal(false)
           setIsLoading(false)
         } else {
-          NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+          NotifyHelper.notifyError(`Ocurrio un error, intente nuevamente.`)
           setIsLoading(false)
         }
       } catch (err) {
-        NotifyHelper.notifyError(`Ocurrio un error, intente nuvamente.`)
+        NotifyHelper.notifyError(`Ocurrio un error, intente nuevamentewe.`)
         setIsLoading(false)
       }
     } else {

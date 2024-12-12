@@ -17,32 +17,19 @@ export const setAddBarber = () => {
   }
 }
 
-export const setUpdateBarber = () => {
+export const setUpdateBarber = (idBarber) => {
   return {
-    type: barbersTypes.UPDATE_BARBER
+    type: barbersTypes.UPDATE_BARBER,
+    payload: idBarber
   }
 }
 
-export const setRemoveBarber = () => {
+export const setRemoveBarber = (id) => {
   return {
-    type: barbersTypes.REMOVE_SELECTED_BERBER
+    type: barbersTypes.REMOVE_SELECTED_BERBER,
+    payload: id
   }
 }
-
-// export const getAllBarbers = () => {
-//   return function (dispatch) {
-//     try {
-//       axios
-//         .get(ruta + "barbers/")
-//         .then((response) => {
-//           dispatch(getBarbers(response.data))
-//         })
-//         .catch((error) => console.error(error))
-//     } catch (err) {
-//       console.log(err)
-//     }
-//   }
-// }
 
 export const getAllBarbers = () => {
   return async function (dispatch) {
@@ -56,7 +43,6 @@ export const getAllBarbers = () => {
 }
 
 export const addBarber = (formData) => async (dispatch) => {
-  console.log(formData)
   try {
     const response = await axios.post(ruta + "barbers/", formData, {
       headers: {
@@ -78,7 +64,7 @@ export const updateBarber = (formData, id) => async (dispatch) => {
         "Content-Type": "multipart/form-data" // Importante para la carga de archivos
       }
     })
-    dispatch(setUpdateBarber())
+    dispatch(setUpdateBarber(id))
     dispatch(getAllBarbers())
     return response.data
   } catch (err) {
@@ -89,7 +75,7 @@ export const updateBarber = (formData, id) => async (dispatch) => {
 export const removeBarber = (id) => async (dispatch) => {
   try {
     const response = await axios.delete(`${ruta}barbers/${id}`)
-    dispatch(setRemoveBarber())
+    dispatch(setRemoveBarber(id))
     dispatch(getAllBarbers())
     return response.data
   } catch (error) {

@@ -49,6 +49,8 @@ const FormHoursCalendar = (props: FormHoursProps) => {
       max_hour_calendar: data.closingTime
     }
     let rtaAddTurn
+    console.log("dataUpdate", dataUpdate)
+    console.log("idHoursCalendar", idHoursCalendar)
     try {
       rtaAddTurn = await dispatch(
         updateHours(dataUpdate, idHoursCalendar) as any

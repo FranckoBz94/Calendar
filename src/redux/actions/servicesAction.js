@@ -4,10 +4,10 @@ import { servicesTypes } from "../contants/action-types"
 // const ruta = "http://localhost:4000/api/services/"
 const ruta = process.env.REACT_APP_URL_API + "/services/"
 
-export const getServices = (clients) => {
+export const getServices = (service) => {
   return {
     type: servicesTypes.GET_SERVICES,
-    payload: clients
+    payload: service
   }
 }
 
@@ -17,15 +17,17 @@ export const setAddService = () => {
   }
 }
 
-export const setUpdateService = () => {
+export const setUpdateService = (service) => {
   return {
-    type: servicesTypes.UPDATE_SERVICE
+    type: servicesTypes.UPDATE_SERVICE,
+    payload: service
   }
 }
 
-export const setRemoveService = () => {
+export const setRemoveService = (id) => {
   return {
-    type: servicesTypes.REMOVE_SELECTED_SERVICE
+    type: servicesTypes.REMOVE_SELECTED_SERVICE,
+    payload: id
   }
 }
 
@@ -59,7 +61,7 @@ export const addService = (user) => async (dispatch) => {
 export const updateService = (data, id) => async (dispatch) => {
   try {
     const response = await axios.put(ruta + id, data)
-    dispatch(setUpdateService())
+    dispatch(setUpdateService(data))
     dispatch(getAllServices())
     return response.data
   } catch (err) {
@@ -70,7 +72,7 @@ export const updateService = (data, id) => async (dispatch) => {
 export const removeService = (id) => async (dispatch) => {
   try {
     const response = await axios.delete(`${ruta}${id}`)
-    dispatch(setRemoveService())
+    dispatch(setRemoveService(id))
     dispatch(getAllServices())
     return response.data
   } catch (error) {

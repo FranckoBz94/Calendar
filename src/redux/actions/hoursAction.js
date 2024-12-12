@@ -11,9 +11,10 @@ export const getHours = (hours) => {
   }
 }
 
-export const setUpdatHours = () => {
+export const setUpdatHours = (data) => {
   return {
-    type: hoursTypes.UPDATE_HOURS
+    type: hoursTypes.UPDATE_HOURS,
+    payload: data
   }
 }
 
@@ -62,8 +63,10 @@ export const getAllDays = () => {
 
 export const updateHours = (data, id) => async (dispatch) => {
   try {
+    console.log("action id", id)
+    console.log("action data", data)
     const response = await axios.put(ruta + "hours/" + id, data)
-    dispatch(setUpdatHours())
+    dispatch(setUpdatHours(data))
     dispatch(getAllHours())
     return response.data
   } catch (err) {

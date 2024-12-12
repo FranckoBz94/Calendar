@@ -210,13 +210,16 @@ export const transformarTurno = async (turn: any) => {
 
 export const newArrayServices = async (
   services: any,
-  dateNextTurn: any,
+  dateAfterTurn: any,
   dateTurnSelected: any
 ) => {
-  const fechaInicioNextTurn: any = new Date(dateNextTurn)
+  const fechaInicioAfterTurn: any = new Date(dateAfterTurn)
   const fechaTurnSelected: any = new Date(dateTurnSelected)
-  const diferenciaEnMilisegundos = fechaInicioNextTurn - fechaTurnSelected
+  const diferenciaEnMilisegundos = fechaInicioAfterTurn - fechaTurnSelected
   const diferenciaEnMinutos = diferenciaEnMilisegundos / (1000 * 60)
+  console.log("fechaInicioAfterTurn", fechaInicioAfterTurn)
+  console.log("fechaTurnSelected", fechaTurnSelected)
+  console.log("diferenciaEnMilisegundos", diferenciaEnMilisegundos)
   return services.filter(
     (itemService: any) => itemService.minutes_service <= diferenciaEnMinutos
   )

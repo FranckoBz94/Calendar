@@ -63,9 +63,7 @@ const Calendar = () => {
     setLoadingTurns,
     turnsLoadedRef
   } = useData();
-
-  console.log("loadBarbers", loadBarbers)
-
+  console.log("hours", hours)
   const handleEventMouseEnter = (info: any) => {
     if (isDesktop) {
       const event = info.event;
@@ -116,19 +114,32 @@ const Calendar = () => {
   const calculateNewArrayServices = async (dataTurn: any) => {
     let rtaAvailableTurn;
     try {
-      rtaAvailableTurn = await dispatch(nextTurnAvailable(dataTurn) as any);
+      console.log("data turn", dataTurn)
+      const startDateUtc = moment(dataTurn.start_date).utc().format('YYYY-MM-DD HH:mm:ss');
+      const endTimeCalendarUtc = moment(`${dataTurn.dateBooking} ${dataTurn.endTimeCalendar}`).utc().format('YYYY-MM-DD HH:mm:ss');
+      const data = {
+        ...dataTurn,
+        endTimeCalendar: endTimeCalendarUtc,
+        start_date: startDateUtc
+      }
+      console.log("data turn", data)
+      rtaAvailableTurn = await dispatch(nextTurnAvailable(data) as any);
+      console.log("rtaAvailableTurn", rtaAvailableTurn)
       if (rtaAvailableTurn.rta === 1) {
         let startDate;
-        let endHoutTime;
+        let timeAfterTurn;
         if (rtaAvailableTurn.message.length > 0) {
           startDate = new Date(rtaAvailableTurn.message[0].start_date);
-          endHoutTime = moment(startDate).format('YYYY-MM-DD HH:mm:ss');
+          timeAfterTurn = moment(startDate).format('YYYY-MM-DD HH:mm:ss');
         } else {
           startDate = moment(dataTurn.start_date).format('YYYY-MM-DD');
           const nextEndHours = moment(dataTurn.start_date).format('YYYY-MM-DD');
-          endHoutTime = nextEndHours + ' ' + localStorage.getItem('newClosingTime');
+          timeAfterTurn = nextEndHours + ' ' + localStorage.getItem('newClosingTime');
         }
-        const newServices = await newArrayServices(allServices, endHoutTime, dataTurn.start_date);
+        console.log("timeAfterTurn", timeAfterTurn)
+        console.log("dataTurn", dataTurn.start_date)
+        const newServices = await newArrayServices(allServices, timeAfterTurn, dataTurn.start_date);
+        console.log("newServices", newServices)
         setFilteredServices(newServices);
       }
     } catch (e) {
@@ -195,6 +206,8 @@ const Calendar = () => {
         start_date: moment(event.start).format("YYYY-MM-DD HH:mm:ss"),
         endTimeCalendar: localStorage.getItem("newClosingTime")
       };
+      console.log("dataTurn", dataTurn)
+
       await calculateNewArrayServices(dataTurn);
     } else {
       NotifyHelper.notifyWarning("Debe agregar un barbero para agregar un turno.");
@@ -256,6 +269,7 @@ const Calendar = () => {
   };
 
   useEffect(() => {
+    console.log("servicios entra ", services)
     setAllServices(services)
   }, [services])
 
@@ -264,6 +278,7 @@ const Calendar = () => {
       setOpeningTime(hours.min_hour_calendar);
       setClosingTime(hours.max_hour_calendar);
       setIdHoursCalendar(hours.id);
+      console.log("newClosingTime", hours)
 
       if (!localStorage.getItem("newOpeningTime")) {
         localStorage.setItem("newOpeningTime", hours.min_hour_calendar);
@@ -367,9 +382,9 @@ const Calendar = () => {
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    setAllServices(services);
-  }, [services]);
+  // useEffect(() => {
+  //   setAllServices(services);
+  // }, [services]);
 
   return (
     <MainComponent>
@@ -485,8 +500,6 @@ const Calendar = () => {
                       </Box>
                     </Card>
                     <div id="calendar-container">
-                      {/* <p>load {firstLoad ? "true" : "false"}</p> */}
-                      <p>loadingTurns {loadingTurns ? "true" : "false"}</p>
                       {loadingTurns ? (
                         <SkeletonCalendar />
                       ) : (barbersActive.length > 0 && (

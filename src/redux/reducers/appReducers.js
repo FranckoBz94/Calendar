@@ -152,7 +152,7 @@ export const usersReducer = (state = initialState.users, { type, payload }) => {
     case usersTypes.GET_USERS:
       return payload
     case usersTypes.REMOVE_SELECTED_USER:
-      return state.filter((user) => user.id !== payload.id)
+      return state.filter((user) => user.id !== payload)
     case usersTypes.ADD_USER:
       return [...state, payload]
     case usersTypes.UPDATE_USER:
@@ -170,12 +170,12 @@ export const clientsReducer = (
     case clientsTypes.GET_CLIENTS:
       return payload
     case clientsTypes.REMOVE_SELECTED_CLIENT:
-      return state.filter((client) => client.id !== payload.id)
+      return state.filter((client) => client.id !== payload)
     case clientsTypes.ADD_CLIENT:
       return [...state, payload]
     case clientsTypes.UPDATE_CLIENT:
       return state.map((client) =>
-        client.id === payload.id ? payload : client
+        client?.id === payload.id ? payload : client
       )
     default:
       return state
@@ -210,13 +210,11 @@ export const berberReducer = (
     case barbersTypes.GET_BARBERS:
       return payload
     case barbersTypes.REMOVE_SELECTED_BERBER:
-      return state.filter((barber) => barber.id !== payload.id)
+      return state.filter((barber) => barber.id !== payload)
     case barbersTypes.ADD_BARBER:
-      return [...state, payload]
+      return [...state]
     case barbersTypes.UPDATE_BARBER:
-      return state.map((barber) =>
-        barber.id === payload.id ? payload : barber
-      )
+      return state.map((barber) => (barber.id === payload ? payload : barber))
     default:
       return state
   }
@@ -227,7 +225,6 @@ export const turnReducer = (state = initialState.turns, { type, payload }) => {
     case turnsTypes.GET_TURNS:
       return payload
     case turnsTypes.REMOVE_SELECTED_TURN:
-      console.log("payload", payload)
       return state.filter((turn) => turn.id !== payload.id)
     case turnsTypes.ADD_TURN:
       return [...state, payload]
@@ -239,11 +236,14 @@ export const turnReducer = (state = initialState.turns, { type, payload }) => {
 }
 
 export const hoursReducer = (state = initialState.hours, { type, payload }) => {
+  console.log("state", state)
+
   switch (type) {
     case hoursTypes.GET_HOURS:
       return payload
     case hoursTypes.UPDATE_HOURS:
-      return state.map((hour) => (hour.id === payload.id ? payload : hour))
+      // return state.map((hours) => (hours.id === payload.id ? payload : hours))
+      return { ...state, payload }
     default:
       return state
   }

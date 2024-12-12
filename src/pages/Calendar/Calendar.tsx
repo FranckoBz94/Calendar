@@ -161,6 +161,7 @@ const Calendar = () => {
     try {
       console.log("dataTurn", dataTurn)
       rtaAvailableTurn = await dispatch(nextTurnAvailable(dataTurn) as any)
+      console.log("rtaAvailableTurn", rtaAvailableTurn)
       if (rtaAvailableTurn.rta === 1) {
         let startDate
         let endHoutTime
@@ -195,6 +196,7 @@ const Calendar = () => {
     const { title } = event._def
     const nameService = event.nameService;
     const transformarTurno = async (turno: any) => {
+      console.log("turno", turno)
       return {
         idTurn: turno.idTurn,
         idBarber: barberSelected?.id,
@@ -270,7 +272,6 @@ const Calendar = () => {
       setOpeningTime(hours.min_hour_calendar);
       setClosingTime(hours.max_hour_calendar);
       setIdHoursCalendar(hours.id);
-
       if (!localStorage.getItem("newOpeningTime")) {
         localStorage.setItem("newOpeningTime", hours.min_hour_calendar);
         localStorage.setItem("newClosingTime", hours.max_hour_calendar);
