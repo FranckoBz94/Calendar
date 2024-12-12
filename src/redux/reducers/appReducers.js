@@ -236,8 +236,6 @@ export const turnReducer = (state = initialState.turns, { type, payload }) => {
 }
 
 export const hoursReducer = (state = initialState.hours, { type, payload }) => {
-  console.log("state", state)
-
   switch (type) {
     case hoursTypes.GET_HOURS:
       return payload

@@ -63,7 +63,6 @@ const Calendar = () => {
     setLoadingTurns,
     turnsLoadedRef
   } = useData();
-  console.log("hours", hours)
   const handleEventMouseEnter = (info: any) => {
     if (isDesktop) {
       const event = info.event;
@@ -114,7 +113,7 @@ const Calendar = () => {
   const calculateNewArrayServices = async (dataTurn: any) => {
     let rtaAvailableTurn;
     try {
-      console.log("data turn", dataTurn)
+      console.log("dataTurn entra", dataTurn)
       const startDateUtc = moment(dataTurn.start_date).utc().format('YYYY-MM-DD HH:mm:ss');
       const endTimeCalendarUtc = moment(`${dataTurn.dateBooking} ${dataTurn.endTimeCalendar}`).utc().format('YYYY-MM-DD HH:mm:ss');
       const data = {
@@ -122,7 +121,7 @@ const Calendar = () => {
         endTimeCalendar: endTimeCalendarUtc,
         start_date: startDateUtc
       }
-      console.log("data turn", data)
+      console.log("data mofificado", data)
       rtaAvailableTurn = await dispatch(nextTurnAvailable(data) as any);
       console.log("rtaAvailableTurn", rtaAvailableTurn)
       if (rtaAvailableTurn.rta === 1) {
@@ -136,10 +135,7 @@ const Calendar = () => {
           const nextEndHours = moment(dataTurn.start_date).format('YYYY-MM-DD');
           timeAfterTurn = nextEndHours + ' ' + localStorage.getItem('newClosingTime');
         }
-        console.log("timeAfterTurn", timeAfterTurn)
-        console.log("dataTurn", dataTurn.start_date)
         const newServices = await newArrayServices(allServices, timeAfterTurn, dataTurn.start_date);
-        console.log("newServices", newServices)
         setFilteredServices(newServices);
       }
     } catch (e) {
@@ -175,6 +171,8 @@ const Calendar = () => {
       start_date: moment(turnoSeleccionado.startTurn).format("YYYY-MM-DD HH:mm:ss"),
       endTimeCalendar: localStorage.getItem("newClosingTime")
     };
+    console.log("localStorage", localStorage)
+    console.log("calculateNewArrayServices", calculateNewArrayServices)
     await calculateNewArrayServices(dataTurn);
     setDataSelected(turnoSeleccionado);
     setOpenModalEdit(true);
@@ -190,6 +188,8 @@ const Calendar = () => {
       start_date: moment(info.date).format("YYYY-MM-DD HH:mm:ss"),
       endTimeCalendar: localStorage.getItem("newClosingTime")
     };
+    console.log("localStorage", localStorage)
+    console.log("calculateNewArrayServices", dataTurn)
     await calculateNewArrayServices(dataTurn);
   };
 
@@ -278,14 +278,14 @@ const Calendar = () => {
       setOpeningTime(hours.min_hour_calendar);
       setClosingTime(hours.max_hour_calendar);
       setIdHoursCalendar(hours.id);
-      console.log("newClosingTime", hours)
+      console.log("newClosingTime", hours);
 
-      if (!localStorage.getItem("newOpeningTime")) {
-        localStorage.setItem("newOpeningTime", hours.min_hour_calendar);
-        localStorage.setItem("newClosingTime", hours.max_hour_calendar);
-      }
+      // Siempre actualizar los valores en localStorage
+      localStorage.setItem("newOpeningTime", hours.min_hour_calendar);
+      localStorage.setItem("newClosingTime", hours.max_hour_calendar);
     }
   }, [hours]);
+
 
   useEffect(() => {
     if (days?.length) {
