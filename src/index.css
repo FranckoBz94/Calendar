@@ -370,7 +370,7 @@ inputDisabled input[type="time"] {
   box-shadow: none !important;
 }
 
-.css-16ac5r2-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
+.MuiBox-root>.Mui-selected {
   background-color: rgb(94, 53, 177) !important;
   border-radius: 5px;
 }
