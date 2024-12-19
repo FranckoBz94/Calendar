@@ -10,7 +10,6 @@ import WaterfallChartIcon from "@mui/icons-material/WaterfallChart";
 import EditRoadIcon from "@mui/icons-material/EditRoad";
 import ContentCutIcon from "@mui/icons-material/ContentCut";
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
 import { Box } from "@mui/material";
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 
@@ -45,14 +44,12 @@ export const mainListItems = () => {
               <ListItemText primary="Clientes" />
             </ListItemButton>
 
-            <motion.div>
-              <ListItemButton component={Link} to="/services" selected={isActive("/services")}>
-                <ListItemIcon>
-                  <FormatListBulletedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Servicios" />
-              </ListItemButton>
-            </motion.div>
+            <ListItemButton component={Link} to="/services" selected={isActive("/services")}>
+              <ListItemIcon>
+                <FormatListBulletedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Servicios" />
+            </ListItemButton>
 
             <ListItemButton component={Link} to="/barbers" selected={isActive("/barbers")}>
               <ListItemIcon>
