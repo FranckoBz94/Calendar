@@ -212,7 +212,7 @@ const formProfits = () => {
                           <Grid item md={4} xs={12} >
                             <DemoItem label={<Label componentName="Desde" />}>
                               <DatePicker
-                                disableFuture
+                                // disableFuture
                                 value={startDate}
                                 onChange={(newValue: Dayjs | null) => setStartDate(newValue)}
                                 format="DD/MM/YYYY"
@@ -224,7 +224,6 @@ const formProfits = () => {
                           <Grid item md={4} xs={12} >
                             <DemoItem label={<Label componentName="Hasta" />}>
                               <DatePicker
-                                disableFuture
                                 value={endDate}
                                 minDate={startDate ?? undefined}
                                 onChange={(newValue: Dayjs | null) => setEndDate(newValue)}

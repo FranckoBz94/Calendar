@@ -195,7 +195,6 @@ export const availableEndHours: any = [
 ]
 
 export const transformarTurno = async (turn: any) => {
-  console.log("turno en transformarTurno", turn)
   return {
     idTurn: turn?.id,
     dateBooking: new Date(turn?.fecha_reserva),
@@ -205,7 +204,8 @@ export const transformarTurno = async (turn: any) => {
     start: new Date(turn?.start_date),
     title: turn?.nameClient + " " + turn?.lastNameClient,
     description: turn?.nameService,
-    backgroundColor: turn?.colorEvent
+    backgroundColor: turn?.colorEvent,
+    note: turn?.note
   }
 }
 
@@ -368,12 +368,13 @@ export const ColorlibStepIconRoot = styled('div')<{
   alignItems: 'center',
   ...(ownerState.active && {
     backgroundImage:
-      'linear-gradient(136deg, rgb(115 159 243) 0%, rgb(74 92 157) 50%, rgb(54 82 113) 100%);',
+      'linear-gradient(136deg, rgb(32 19 11) 0%, rgb(79 76 74) 50%, rgb(167 115 76) 100%);',
     boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+    border: "4px solid #000"
   }),
   ...(ownerState.completed && {
     backgroundImage:
-      'linear-gradient(136deg, rgb(12 4 125) 0%, rgb(0 0 0) 50%, rgb(0 0 0) 100%)',
+      'linear-gradient(136deg, rgb(85 61 44) 0%, rgb(0 0 0) 50%, rgb(0 0 0) 100%);',
   }),
 }));
 

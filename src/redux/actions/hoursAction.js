@@ -25,9 +25,10 @@ export const getDays = (days) => {
   }
 }
 
-export const setUpdatDays = () => {
+export const setUpdatDays = (data) => {
   return {
-    type: daysTypes.UPDATE_DAYS
+    type: daysTypes.UPDATE_DAYS,
+    payload: data
   }
 }
 
@@ -78,7 +79,7 @@ export const updateDataDays = (data) => async (dispatch) => {
   try {
     console.log("da", data)
     const response = await axios.post(ruta + "hours/update-days", data)
-    dispatch(setUpdatDays())
+    dispatch(setUpdatDays(data))
     dispatch(getAllDays())
     console.log("response", response)
     return response.data

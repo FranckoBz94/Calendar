@@ -58,6 +58,7 @@ export const getMyUser = (id) => {
 }
 
 export const addUser = (formData) => async (dispatch) => {
+  console.log("formData", formData)
   try {
     const response = await axios.post(ruta + "users/", formData, {
       headers: {
@@ -87,12 +88,13 @@ export const updateUser = (formData, id) => async (dispatch) => {
   }
 }
 
-export const updateStateUser = (id, data) => async (dispatch) => {
+export const updateStateUser = (id, isBarber) => async (dispatch) => {
+  console.log("data deberia venir 0 es:", isBarber)
+  console.log("id deberia venir 0 es:", id)
   try {
-    const response = await axios.put(
-      ruta + "users/updateStateBarber/" + id,
-      data
-    )
+    const response = await axios.put(ruta + "users/updateStateBarber/" + id, {
+      isBarber
+    })
     dispatch(setUpdateUser(id))
     dispatch(getAllUsers())
     return response.data

@@ -3,7 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import { Barber, newArrayServices, NotifyHelper, socket, transformarTurno } from 'contants';
 import { Alert, Avatar, Box, Button, Card, CardContent, Container, InputLabel, Stack, Tooltip, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { getAllTurns, nextTurnAvailable } from 'redux/actions/turnsAction';
+import { getAllTurns, nextTurnAvailable, removeTurn } from 'redux/actions/turnsAction';
 import moment from "moment"
 import { getAllClients } from 'redux/actions/clientsAction';
 import { getAllDays, getAllHours } from 'redux/actions/hoursAction';
@@ -24,6 +24,7 @@ import DaySwitch from './DaySwitch';
 import esLocale from "@fullcalendar/core/locales/es"
 // import useLoadData from './hooks/useLoadData';
 import { useData } from './hooks/useContextCalendar';
+import { HelperContants } from 'utils/HelperContants';
 
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar | null>(null);
@@ -45,7 +46,8 @@ const Calendar = () => {
   const [value, setValue] = useState(1);
   const [hiddenDays, setHiddenDays] = useState<number[]>([]);
   const [allServices, setAllServices] = useState<any[]>([])
-
+  const [openModalInactive, setOpenModalInactive] = useState(false)
+  const [dataPeriodInactive, setDataPeriodInactive] = useState<any>({});
   const dispatch = useDispatch()
 
   const {
@@ -63,6 +65,7 @@ const Calendar = () => {
     setLoadingTurns,
     turnsLoadedRef
   } = useData();
+  console.log("barbersActive", barbersActive)
   const handleEventMouseEnter = (info: any) => {
     if (isDesktop) {
       const event = info.event;
@@ -113,7 +116,6 @@ const Calendar = () => {
   const calculateNewArrayServices = async (dataTurn: any) => {
     let rtaAvailableTurn;
     try {
-      console.log("dataTurn entra", dataTurn)
       const startDateUtc = moment(dataTurn.start_date).utc().format('YYYY-MM-DD HH:mm:ss');
       const endTimeCalendarUtc = moment(`${dataTurn.dateBooking} ${dataTurn.endTimeCalendar}`).utc().format('YYYY-MM-DD HH:mm:ss');
       const data = {
@@ -121,9 +123,7 @@ const Calendar = () => {
         endTimeCalendar: endTimeCalendarUtc,
         start_date: startDateUtc
       }
-      console.log("data mofificado", data)
       rtaAvailableTurn = await dispatch(nextTurnAvailable(data) as any);
-      console.log("rtaAvailableTurn", rtaAvailableTurn)
       if (rtaAvailableTurn.rta === 1) {
         let startDate;
         let timeAfterTurn;
@@ -147,35 +147,44 @@ const Calendar = () => {
     await dispatch(getAllClients() as any);
     const { event } = clickInfo;
     const eventData = event.extendedProps;
-    const start = event.start ? event.start.toISOString() : null;
-    const end = event.end ? event.end.toISOString() : null;
-    const { title } = event._def;
-    const nameService = event.nameService;
-    const transformarTurno = async (turno: any) => {
-      return {
-        idTurn: turno.idTurn,
-        idBarber: barberSelected?.id,
-        dateBooking: turno.dateBooking,
-        endTurn: new Date(end),
-        idClient: turno.idClient,
-        idService: turno.idService,
-        startTurn: new Date(start),
-        titleTurn: title,
-        description: nameService,
+    console.log("eve", eventData)
+    if (eventData.idService === 1) {
+      const dateBooking = new Date(eventData.dateBooking);
+      const dateBookingInLocalTime = dateBooking.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+      const data = { date: dateBookingInLocalTime, idTurn: eventData.idTurn }
+      setDataPeriodInactive(data);
+      setOpenModalInactive(true)
+
+    } else {
+      const start = event.start ? event.start.toISOString() : null;
+      const end = event.end ? event.end.toISOString() : null;
+      const { title } = event._def;
+      const nameService = event.nameService;
+      const transformarTurno = async (turno: any) => {
+        return {
+          idTurn: turno.idTurn,
+          idBarber: barberSelected?.id,
+          dateBooking: turno.dateBooking,
+          endTurn: new Date(end),
+          idClient: turno.idClient,
+          idService: turno.idService,
+          startTurn: new Date(start),
+          titleTurn: title,
+          description: nameService,
+          note: turno?.note
+        };
       };
-    };
-    const turnoSeleccionado = await transformarTurno(eventData);
-    const dataTurn = {
-      idBarber: barberSelected?.id,
-      dateBooking: moment(turnoSeleccionado.dateBooking).format("YYYY-MM-DD"),
-      start_date: moment(turnoSeleccionado.startTurn).format("YYYY-MM-DD HH:mm:ss"),
-      endTimeCalendar: localStorage.getItem("newClosingTime")
-    };
-    console.log("localStorage", localStorage)
-    console.log("calculateNewArrayServices", calculateNewArrayServices)
-    await calculateNewArrayServices(dataTurn);
-    setDataSelected(turnoSeleccionado);
-    setOpenModalEdit(true);
+      const turnoSeleccionado = await transformarTurno(eventData);
+      const dataTurn = {
+        idBarber: barberSelected?.id,
+        dateBooking: moment(turnoSeleccionado.dateBooking).format("YYYY-MM-DD"),
+        start_date: moment(turnoSeleccionado.startTurn).format("YYYY-MM-DD HH:mm:ss"),
+        endTimeCalendar: localStorage.getItem("newClosingTime")
+      };
+      await calculateNewArrayServices(dataTurn);
+      setDataSelected(turnoSeleccionado);
+      setOpenModalEdit(true);
+    }
   };
 
   const click = async (info: any) => {
@@ -188,8 +197,6 @@ const Calendar = () => {
       start_date: moment(info.date).format("YYYY-MM-DD HH:mm:ss"),
       endTimeCalendar: localStorage.getItem("newClosingTime")
     };
-    console.log("localStorage", localStorage)
-    console.log("calculateNewArrayServices", dataTurn)
     await calculateNewArrayServices(dataTurn);
   };
 
@@ -218,9 +225,7 @@ const Calendar = () => {
     if (barbers.length > 0) {
       setBarberSelected(barbers[0]);
       setActive(barbers[0].id);
-      console.log("selectBarber function")
       await dispatch(getAllTurns(barbers[0].id) as any);
-      console.log("termina")
       setLoadingTurns(false)
     }
   };
@@ -231,6 +236,10 @@ const Calendar = () => {
 
   const handleCloseModalEdit = () => {
     setOpenModalEdit(false)
+  }
+
+  const handleCloseModalInactive = () => {
+    setOpenModalInactive(false)
   }
 
   const handleCloseModalHours = () => {
@@ -256,7 +265,6 @@ const Calendar = () => {
         turnsLoadedRef.current = false
         setActive(index);
         setBarberSelected(e);
-        console.log("handle click evento")
         await dispatch(getAllTurns(e.id) as any);
         setLoadingTurns(false);
       }
@@ -269,7 +277,6 @@ const Calendar = () => {
   };
 
   useEffect(() => {
-    console.log("servicios entra ", services)
     setAllServices(services)
   }, [services])
 
@@ -278,7 +285,6 @@ const Calendar = () => {
       setOpeningTime(hours.min_hour_calendar);
       setClosingTime(hours.max_hour_calendar);
       setIdHoursCalendar(hours.id);
-      console.log("newClosingTime", hours);
 
       // Siempre actualizar los valores en localStorage
       localStorage.setItem("newOpeningTime", hours.min_hour_calendar);
@@ -301,7 +307,6 @@ const Calendar = () => {
     const handleSocketTurn = async (barberId: any) => {
       console.log("turno effect barberselected")
       if (barberSelected?.id === barberId) {
-        // await dispatch(getAllTurns(barberId) as any);
         await fetchTurns()
       }
     };
@@ -318,8 +323,6 @@ const Calendar = () => {
       if (userFromLocalStorage) {
         setUser(JSON.parse(userFromLocalStorage));
       }
-      // await getDataCalendar();
-      // fetchTurns();
     };
 
     loadData();
@@ -343,29 +346,14 @@ const Calendar = () => {
       setLoadingTurns(true);
       await fetchTurns();
       turnsLoadedRef.current = true;
+      barberSelected && setActive(barberSelected.id);
     };
     fetchData();
   }, [turns]);
 
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       console.log("barberos")
-  //       await dispatch(getAllBarbers() as any);
-  //       dispatch(getAllClients() as any);
-  //       dispatch(getAllServices() as any);
-  //     } catch (error) {
-  //       console.error('Error al obtener los datos:', error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [dispatch]);
-
   useEffect(() => {
     const initializeData = async () => {
       const userFromLocalStorage = localStorage.getItem('user');
-      console.log("inicia aca")
       if (userFromLocalStorage) {
         setUser(JSON.parse(userFromLocalStorage));
       }
@@ -382,9 +370,26 @@ const Calendar = () => {
     }
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   setAllServices(services);
-  // }, [services]);
+  const deleteTurn = async () => {
+    console.log("dataSelected", dataSelected)
+    const { idTurn, rtaDelete } = await HelperContants.SwalDeleteTurnInactive(
+      dataPeriodInactive
+    )
+    console.log("idTurn", idTurn)
+    console.log("rtaDelete", rtaDelete)
+    if (rtaDelete) {
+      const rtaRemoveTurn = await dispatch(removeTurn(idTurn) as any)
+      if (rtaRemoveTurn.rta === 1) {
+        setOpenModalInactive(false)
+        dispatch(getAllTurns(barberSelected?.id) as any)
+        NotifyHelper.notifySuccess(rtaRemoveTurn.message)
+        socket.emit("turn", barberSelected?.id);
+      } else {
+        NotifyHelper.notifyError(rtaRemoveTurn.message)
+      }
+      setOpenModalInactive(false)
+    }
+  }
 
   return (
     <MainComponent>
@@ -601,6 +606,23 @@ const Calendar = () => {
               allServices={filteredServices}
               barberSelected={barberSelected}
             />
+          </Box>
+        </MotionModal>
+        <MotionModal
+          isOpen={openModalInactive}
+          handleClose={handleCloseModalInactive}
+          size="medium"
+        >
+          <Box p={3} mt={1}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", p: 3 }}>
+
+              <div>
+
+                <h4>Eliminar Periodo inactivo</h4>
+                <p>Fecha del periodo:{dataPeriodInactive?.date} </p>
+              </div>
+              <Button variant="contained" color="secondary" onClick={deleteTurn}> Eliminar Turno </Button>
+            </Box>
           </Box>
         </MotionModal>
         <MotionModal isOpen={openModalHours} handleClose={handleCloseModalHours}>

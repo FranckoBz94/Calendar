@@ -86,6 +86,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
       end_date: formattedEndDate,
       start_date: formattedStartDate,
     }
+    console.log("dataComplete", dataComplete)
     let rtaAddTurn: any
     let stillAvailable
     try {
@@ -190,8 +191,8 @@ const FormAddTurn = (props: FormCalendarProps) => {
                     <Select
                       isSearchable={true}
                       options={allClients.map((client: any) => ({
-                        label: client.firstName + " " + client.lastName,
-                        value: client.id
+                        label: client?.firstName + " " + client?.lastName,
+                        value: client?.id
                       }))}
                       value={selectedOptionClient}
                       onChange={handleChangeSelectClient}
@@ -298,7 +299,7 @@ const FormAddTurn = (props: FormCalendarProps) => {
             </TabPanel>
             <TabPanel value="2">
               <FormClient
-                dataFormClient=""
+                dataFormClient={{}}
                 optionSelected="NewClient"
                 setOpenModal={setOpenModal}
               />

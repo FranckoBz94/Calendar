@@ -42,7 +42,7 @@ const FormUser = (props: FormUserProps) => {
     email: dataForm.email || "",
     is_admin: !(false || dataForm.is_admin === 0),
     imageProfile:
-      dataForm.url_image ? dataForm.url_image : "uploads/profile.png"
+      dataForm.url_image ? dataForm.url_image : "uploads/imageBarbers/profile.png"
   }
 
   const registerUser = async (data: any) => {
@@ -204,7 +204,7 @@ const FormUser = (props: FormUserProps) => {
                         ) : (
                           /* Si no hay nueva imagen seleccionada, mostrar la imagen del usuario o la predeterminada */
                           <img
-                            src={optionSelected === "Editar" ? urlBase + dataForm.url_image : urlBase + "uploads/profile.png"}
+                            src={optionSelected === "Editar" ? urlBase + dataForm.url_image : urlBase + "uploads/imageBarbers/profile.png"}
                             id="output"
                             style={{
                               padding: "1px",

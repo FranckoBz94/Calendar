@@ -39,7 +39,6 @@ const Barbers = () => {
   const barbers = useSelector((state: RootState) => storeComplete.barbers, shallowEqual);
   const users = useSelector((state: RootState) => storeComplete.users, shallowEqual)
   const { user: userLogged } = useUser();
-  console.log("entra barbers", barbers)
   const handleOpenModal = (option: string) => {
     setOptionSelected(option)
     setDataSelected({})
@@ -63,14 +62,16 @@ const Barbers = () => {
       is_active: e[7],
       id_user: e[8],
     };
-    console.log("values.id_user", values.id_user)
     if (option === "Editar") {
       handleOpenModal("Editar")
       setDataSelected(values)
     } else {
       const { id, rtaDelete } = await HelperContants.SwalDeleteUser(values)
+      console.log("id", id)
+      console.log("rtaDelete", rtaDelete)
       if (rtaDelete) {
         const rtaRemoveBarber = await dispatch(removeBarber(id) as any)
+        console.log("rtaRemoveBarber", rtaRemoveBarber)
         if (rtaRemoveBarber.rta === 1) {
           let successMessage = "Barbero eliminado correctamente.";
 
@@ -206,9 +207,16 @@ const Barbers = () => {
   //     </Alert>
   //   ),
   // }));
-
-  const modifiedData = barbers ? barbers.map((row: any) => ({ ...row, nameBarber: row.firstName + " " + row.lastName, data_user: row.id_user === 0 ? (<Alert severity="error">No tiene usuario</Alert>) : (<Alert icon={<MailOutlineIcon fontSize="inherit" />} severity="info"> <AlertTitle>{row.firstName} {row.lastName}</AlertTitle> {row.emailUser} </Alert>), })) : [];
-  console.log("modifiedData", modifiedData)
+  const modifiedData = barbers ? barbers.map((row: any) => ({
+    ...row, nameBarber: row.firstName + " " + row.lastName,
+    data_user: row.id_user === 0 ? (
+      <Alert severity="error">No tiene usuario</Alert>
+    ) : (
+      <Alert icon={<MailOutlineIcon fontSize="inherit" />} severity="info">
+        <AlertTitle>{row.nameBarber} {row.lastNameBarber}</AlertTitle> {row.emailUser}
+      </Alert>
+    ),
+  })) : [];
   useEffect(() => {
     dispatch(getAllBarbers() as any)
     dispatch(getAllUsers() as any)

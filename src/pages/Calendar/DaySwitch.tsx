@@ -1,27 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, List, ListItem, ListItemText, ListItemSecondaryAction, Button, Container } from '@mui/material';
-import { styled } from '@mui/system';
+import { Typography, List, ListItem, ListItemText, ListItemSecondaryAction, Container } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { updateDataDays } from 'redux/actions/hoursAction';
 import { NotifyHelper } from 'contants';
+import { LoadingButton } from '@mui/lab';
 
-// Estilos para el botón de guardar
-const SaveButton = styled(Button)({
-  marginTop: '16px',
-  width: '100%',
-  backgroundColor: '#0b0e3a',
-  '&:hover': {
-    backgroundColor: '#0f4c75',
-  },
-  padding: "12px",
-  borderRadius: '8px',
-});
-
-// Interfaz para definir la estructura de cada día
 interface Day {
   id: number;
   day_of_week: string;
-  is_open: boolean;
+  is_open: number;
 }
 
 interface FormHoursProps {
@@ -32,22 +19,22 @@ interface FormHoursProps {
 const DaySwitch: React.FC<FormHoursProps> = ({ days, setOpenModalHours }) => {
   const dispatch = useDispatch();
 
-  // Estado local para manejar cambios en los días
   const [localDays, setLocalDays] = useState<Day[]>(days);
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Sincroniza el estado local con los días recibidos como prop
   useEffect(() => {
     setLocalDays(days);
   }, [days]);
 
   const handleSwitchChange = (index: number) => {
     setLocalDays(prevDays =>
-      prevDays.map((day, i) => (i === index ? { ...day, is_open: !day.is_open } : day))
+      prevDays.map((day, i) => (i === index ? { ...day, is_open: day.is_open === 0 ? 1 : 0 } : day))
     );
   };
 
   const handleSaveChanges = async () => {
     console.log('Días actualizados:', localDays);
+    setIsLoading(true)
     try {
       const rtaDays = await dispatch(updateDataDays(localDays) as any);
       console.log("rtaDays", rtaDays);
@@ -59,6 +46,9 @@ const DaySwitch: React.FC<FormHoursProps> = ({ days, setOpenModalHours }) => {
       }
     } catch (err) {
       NotifyHelper.notifyError(`Ocurrió un error, inténtelo nuevamente.`);
+    }
+    finally {
+      setIsLoading(false)
     }
   };
 
@@ -75,23 +65,36 @@ const DaySwitch: React.FC<FormHoursProps> = ({ days, setOpenModalHours }) => {
               <input
                 type="checkbox"
                 id={`day-switch-${day.id}`}
-                checked={day.is_open}
+                checked={day.is_open !== 0}
                 onChange={() => handleSwitchChange(index)}
                 hidden
               />
               <label htmlFor={`day-switch-${day.id}`} className="toggle">
-                <div className={`toggle__switch ${day.is_open ? 'on' : 'off'}`}>
+                <div className={`toggle__switch ${day.is_open === 0 ? 'off' : 'on'}`}>
                   <div className="toggle__circle"></div>
-                  <span className="toggle__text">{day.is_open ? 'Abierto' : 'Cerrado'}</span>
+                  <span className="toggle__text">{day.is_open === 0 ? 'Cerrado' : 'Abierto'}</span>
                 </div>
               </label>
             </ListItemSecondaryAction>
           </ListItem>
         ))}
       </List>
-      <SaveButton variant="contained" onClick={handleSaveChanges}>
+      {/* <SaveButton variant="contained" onClick={handleSaveChanges}>
         Guardar Cambios
-      </SaveButton>
+      </SaveButton> */}
+      <LoadingButton
+        size="small"
+        type="submit"
+        className="btnSubmitOption2"
+        variant="contained"
+        fullWidth
+        sx={{ mt: 5, mb: 5, py: 2, px: 4, w: 100 }}
+        onClick={handleSaveChanges}
+        loading={isLoading}
+        disabled={isLoading}
+      >
+        <span>{isLoading ? "Guardando" : "Guardar Cambios"}</span>
+      </LoadingButton>
     </Container>
   );
 };

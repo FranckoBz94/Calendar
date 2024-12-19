@@ -16,7 +16,7 @@ const BarberCardContainer = styled(Card)(({ theme }) => ({
   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
   overflow: 'hidden',
   border: '2px solid #f0f0f0',
-  background: 'linear-gradient(to bottom, rgb(197 197 197 / 90%), rgb(28 28 28 / 99%))',
+  background: 'linear-gradient(to bottom, rgb(26 14 8 / 55%), rgb(61 40 24))',
   padding: theme.spacing(2),
   textAlign: 'center',
   display: 'flex',

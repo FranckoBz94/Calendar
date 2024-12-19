@@ -122,7 +122,6 @@ const Filter: React.FC<DataProps> = ({ barbers, barberDefault, handleChangeSelec
               <Grid item xl={3} md={6} xs={12}>
                 <DemoItem label={<Label componentName="Hasta" />}>
                   <DatePicker
-                    disableFuture
                     minDate={dateFrom ?? undefined}
                     value={dateTo}
                     onChange={(newValue: Dayjs | null) => { console.log("n", newValue); setDateTo(newValue) }}

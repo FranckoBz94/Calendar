@@ -32,6 +32,7 @@ const FormHoursCalendar = (props: FormHoursProps) => {
     updateCalendarData
   } = props
   const [closeHours, setCloseHours] = useState(availableEndHours)
+  const [isLoading, setIsLoading] = useState(false)
 
   const theme = createTheme()
   const dispatch = useDispatch()
@@ -44,13 +45,12 @@ const FormHoursCalendar = (props: FormHoursProps) => {
   const classes = useStyles()
 
   const registerEvent = async (data: any) => {
+    setIsLoading(true)
     const dataUpdate = {
       min_hour_calendar: data.openingTime,
       max_hour_calendar: data.closingTime
     }
     let rtaAddTurn
-    console.log("dataUpdate", dataUpdate)
-    console.log("idHoursCalendar", idHoursCalendar)
     try {
       rtaAddTurn = await dispatch(
         updateHours(dataUpdate, idHoursCalendar) as any
@@ -64,6 +64,9 @@ const FormHoursCalendar = (props: FormHoursProps) => {
       }
     } catch (err) {
       NotifyHelper.notifyError(`Ocurrió un error, inténtelo nuevamente.`)
+    }
+    finally {
+      setIsLoading(false)
     }
   }
 
@@ -192,8 +195,11 @@ const FormHoursCalendar = (props: FormHoursProps) => {
                     className="btnSubmitOption2"
                     variant="contained"
                     sx={{ mt: 5, mb: 5, py: 2, px: 4, w: 100 }}
+                    loading={isLoading}
+                    disabled={isLoading}
                   >
                     <span>Guardar</span>
+                    <span>{isLoading ? "Guardando" : "Guardar"}</span>
                   </LoadingButton>
                 </Box>
               </Grid>

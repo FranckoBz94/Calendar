@@ -39,8 +39,7 @@ const FormBarber = (props: FormBarberProps) => {
   const { dataForm, optionSelected, setOpenModal, users } = props
   const [selectedOptionUser, setSelectedOptionUser] = React.useState(dataForm.id_user || 0)
   const dispatch = useDispatch()
-
-  const usersAvailable = users?.filter((user: any) => user.is_barber === 0)
+  const usersAvailable = users?.filter((user: any) => user?.is_barber === 0)
 
 
   const initialValues = {
@@ -56,7 +55,10 @@ const FormBarber = (props: FormBarberProps) => {
 
   const registerBarber = async (data: any) => {
     setIsLoading(true);
+    console.log("dataForm", dataForm)
     const isBarber: any = selectedOptionUser !== 0 ? 1 : 0
+    console.log("selectedOptionUser", selectedOptionUser)
+    console.log("isBarber", isBarber)
     try {
       const formData = createFormData(data, profileImage, selectedOptionUser, isBarber);
       let rta;
@@ -68,12 +70,12 @@ const FormBarber = (props: FormBarberProps) => {
       console.log("rta", rta)
       if (rta.rta === 1) {
         if (selectedOptionUser !== 0) {
-          const dataUpdateState = {
-            isBarber
-          }
+          // const dataUpdateState = {
+          //   isBarber
+          // }
           console.log("selectedOptionUser", selectedOptionUser)
-          console.log("dataUpdateState", dataUpdateState)
-          const stateIsBarber = await dispatch(updateStateUser(selectedOptionUser, dataUpdateState) as any)
+          console.log("isBarber", isBarber)
+          const stateIsBarber = await dispatch(updateStateUser(selectedOptionUser, isBarber) as any)
           console.log("stateIsBarber", stateIsBarber)
         }
         NotifyHelper.notifySuccess(rta.message);
@@ -136,14 +138,14 @@ const FormBarber = (props: FormBarberProps) => {
       console.log("selectedOptionUser", selectedOptionUser)
       const { rtaDelete } = await HelperContants.SwalDeleteUserAsosiate(existUser)
       const isBarber: any = selectedOptionUser !== 0 ? 1 : 0
-
+      const stateUserInactive = 0
       console.log("dataForm", dataForm)
 
       if (rtaDelete) {
         dataForm.is_active = !(false || dataForm.is_active === 0)
         const formData = createFormData(dataForm, profileImage, 0, isBarber);
         const rta = await dispatch(updateBarber(formData, dataForm.id) as any);
-        const stateIsBarber = await dispatch(updateStateUser(selectedOptionUser, 0) as any)
+        const stateIsBarber = await dispatch(updateStateUser(selectedOptionUser, stateUserInactive) as any)
         if (rta.rta === 1) {
           console.log("stateIsBarber", stateIsBarber)
           NotifyHelper.notifySuccess(rta.message);
@@ -205,7 +207,7 @@ const FormBarber = (props: FormBarberProps) => {
                           />
                         ) : (
                           <img
-                            src={profileImage ? URL.createObjectURL(profileImage) : urlBase + "uploads/profile.png"}
+                            src={profileImage ? URL.createObjectURL(profileImage) : urlBase + "uploads/imageBarbers/profile.png"}
                             id="preview-output"
                             style={{ maxWidth: "100%", maxHeight: "100%", padding: "1px" }}
                             alt="Vista previa"

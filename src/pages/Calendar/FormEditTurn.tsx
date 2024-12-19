@@ -33,9 +33,9 @@ const FormEditTurn = (props: FormCalendarProps) => {
     dateBooking,
     startTurn,
     idService,
-    idTurn
+    idTurn,
+    note
   } = dataFormEvent
-  console.log("dataFormEvent", dataFormEvent)
   const [selectedOptionService, setSelectedOptionService] = useState({
     id: null,
     minutes_service: null
@@ -70,6 +70,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
       startTurn,
       endService
     )
+    console.log("data", data)
     const dataComplete = {
       ...data,
       end: moment(endTime).toDate(),
@@ -101,7 +102,7 @@ const FormEditTurn = (props: FormCalendarProps) => {
   })
 
   const { handleSubmit, handleChange, values } = formik
-
+  console.log("val", values)
   const deleteTurn = async () => {
     const { idTurn, rtaDelete } = await HelperContants.SwalDeleteTurn(
       dataFormEvent
@@ -228,10 +229,12 @@ const FormEditTurn = (props: FormCalendarProps) => {
                   name="note"
                   label="Agregar Nota"
                   onChange={handleChange}
+                  defaultValue={note}
                   fullWidth
                   margin="normal"
                   multiline
                   rows={3}
+                  variant="outlined"
                 />
               </Grid>
               <Grid item xs={12} mb={2}>

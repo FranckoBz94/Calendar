@@ -9,6 +9,7 @@ interface ModalProps {
   isOpen: boolean
   handleClose: () => void
   children: any
+  size?: string
 }
 
 const style = {
@@ -23,7 +24,8 @@ const style = {
 const MotionModal: React.FC<ModalProps> = ({
   isOpen,
   handleClose,
-  children
+  children,
+  size
 }) => {
   const [isBrowser, setIsBrowser] = useState(false)
 
@@ -44,6 +46,7 @@ const MotionModal: React.FC<ModalProps> = ({
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
           style={style}
+          sx={size ? { width: size } : {}}
         >
           <Box className="modal_custom" >
             <IconButton

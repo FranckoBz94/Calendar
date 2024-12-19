@@ -52,6 +52,33 @@ export class HelperContants {
     return { id, rtaDelete }
   }
 
+  static async SwalDeleteTurnInactive(turn: any) {
+    // eslint-disable-next-line camelcase
+    const { idTurn } = turn
+    console.log("Turn", turn)
+    let rtaDelete: boolean = false
+    await Swal.fire({
+      cancelButtonColor: "#3085d6",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Eliminar",
+      icon: "error",
+      reverseButtons: true,
+      showCancelButton: true,
+      customClass: {
+        container: "my-swal-container"
+      },
+      title: `<h5 style="margin:0">¿Está seguro que desea eliminar este turno inactivo?</h5>`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        rtaDelete = true
+      } else {
+        rtaDelete = false
+      }
+    })
+    return { idTurn, rtaDelete }
+  }
+
   static async SwalDeleteTurn(turn: any) {
     // eslint-disable-next-line camelcase
     const { idTurn } = turn

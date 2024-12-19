@@ -48,23 +48,7 @@ const CompleteFormClient = (props: propsForm) => {
   });
   const [value, setValue] = React.useState("1");
 
-  const handleChange = (event: React.SyntheticEvent, newValue: any) => {
-    event.preventDefault()
-    setValue(newValue);
-    console.log("e", newValue)
-    setFormValues({
-      dni: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-    });
-    setClientId?.(null);
-    if (newValue === "1") {
-      console.log("1 en")
-      setShowWarning(false);
-    }
-  };
+
 
   const searchClient = async () => {
     if (dni !== '') {
@@ -98,6 +82,25 @@ const CompleteFormClient = (props: propsForm) => {
       setShowWarning(true);
     }
   }
+
+  const handleChange = (event: React.SyntheticEvent, newValue: any) => {
+    event.preventDefault()
+    setValue(newValue);
+    // searchClient();
+    console.log("e", newValue)
+    setFormValues({
+      dni: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+    });
+    setClientId?.(null);
+    if (newValue === "1") {
+      console.log("1 en")
+      setShowWarning(false);
+    }
+  };
 
   useEffect(() => {
     if (value === "1") {
