@@ -375,11 +375,11 @@ inputDisabled input[type="time"] {
   border-radius: 5px;
 }
 
-.css-16ac5r2-MuiButtonBase-root-MuiListItemButton-root.Mui-selected .MuiListItemIcon-root {
+.MuiBox-root>.Mui-selected .MuiListItemIcon-root {
   color: #fff;
 }
 
-.css-16ac5r2-MuiButtonBase-root-MuiListItemButton-root.Mui-selected .MuiListItemText-root {
+.MuiBox-root>.Mui-selected .MuiListItemText-root {
   color: #fff;
 }
 
